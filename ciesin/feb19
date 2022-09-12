@@ -1,0 +1,58 @@
+var usa = ee.FeatureCollection('users/lkmills/geoBoundariesSimplified-3_0_0-USA-ADM0');
+Map.addLayer(usa, {color: '0000FF'}, 'USA');
+
+var pop = ee.ImageCollection("CIESIN/GPWv411/GPW_Population_Density").first().select('population_density');
+var raster = pop.select('population_density');
+var raster_vis = {
+  "max": 1000.0,
+  "palette": [
+    "ffffe7",
+    "FFc869",
+    "ffac1d",
+    "e17735",
+    "f2552c",
+    "9f0c21"
+  ],
+  "min": 200.0
+};
+Map.setCenter(79.1, 19.81, 3);
+Map.addLayer(raster, raster_vis, 'population_density');
+
+var pop_func = function(feature) {
+  var collection = pop;
+  var clipped = collection.clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({basic_demographic_characteristics: meanDictionary.get('population_density')})
+};
+
+var pop_value = usa.map(pop_func);
+//print(pop_value);
+
+//Map.setCenter(79.1, 19.81, 3);
+
+var raster_vis = {
+  "max": 1000.0,
+  "palette": [
+    "ffffe7",
+    "FFc869",
+    "ffac1d",
+    "e17735",
+    "f2552c",
+    "9f0c21"
+  ],
+  "min": 200.0
+};
+Map.addLayer(pop_value, raster_vis, 'population_density');
+
+// Export.table.toDrive({
+//   collection: pop_value, 
+//   description: 'pop_value', 
+//   selectors: ['Name', 'basic_demographic_characteristics'] 
+// });
+
+

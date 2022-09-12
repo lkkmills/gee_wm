@@ -1,0 +1,26 @@
+// Google Earth Engine Code for geoBoundaries
+// March 4, 2021
+
+// Step 1: Upload shapefile as a new asset.
+// https://developers.google.com/earth-engine/guides/importing
+
+// Step 2: Import shapefile as a FeatureCollection.
+// Each asset has a 'Table ID' that you put in the parentheses after ee.FeatureCollection
+
+// Using the print function in Line 13, you can see the metadata for each ADM1 boundary.
+// Click the drop-down for each to see its properties (each column to extract)
+
+var bra_adm1 = ee.FeatureCollection('users/lkmills/geoBoundariesSimplified-3_0_0-BRA-ADM1');
+Map.addLayer(bra_adm1, {color: 'blue'}, 'bra_adm1');
+print(bra_adm1);
+
+// Step 3: Export the metadata for each feature.
+
+Export.table.toDrive({
+  collection: bra_adm1, 
+  description: 'bra_adm1', 
+  selectors: ['shapeGroup', 'shapeID', 'shapeISO', 'shapeName', 'shapeType'] 
+});
+
+// Step 4: Go to tasks and pick a pre-made Google Drive folder and file format
+// The CSV will appear in the Google Drive folder you specify.
