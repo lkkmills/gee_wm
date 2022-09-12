@@ -1,0 +1,112 @@
+// Yearly MEAN NDVI for GEF Projects in Specified WDPA Regions and ADM1 levels
+
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+Map.setCenter(23.5, -4, 6);
+
+var salonga = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Salonga')
+  ));
+Map.addLayer(salonga, {}, 'Salonga');
+
+var kahuzi_biega = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de Kahuzi-Biega')
+  ));
+Map.addLayer(kahuzi_biega, {}, 'Kahuzi-Biega');
+
+var garamba = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Garamba')
+  ));
+Map.addLayer(garamba, {}, 'Garamba');
+
+var maiko = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Maiko')
+  ));
+Map.addLayer(maiko, {}, 'Maiko');
+
+var tumba_lediima = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Tumba-Lediima')
+  ));
+Map.addLayer(tumba_lediima, {color: '0492C2'}, 'Tumba-Lediima');
+
+var virunga = ee.FeatureCollection('users/lkmills/virunga');
+Map.addLayer(virunga, {}, 'Virunga');
+
+// set position of panel
+var legend = ui.Panel({
+  style: {
+    position: 'bottom-left',
+    padding: '8px 15px'
+  }
+});
+
+// Create legend title
+var legendTitle = ui.Label({
+  value: 'CBSP-Catalyzing Sustainable Forest Management in the Lake Tele-Lake Tumba (LTLT) Transboundary Wetland Landscape',
+  style: {
+    fontWeight: 'bold',
+    fontSize: '18px',
+    margin: '0 0 4px 0',
+    padding: '0'
+    }
+});
+ 
+// Add the title to the panel
+legend.add(legendTitle);
+ 
+// Creates and styles 1 row of the legend.
+var makeRow = function(color, name) {
+ 
+      // Create the label that is actually the colored box.
+      var colorBox = ui.Label({
+        style: {
+          backgroundColor: '#' + color,
+          // Use padding to give the box height and width.
+          padding: '8px',
+          margin: '0 0 4px 0'
+        }
+      });
+ 
+      // Create the label filled with the description text.
+      var description = ui.Label({
+        value: name,
+        style: {margin: '0 0 4px 6px'}
+      });
+ 
+      // return the panel
+      return ui.Panel({
+        widgets: [colorBox, description],
+        layout: ui.Panel.Layout.Flow('horizontal')
+      });
+};
+ 
+//  Palette with the colors
+var palette =['0492C2', '000000'];
+ 
+// name of the legend
+var names = ['Tumba-Lediima','Unrelated Protected Areas'];
+ 
+// Add color and and names
+for (var i = 0; i < 2; i++) {
+  legend.add(makeRow(palette[i], names[i]));
+  }  
+ 
+// add legend to map (alternatively you can also print the legend to the console)
+Map.add(legend);

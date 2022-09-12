@@ -1,0 +1,16 @@
+var east_kalimantan = ee.FeatureCollection('users/lkmills/20km_grid_east_kalimatan');
+Map.addLayer(east_kalimantan, {color: '0000FF'}, 'east_kalimantan');
+
+var centroids = function(feature) {
+  return feature.set({centroid: feature.geometry().centroid().coordinates()});
+}
+
+var centroids_east_kalimantan = east_kalimantan.map(centroids);
+print(centroids_east_kalimantan);
+Map.addLayer(centroids_east_kalimantan, {color: 'purple'}, 'centroids_east_kalimantan');
+
+Export.table.toDrive({
+  collection: centroids_east_kalimantan, 
+  description: 'centroids_east_kalimantan', 
+  selectors: ['Name', 'centroid'] 
+});

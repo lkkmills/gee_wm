@@ -1,0 +1,22 @@
+// Import NAIP imagery
+var naip = ee.ImageCollection('USDA/NAIP/DOQQ')
+                  .filter(ee.Filter.date('2018-01-01', '2019-12-31'));
+// var trueColor = naip.select(['R', 'G', 'B', 'N']);
+// var trueColorVis = {
+//   min: 0.0,
+//   max: 255.0,
+// };
+// Map.setCenter(-118.2159, 34.031, 12);
+// Map.addLayer(trueColor, trueColorVis, 'True Color');
+
+// Import Los Angeles Unified School District Shapefile
+var lausd = ee.FeatureCollection('users/lkmills/GRIP_Treatment_Poly');
+// Map.addLayer(lausd, {color: 'red'}, 'LAUSD');
+// Map.setCenter(-118.3002, 34.0994, 10);
+
+// Map function over NAIP collection and add NDVI
+var withNDVI = naip.map(function(image) {
+  var ndvi = image.normalizedDifference(['N','R']).rename('NDVI');
+  return image.addBands(ndvi);
+});
+

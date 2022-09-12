@@ -1,0 +1,99 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var test2 = 
+    /* color: #ff0000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.MultiPolygon(
+        [[[[20.186816494781095, 2.860306888647361],
+           [20.186816494781095, -0.47834249552926617],
+           [23.702441494781095, -0.47834249552926617],
+           [23.702441494781095, 2.860306888647361]]],
+         [[[24.449511807281095, 8.716353616609416],
+           [24.449511807281095, 4.176155121835404],
+           [29.635058682281095, 4.176155121835404],
+           [29.635058682281095, 8.716353616609416]]],
+         [[[8.453418057281095, 9.237236374637673],
+           [8.453418057281095, 5.402304051090009],
+           [13.023730557281095, 5.402304051090009],
+           [13.023730557281095, 9.237236374637673]]]], null, false),
+    test3 = 
+    /* color: #00ff00 */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[28.712207119781095, 10.017102992454358],
+          [28.712207119781095, 6.625973947212325],
+          [32.49150399478109, 6.625973947212325],
+          [32.49150399478109, 10.017102992454358]]], null, false),
+    test4 = 
+    /* color: #0000ff */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[8.936816494781095, 10.708754182044117],
+          [8.936816494781095, 6.625973947212325],
+          [15.264941494781095, 6.625973947212325],
+          [15.264941494781095, 10.708754182044117]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Make a list of Features.
+var featcollect = [
+  ee.Feature(test4),
+  ee.Feature(test2),
+  ee.Feature(test3)
+];
+
+print('featcollect: ', featcollect);
+print(test2);
+
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+
+var fromList = ee.FeatureCollection(featcollect);
+print('fromList: ', fromList);
+
+
+
+var comlen = combinedFeatureCollection2.toList(771)
+print(comlen);
+
+var fromList2 = ee.FeatureCollection(comlen);
+
+var gfc2019 = ee.Image('UMD/hansen/global_forest_change_2019_v1_7');
+var lossIn2019 = gfc2019.select(['lossyear']).eq(19); // Only have to specify year when not latest
+var areaImage = lossIn2019.multiply(ee.Image.pixelArea());
+
+
+var getstats = function(feature) {
+  var stats = areaImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({area_loss_sqm: stats.get('lossyear')})
+};
+
+var area_loss_sqm = test2.map(getstats);
+print(area_loss_sqm);
+

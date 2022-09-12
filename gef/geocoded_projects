@@ -1,0 +1,127 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("users/lkmills/WDPA_Jun2020_COD-shapefile-points"),
+    table2 = ee.FeatureCollection("users/lkmills/WDPA_Jun2020_COD-shapefile-polygons"),
+    table3 = ee.FeatureCollection("users/lkmills/WDPA_Jun2020_COD-shapefile-polygons_2"),
+    table4 = ee.FeatureCollection("users/lkmills/WDPA_Jun2020_COD-shapefile-polygons_2"),
+    table5 = ee.FeatureCollection("users/lkmills/WDPA_Jun2020_COD-shapefile-polygons_3");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+Map.setCenter(23.5, -2.5, 6);
+
+Map.setCenter(23.5, -2.5, 5);
+
+var layer = ee.FeatureCollection('users/lkmills/WDPA_Jun2020_COD-shapefile-polygons');
+Map.addLayer(layer, {}, 'layer');
+
+var layer_2 = ee.FeatureCollection('users/lkmills/WDPA_Jun2020_COD-shapefile-polygons_2');
+Map.addLayer(layer_2, {}, 'layer_2');
+
+var layer_3 = ee.FeatureCollection('users/lkmills/WDPA_Jun2020_COD-shapefile-polygons_3');
+Map.addLayer(layer_3, {}, 'layer_3');
+
+var tumba_lediima = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Tumba-Lediima')
+  ));
+Map.addLayer(tumba_lediima, {}, 'Tumba-Lediima');
+
+var cbsp_sfm = ee.Geometry.Point([23.5, -2.5]);
+Map.addLayer(cbsp_sfm, {color: 'pink'}, 'cbsp_sfm');
+
+var csp_forest_1 = ee.Geometry.Point([24.7333, 2.8]);
+Map.addLayer(csp_forest_1, {color: 'red'}, 'csp_forest_1');
+
+var csp_forest_2 = ee.Geometry.Point([21.51667, 2.06667]);
+Map.addLayer(csp_forest_2, {color: 'red'}, 'csp_forest_2');
+
+var csp_forest_3 = ee.Geometry.Point([30.25, 1.56667]);
+Map.addLayer(csp_forest_3, {color: 'red'}, 'csp_forest_3');
+
+var csp_forest_4 = ee.Geometry.Point([19.35, 3.08333]);
+Map.addLayer(csp_forest_4, {color: 'red'}, 'csp_forest_4');
+
+var csp_forest_5 = ee.Geometry.Point([25.21667, 0.46667]);
+Map.addLayer(csp_forest_5, {color: 'red'}, 'csp_forest_5');
+
+var csp_forest_6 = ee.Geometry.Point([19.335, -2.591]);
+Map.addLayer(csp_forest_6, {color: 'red'}, 'csp_forest_6');
+
+var csp_forest_7 = ee.Geometry.Point([17.832, -6.542]);
+Map.addLayer(csp_forest_7, {color: 'red'}, 'csp_forest_7');
+
+var csp_forest_8 = ee.Geometry.Point([18.93333, 0.2]);
+Map.addLayer(csp_forest_8, {color: 'red'}, 'csp_forest_8');
+
+var csp_forest_9 = ee.Geometry.Point([27.61667, 2.76667]);
+Map.addLayer(csp_forest_9, {color: 'red'}, 'csp_forest_9');
+
+var csp_forest_10 = ee.Geometry.Point([20.86667, -0.21667]);
+Map.addLayer(csp_forest_10, {color: 'red'}, 'csp_forest_10');
+
+var csp_forest_11 = ee.Geometry.Point([18.81667, -5.03333]);
+Map.addLayer(csp_forest_11, {color: 'red'}, 'csp_forest_11');
+
+var emergency_bio_1 = ee.Geometry.Point([28.1851, -2.10858]);
+Map.addLayer(emergency_bio_1, {color: 'orange'}, 'emergency_bio_1');
+
+var emergency_bio_2 = ee.Geometry.Point([29.16667, 0.91667]);
+Map.addLayer(emergency_bio_2, {color: 'orange'}, 'emergency_bio_2');
+
+var trust_fund_1 = ee.Geometry.Point([21.49723, -1.76516]);
+Map.addLayer(trust_fund_1, {color: 'yellow'}, 'trust_fund_1');
+
+var trust_fund_2 = ee.Geometry.Point([29.43891, -0.64735]);
+Map.addLayer(trust_fund_2, {color: 'yellow'}, 'trust_fund_2');
+
+var trust_fund_3 = ee.Geometry.Point([28.1851, -2.10858]);
+Map.addLayer(trust_fund_3, {color: 'yellow'}, 'trust_fund_3');
+
+var trust_fund_4 = ee.Geometry.Point([29.48093, 4.19559]);
+Map.addLayer(trust_fund_4, {color: 'yellow'}, 'trust_fund_4');
+
+var trust_fund_5 = ee.Geometry.Point([27.58629, -0.27225]);
+Map.addLayer(trust_fund_5, {color: 'yellow'}, 'trust_fund_5');
+
+var cbsp_forest_1 = ee.Geometry.Point([21.01667, 4.28333]);
+Map.addLayer(cbsp_forest_1, {color: 'green'}, 'cbsp_forest_1');
+
+var cbsp_forest_2 = ee.Geometry.Point([21.05228, 3.88593]);
+Map.addLayer(cbsp_forest_2, {color: 'green'}, 'cbsp_forest_2');
+
+var lake_tele_1 = ee.Geometry.Point([18.5961, 3.70988]);
+Map.addLayer(lake_tele_1, {color: 'blue'}, 'lake_tele_1');
+
+var lake_tele_2 = ee.Geometry.Point([18.0205, -0.75939]);
+Map.addLayer(lake_tele_2, {color: 'blue'}, 'lake_tele_2');
+
+var lake_tele_3 = ee.Geometry.Point([18.121, -0.34]);
+Map.addLayer(lake_tele_3, {color: 'blue'}, 'lake_tele_3');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

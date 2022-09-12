@@ -1,0 +1,520 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var garamba = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.MultiPolygon(
+        [[[[29.33844342865399, 4.339235010004169],
+           [29.33844342865399, 3.9940808877583125],
+           [29.68451276459149, 3.9940808877583125],
+           [29.68451276459149, 4.339235010004169]]],
+         [[[27.42135379122186, -0.23872121683046466],
+           [27.42135379122186, -0.5820346507937548],
+           [27.76467654512811, -0.5820346507937548],
+           [27.76467654512811, -0.23872121683046466]]],
+         [[[21.16473603391174, 3.896259424526918],
+           [21.16473603391174, 3.5550331349490887],
+           [21.512178660864866, 3.5550331349490887],
+           [21.512178660864866, 3.896259424526918]]],
+         [[[17.086434277047907, -1.4029359326312292],
+           [17.086434277047907, -1.7433832347682026],
+           [17.437996777047907, -1.7433832347682026],
+           [17.437996777047907, -1.4029359326312292]]]], null, false),
+    geometrytest = 
+    /* color: #07c1d6 */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[29.007006886134043, 0.9906062694566881],
+          [29.007006886134043, -1.6458367366658873],
+          [30.006762745509043, -1.6458367366658873],
+          [30.006762745509043, 0.9906062694566881]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Yearly MEAN NDVI for GEF Projects in Specified WDPA Regions and ADM1 levels
+
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+Map.setCenter(23.5, -2.5, 6);
+
+var modisNDVI = ee.ImageCollection('MODIS/006/MOD13Q1')
+              .select('NDVI')
+              .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+                   
+  }
+);
+                    
+var modisNDVI_year = modisNDVI.filter(ee.Filter.calendarRange(2000, 2020, 'year'));
+
+var interval = 1;
+var increment = 'year';
+var start = '2000-01-01';
+var startDate = ee.Date(start);
+var secondDate = startDate.advance(interval, increment).millis();
+var increase = secondDate.subtract(startDate.millis());
+var list = ee.List.sequence(startDate.millis(), ee.Date('2020-08-07').millis(), increase);
+
+var year_list = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008',
+                '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017',
+                '2018', '2019', '2020'];
+                
+var geoBoundaries_ADM1 = ee.FeatureCollection('users/lkmills/geoBoundaries_DRC_ADM1');
+
+// Pârc National de la Salonga >> WDPA
+var salonga = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Salonga')
+  ));
+Map.addLayer(salonga, {}, 'Salonga');
+
+var composites_salonga = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(salonga).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: salonga,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_salonga = ee.Dictionary.fromLists(year_list, composites_salonga.aggregate_array('NDVI'));
+//print('Pârc National de la Salonga', out_dict_salonga);
+
+var bottom_left_salonga = ee.Geometry.Point([20.77752, -2.660417]);
+Map.addLayer(bottom_left_salonga, {color: 'red'}, 'bottom_left_salonga');
+
+var bottom_right_salonga = ee.Geometry.Point([21.1186, -2.660417]);
+Map.addLayer(bottom_right_salonga, {color: 'red'}, 'bottom_right_salonga');
+
+var top_left_salonga = ee.Geometry.Point([20.77752, -2.325]);
+Map.addLayer(top_left_salonga, {color: 'red'}, 'top_left_salonga');
+
+var top_right_salonga = ee.Geometry.Point([21.1186, -2.325]);
+Map.addLayer(top_right_salonga, {color: 'red'}, 'top_right_salonga');
+
+var ndvi_salonga = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_salonga = ui.Chart.image.seriesByRegion(ndvi_salonga, salonga, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Salonga 2010-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+//print(TS_salonga);
+
+var farm_boundaries = ee.FeatureCollection('users/lkmills/farm_boundaries_gee');
+farm_boundaries = farm_boundaries.geometry();
+Map.centerObject(farm_boundaries);
+Map.addLayer(farm_boundaries, {color: 'blue'}, 'farm_boundaries');
+
+var composites_farm_boundaries = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(farm_boundaries).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: farm_boundaries,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_farm_boundaries = ee.Dictionary.fromLists(year_list, composites_farm_boundaries.aggregate_array('NDVI'));
+//print('Pârc National de la Salonga', out_dict_salonga);
+
+
+var ndvi_farm_boundaries = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2000-01-01', '2020-07-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_farm_boundaries = ui.Chart.image.seriesByRegion(ndvi_farm_boundaries, farm_boundaries, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI farm_boundaries 2010-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+
+print(TS_farm_boundaries);
+
+// Parc National de Kahuzi-Biega >> WDPA
+var kahuzi_biega = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de Kahuzi-Biega')
+  ));
+Map.addLayer(kahuzi_biega, {}, 'Kahuzi-Biega');
+  
+var composites_kahuzi_biega = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(kahuzi_biega).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: kahuzi_biega,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_kahuzi_biega = ee.Dictionary.fromLists(year_list, composites_kahuzi_biega.aggregate_array('NDVI'));
+//print('Parc National de Kahuzi-Biega', out_dict_kahuzi_biega);
+
+var bottom_left_kahuzi_biega = ee.Geometry.Point([17.08848, -1.741667]);
+Map.addLayer(bottom_left_kahuzi_biega, {color: 'red'}, 'bottom_left_kahuzi_biega');
+
+var bottom_right_kahuzi_biega = ee.Geometry.Point([17.4268, -1.741667]);
+Map.addLayer(bottom_right_kahuzi_biega, {color: 'red'}, 'bottom_right_kahuzi_biega');
+
+var top_left_kahuzi_biega = ee.Geometry.Point([17.08848, -1.40625]);
+Map.addLayer(top_left_kahuzi_biega, {color: 'red'}, 'top_left_kahuzi_biega');
+
+var top_right_kahuzi_biega = ee.Geometry.Point([17.4268, -1.40625]);
+Map.addLayer(top_right_kahuzi_biega, {color: 'red'}, 'top_right_kahuzi_biega');
+
+var ndvi_kahuzi_biega = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_kahuzi_biega = ui.Chart.image.seriesByRegion(ndvi_kahuzi_biega, kahuzi_biega, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Kahuzi-Biega 2010-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+//print(TS_kahuzi_biega);
+
+// Parc National de la Garamba >> WDPA
+var garamba = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Garamba')
+  ));
+Map.addLayer(garamba, {}, 'Garamba');
+  
+var composites_garamba = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(garamba).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: garamba,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_garamba = ee.Dictionary.fromLists(year_list, composites_garamba.aggregate_array('NDVI'));
+//print('Parc national de la Garamba', out_dict_garamba);
+
+var bottom_left_garamba = ee.Geometry.Point([29.34015, 3.997917]);
+Map.addLayer(bottom_left_garamba, {color: 'red'}, 'bottom_left_garamba');
+
+var bottom_right_garamba = ee.Geometry.Point([29.68904, 3.997917]);
+Map.addLayer(bottom_right_garamba, {color: 'red'}, 'bottom_right_garamba');
+
+var top_left_garamba = ee.Geometry.Point([29.34015, 4.333334]);
+Map.addLayer(top_left_garamba, {color: 'red'}, 'top_left_garamba');
+
+var top_right_garamba = ee.Geometry.Point([29.68904, 4.333334]);
+Map.addLayer(top_right_garamba, {color: 'red'}, 'top_right_garamba');
+
+var ndvi_garamba = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_garamba = ui.Chart.image.seriesByRegion(ndvi_garamba, garamba, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Garamba 2010-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+//print(TS_garamba);
+
+// Parc National de la Maïko >> WDPA
+var maiko = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Maiko')
+  ));
+Map.addLayer(maiko, {}, 'Maiko');
+  
+var composites_maiko = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(maiko).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: maiko,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_maiko = ee.Dictionary.fromLists(year_list, composites_maiko.aggregate_array('NDVI'));
+//print('Parc National de la Maïko', out_dict_maiko);
+
+var bottom_left_maiko = ee.Geometry.Point([27.42734, -0.58125]);
+Map.addLayer(bottom_left_maiko, {color: 'red'}, 'bottom_left_maiko');
+
+var bottom_right_maiko = ee.Geometry.Point([27.76393, -0.58125]);
+Map.addLayer(bottom_right_maiko, {color: 'red'}, 'bottom_right_maiko');
+
+var top_left_maiko = ee.Geometry.Point([27.42734, -0.2458333]);
+Map.addLayer(top_left_maiko, {color: 'red'}, 'top_left_maiko');
+
+var top_right_maiko = ee.Geometry.Point([27.76393, -0.2458333]);
+Map.addLayer(top_right_maiko, {color: 'red'}, 'top_right_maiko');
+
+var ndvi_maiko = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_maiko = ui.Chart.image.seriesByRegion(ndvi_maiko, maiko, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Maiko 2000-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+//print(TS_maiko);
+
+// Tumba Lediima Natural Reserve >> WDPA
+var tumba_lediima = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Tumba-Lediima')
+  ));
+Map.addLayer(tumba_lediima, {}, 'Tumba-Lediima');
+  
+var composites_tumba_lediima = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(tumba_lediima).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: tumba_lediima,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_tumba_lediima = ee.Dictionary.fromLists(year_list, composites_tumba_lediima.aggregate_array('NDVI'));
+//print('Tumba Lediima Natural Reserve', out_dict_tumba_lediima);
+
+var bottom_left_tumba_lediima = ee.Geometry.Point([17.08848, -1.741667]);
+Map.addLayer(bottom_left_tumba_lediima, {color: 'red'}, 'bottom_left_tumba_lediima');
+
+var bottom_right_tumba_lediima = ee.Geometry.Point([17.4268, -1.741667]);
+Map.addLayer(bottom_right_tumba_lediima, {color: 'red'}, 'bottom_right_tumba_lediima');
+
+var top_left_tumba_lediima = ee.Geometry.Point([17.08848, -1.40625]);
+Map.addLayer(top_left_tumba_lediima, {color: 'red'}, 'top_left_tumba_lediima');
+
+var top_right_tumba_lediima = ee.Geometry.Point([17.4268, -1.40625]);
+Map.addLayer(top_right_tumba_lediima, {color: 'red'}, 'top_right_tumba_lediima');
+
+var ndvi_tumba_lediima = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_tumba_lediima = ui.Chart.image.seriesByRegion(ndvi_tumba_lediima, tumba_lediima, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Tumba-Lediima 2010-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+//print(TS_tumba_lediima);
+
+// Virunga >> WDPA
+var virunga = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national des Virunga')
+  ));
+Map.addLayer(virunga, {}, 'Virunga');
+  
+var composites_virunga = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(virunga).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: virunga,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_virunga = ee.Dictionary.fromLists(year_list, composites_virunga.aggregate_array('NDVI'));
+//print('Parc national des Virunga', out_dict_virunga);
+
+var bottom_left_virunga = ee.Geometry.Point([29.35024, -0.566667]);
+Map.addLayer(bottom_left_virunga, {color: 'red'}, 'bottom_left_virunga');
+
+var bottom_right_virunga = ee.Geometry.Point([29.68687, -0.566667]);
+Map.addLayer(bottom_right_virunga, {color: 'red'}, 'bottom_right_virunga');
+
+var top_left_virunga = ee.Geometry.Point([29.35024, -0.2312504]);
+Map.addLayer(top_left_virunga, {color: 'red'}, 'top_left_virunga');
+
+var top_right_virunga = ee.Geometry.Point([29.68687, -0.2312504]);
+Map.addLayer(top_right_virunga, {color: 'red'}, 'top_right_virunga');
+
+var ndvi_virunga = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+
+//var virunga_geometry = ndvi_virunga.mean().clip(virunga);
+//print(virunga_geometry);
+
+var TS_virunga = ui.Chart.image.seriesByRegion(ndvi_virunga, virunga, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Virunga 2010-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+//print(TS_virunga);
+
+//Map.addLayer(ndvi_virunga.mean().clip(virunga), {color: 'blue'}, 'test_clip');
+
+//print(virunga);
+//print(salonga);
+
+
+
+
+// Abumonbazi >> WDPA
+var abumonbazi = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Abumonbazi')
+  ));
+Map.addLayer(abumonbazi, {}, 'Abumonbazi');
+  
+var composites_abumonbazi = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(abumonbazi).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: abumonbazi,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_abumonbazi = ee.Dictionary.fromLists(year_list, composites_virunga.aggregate_array('NDVI'));
+//print('Abumonbazi', out_dict_abumonbazi);
+
+var bottom_left_abumonbazi = ee.Geometry.Point([21.16581, 3.558333]);
+Map.addLayer(bottom_left_abumonbazi, {color: 'red'}, 'bottom_left_abumonbazi');
+
+var bottom_right_abumonbazi = ee.Geometry.Point([21.51007, 3.558333]);
+Map.addLayer(bottom_right_abumonbazi, {color: 'red'}, 'bottom_right_abumonbazi');
+
+var top_left_abumonbazi = ee.Geometry.Point([21.16581, 3.89375]);
+Map.addLayer(top_left_abumonbazi, {color: 'red'}, 'top_left_abumonbazi');
+
+var top_right_abumonbazi = ee.Geometry.Point([21.51007, 3.89375]);
+Map.addLayer(top_right_abumonbazi, {color: 'red'}, 'top_right_abumonbazi');
+
+var ndvi_abumonbazi = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_abumonbazi = ui.Chart.image.seriesByRegion(ndvi_abumonbazi, abumonbazi, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Abumonbazi 2010-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+//print(TS_abumonbazi);
+  

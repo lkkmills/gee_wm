@@ -1,0 +1,76 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Load country features from Large Scale International Boundary (LSIB) dataset.
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+
+// Subset the Congo Republic feature from countries.
+var congo = ee.Feature(
+  countries
+    .filter(ee.Filter.eq('country_na', 'Rep of the Congo')) // safest to use country_co and abbreviation on Wikipedia
+    .first()
+);
+
+// Subset protected areas to the bounds of the congo feature
+// and other criteria. Clip to the intersection with congo.
+var protectedAreas = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+  .filter(ee.Filter.and(
+    ee.Filter.bounds(congo.geometry()),
+    ee.Filter.neq('IUCN_CAT', 'VI'),
+    ee.Filter.neq('STATUS', 'proposed'),
+    ee.Filter.lt('STATUS_YR', 2010)
+  ))
+  .map(function(feat){
+    return congo.intersection(feat);
+  });
+
+// Get the loss image.
+var gfc2014 = ee.Image('UMD/hansen/global_forest_change_2015');
+var lossIn2012 = gfc2014.select(['lossyear']).eq(12); // Only have to specify year when not latest
+var areaImage = lossIn2012.multiply(ee.Image.pixelArea());
+// Multiply loss image with area image 
+
+// Clip visualization to Congo. Produce images.
+
+var gfc2014_clip = gfc2014.clip(congo);
+
+Map.addLayer(gfc2014_clip.mask(gfc2014_clip), {
+  bands: ['treecover2000'],
+  palette: ['000000', '00FF00'],
+  max: 100
+}, 'forest cover masked');
+
+var loss_clip = lossIn2012.clip(congo);
+
+Map.addLayer(loss_clip.updateMask(loss_clip),
+            {palette: ['red']}, 'Loss');
+
+// Calculate the area of loss pixels in the Congo Republic.
+var stats = areaImage.reduceRegion({
+  reducer: ee.Reducer.sum(),
+  geometry: congo.geometry(),
+  scale: 30,
+  maxPixels: 1e9
+});
+print(
+  'Area lost in the Congo Republic:',
+  stats.get('lossyear'),
+  'square meters'
+);
+
+// Calculate the area of loss pixels in the protected areas.
+var stats = areaImage.reduceRegion({
+  reducer: ee.Reducer.sum(),
+  geometry: protectedAreas.geometry(),
+  scale: 30,
+  maxPixels: 1e9
+});
+print(
+  'Area lost in protected areas:',
+  stats.get('lossyear'),
+  'square meters'
+);
+
+// CONCLUSION!! How to calculate total forest area lost
+// in given region (CF). Next section = calculating total
+// loss for each year (2000-2017) using Grouped Reducer.

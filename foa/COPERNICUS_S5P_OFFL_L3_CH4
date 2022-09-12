@@ -1,0 +1,662 @@
+var GPP = ee.ImageCollection("CAS/IGSNRR/PML/V2").select('GPP').filter(ee.Filter.date('2002-07-04', '2017-12-27'));
+
+var visualization = {
+  bands: ['GPP'],
+  min: 0.0,
+  max: 9.0,
+  palette: [
+    "a50026","d73027","f46d43","fdae61","fee08b","ffffbf",
+    "d9ef8b","a6d96a","66bd63","1a9850","006837",
+  ]
+};
+
+Map.setCenter(0.0, 15.0, 2);
+
+Map.addLayer(GPP, visualization, "PML_V2 GPP");
+
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+
+var burkinafaso = countries.filter(ee.Filter.eq('country_co', 'UV'));
+Map.addLayer(burkinafaso, styleParams, 'Burkina Faso');
+
+var mali = countries.filter(ee.Filter.eq('country_co', 'ML'));
+Map.addLayer(mali, styleParams, 'Mali');
+
+var niger = countries.filter(ee.Filter.eq('country_co', 'NG'));
+Map.addLayer(niger, styleParams, 'Niger');
+
+var senegal = countries.filter(ee.Filter.eq('country_co', 'SG'));
+Map.addLayer(senegal, styleParams, 'Senegal');
+
+var gambia = countries.filter(ee.Filter.eq('country_co', 'GA'));
+Map.addLayer(gambia, styleParams, 'Gambia');
+
+var ethiopia = countries.filter(ee.Filter.eq('country_co', 'ET'));
+Map.addLayer(ethiopia, styleParams, 'Ethiopia');
+
+var mauritania = countries.filter(ee.Filter.eq('country_co', 'MR'));
+Map.addLayer(mauritania, styleParams, 'Mauritania');
+
+var nigeria = countries.filter(ee.Filter.eq('country_co', 'NI'));
+Map.addLayer(nigeria, styleParams, 'Nigeria');
+
+var sudan = countries.filter(ee.Filter.eq('country_co', 'SU'));
+Map.addLayer(sudan, styleParams, 'Sudan');
+
+var fiji = countries.filter(ee.Filter.eq('country_co', 'FJ'));
+Map.addLayer(fiji, styleParams, 'Fiji');
+
+var haiti = countries.filter(ee.Filter.eq('country_co', 'HA'));
+Map.addLayer(haiti, styleParams, 'Haiti');
+
+//
+
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+
+//print(first);
+
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+
+//print(second);
+
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+Map.addLayer(third, {color: '0000FF'}, '2019-2020'); // blue
+
+//print(third);
+
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+Map.addLayer(fourth, {color: '0000FF'}, 'Fiji points');
+
+
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+
+var GPP = ee.ImageCollection("CAS/IGSNRR/PML/V2").select('GPP').filter(ee.Filter.date('2002-07-04', '2017-12-27'));
+
+var GPP_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2002-07-04', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2002: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2003: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2004: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2005: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2006: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2007: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2008: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2009: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2010: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2011: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2012: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2013: meanDictionary.get('GPP')})
+};
+
+var GPP_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2014: meanDictionary.get('GPP')})
+};
+
+
+var GPP_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2015: meanDictionary.get('GPP')})
+};
+
+
+var GPP_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2016: meanDictionary.get('GPP')})
+};
+
+
+var GPP_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(GPP.filterDate('2017-01-01', '2017-12-27'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({GPP_2017: meanDictionary.get('GPP')})
+};
+
+
+var GPP_2002 = combinedFeatureCollection2.map(GPP_func_2002);
+var GPP_2003 = GPP_2002.map(GPP_func_2003);
+var GPP_2004 = GPP_2003.map(GPP_func_2004);
+var GPP_2005 = GPP_2004.map(GPP_func_2005);
+var GPP_2006 = GPP_2005.map(GPP_func_2006);
+var GPP_2007 = GPP_2006.map(GPP_func_2007);
+var GPP_2008 = GPP_2007.map(GPP_func_2008);
+var GPP_2009 = GPP_2008.map(GPP_func_2009);
+var GPP_2010 = GPP_2009.map(GPP_func_2010);
+var GPP_2011 = GPP_2010.map(GPP_func_2011);
+var GPP_2012 = GPP_2011.map(GPP_func_2012);
+var GPP_2013 = GPP_2012.map(GPP_func_2013);
+var GPP_2014 = GPP_2013.map(GPP_func_2014);
+var GPP_2015 = GPP_2014.map(GPP_func_2015);
+var GPP_2016 = GPP_2015.map(GPP_func_2016);
+var GPP_2017 = GPP_2016.map(GPP_func_2017);
+
+//print(GPP_2017);
+
+//Export.table.toDrive({
+  //collection: GPP_2017, 
+  //description: 'GPP_2017', 
+  //selectors: ['Name', 'GPP_2000', 'GPP_2001','GPP_2002','GPP_2003',
+  //'GPP_2004','GPP_2005','GPP_2006','GPP_2007','GPP_2008',
+  //'GPP_2009','GPP_2010','GPP_2011','GPP_2012','GPP_2013',
+  //'GPP_2014', 'GPP_2015', 'GPP_2016', 'GPP_2017'] 
+//});
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm = ee.ImageCollection('NOAA/CFSV2/FOR6H')
+                  .filter(ee.Filter.date('2000-01-01', '2020-08-25'))
+                  .select('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm');
+
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2000: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2001: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2002: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2003: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2004: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2005: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2006: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2007: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2008: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2009: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2010: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2011: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2012: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2013: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2014: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2015: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2016: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2017: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2018: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2019: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2020 = function(feature) {
+  var collection = ee.ImageCollection(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm.filterDate('2020-01-01', '2020-06-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2020: meanDictionary.get('Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm')})
+};
+
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2000 = combinedFeatureCollection2.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2000);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2001 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2000.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2001);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2002 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2001.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2002);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2003 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2002.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2003);
+
+//print(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2003);
+
+//Export.table.toDrive({
+  //collection: Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2003, 
+  //description: 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2003', 
+  //selectors: ['Name', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2000', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2001',
+  //'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2002','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2003'] 
+//});
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2004 = combinedFeatureCollection2.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2004);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2005 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2004.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2005);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2006 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2005.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2006);
+print(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2006);
+
+Export.table.toDrive({
+  collection: Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2007, 
+  description: 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2007', 
+  selectors: ['Name', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2004', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2005',
+  'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2006'] 
+});
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2007 = combinedFeatureCollection2.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2007);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2008 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2007.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2008);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2009 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2008.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2009);
+
+Export.table.toDrive({
+  collection: Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2009, 
+  description: 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2009', 
+  selectors: ['Name', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2007', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2008',
+  'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2009'] 
+});
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2010 = combinedFeatureCollection2.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2010);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2011 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2010.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2011);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2012 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2011.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2012);
+
+Export.table.toDrive({
+  collection: Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2012, 
+  description: 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2012', 
+  selectors: ['Name', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2010',
+  'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2011','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2012'] 
+});
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2013 = combinedFeatureCollection2.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2013);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2014 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2013.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2014);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2015 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2014.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2015);
+print(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2015);
+
+Export.table.toDrive({
+  collection: Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2015, 
+  description: 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2015', 
+  selectors: ['Name', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2013',
+  'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2014','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2015'] 
+});
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2016 = combinedFeatureCollection2.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2016);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2017 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2016.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2017);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2018 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2017.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2018);
+
+Export.table.toDrive({
+  collection: Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2018, 
+  description: 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2018', 
+  selectors: ['Name', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2016', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2017',
+  'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2018'] 
+});
+
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2019 = combinedFeatureCollection2.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2019);
+var Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2020 = Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2019.map(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_func_2020);
+
+Export.table.toDrive({
+  collection: Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2020, 
+  description: 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2020', 
+  selectors: ['Name', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2019', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2020'] 
+});
+
+//print(Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2003);
+
+//Export.table.toDrive({
+  //collection: Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2020, 
+  //description: 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2020_', 
+  //selectors: ['Name', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2000', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2001','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2002','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2003',
+  //'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2004','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2005','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2006','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2007','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2008',
+  //'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2009','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2010','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2011','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2012','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2013',
+  //'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2014', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2015', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2016', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2017', 'Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2018','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2019','Volumetric_Soil_Moisture_Content_depth_below_surface_layer_5_cm_2020'] 
+//});

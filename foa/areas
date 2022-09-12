@@ -1,0 +1,86 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("WWF/HydroSHEDS/v1/Basins/hybas_1");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+//Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+
+//print(first);
+
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+//Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+
+//print(second);
+
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+//Map.addLayer(third, {color: '0000FF'}, '2019-2020'); // blue
+
+//print(third);
+
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+Map.addLayer(fourth, {color: '0000FF'}, 'Fiji points');
+
+//-74.23730379254565,18.601621624137515
+
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+Map.addLayer(combinedFeatureCollection2, {color: 'yellow'}, 'Combined FeatureCollection');
+
+//var test = combinedFeatureCollection2.filter(ee.Filter.gt('id', 1_2_00000000000000000010)));
+
+//print(combinedFeatureCollection2.area().divide(1000*1000));
+
+var surface_pressure_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2000: meanDictionary.get('surface_pressure')})
+};
+
+
+
+var area_func = function(feature) {
+  return feature.set({area: feature.geometry().area().divide(1000*1000)});
+};
+
+var area = combinedFeatureCollection2.map(area_func);
+print(area);
+
+//Export.table.toDrive({
+  //collection: area,
+  //description: 'fao_areas',
+  //selectors: ['Name', 'area']
+//});
+
+var centroids = function(feature) {
+  return feature.set({centroid: feature.centroid()})
+}
+
+var centroids_fao = combinedFeatureCollection2.map(centroids);
+print(centroids_fao);
+//Map.addLayer(centroids_fao, {color: 'purple'}, 'centroids_fao');
+
+var bufferPoly = function(feature) {
+  return feature.buffer(1000);   // substitute in your value of Z here
+};
+
+var fao_buffers = combinedFeatureCollection2.map(bufferPoly);
+Map.addLayer(fao_buffers, {color: 'purple'}, 'fao_buffers');
+print(fao_buffers);
+
+var area_buff_func = function(feature) {
+  return feature.set({area_buff: feature.geometry().area().divide(1000*1000)});
+};
+
+var area_buff = fao_buffers.map(area_buff_func);
+print(area_buff);
+
+Export.table.toDrive({
+  collection: area_buff,
+  description: 'fao_area_buffs',
+  selectors: ['Name', 'area_buff']
+});

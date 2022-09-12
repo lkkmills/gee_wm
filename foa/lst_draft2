@@ -1,0 +1,366 @@
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+
+var burkinafaso = countries.filter(ee.Filter.eq('country_co', 'UV'));
+//Map.addLayer(burkinafaso, styleParams, 'Burkina Faso');
+
+var mali = countries.filter(ee.Filter.eq('country_co', 'ML'));
+//Map.addLayer(mali, styleParams, 'Mali');
+
+var niger = countries.filter(ee.Filter.eq('country_co', 'NG'));
+//Map.addLayer(niger, styleParams, 'Niger');
+
+var senegal = countries.filter(ee.Filter.eq('country_co', 'SG'));
+//Map.addLayer(senegal, styleParams, 'Senegal');
+
+var gambia = countries.filter(ee.Filter.eq('country_co', 'GA'));
+//Map.addLayer(gambia, styleParams, 'Gambia');
+
+var ethiopia = countries.filter(ee.Filter.eq('country_co', 'ET'));
+//Map.addLayer(ethiopia, styleParams, 'Ethiopia');
+
+var mauritania = countries.filter(ee.Filter.eq('country_co', 'MR'));
+//Map.addLayer(mauritania, styleParams, 'Mauritania');
+
+var nigeria = countries.filter(ee.Filter.eq('country_co', 'NI'));
+//Map.addLayer(nigeria, styleParams, 'Nigeria');
+
+var sudan = countries.filter(ee.Filter.eq('country_co', 'SU'));
+//Map.addLayer(sudan, styleParams, 'Sudan');
+
+var fiji = countries.filter(ee.Filter.eq('country_co', 'FJ'));
+//Map.addLayer(fiji, styleParams, 'Fiji');
+
+var haiti = countries.filter(ee.Filter.eq('country_co', 'HA'));
+//Map.addLayer(haiti, styleParams, 'Haiti');
+
+//
+
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+//Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+
+//print(first);
+
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+//Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+
+//print(second);
+
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+//Map.addLayer(third, {color: '0000FF'}, '2019-2020'); // blue
+
+//print(third);
+
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+//Map.addLayer(fourth, {color: '0000FF'}, 'Fiji points');
+
+
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+
+//print(combinedFeatureCollection2);
+
+Map.addLayer(combinedFeatureCollection2, {color: 'yellow'}, 'Combined FeatureCollection');
+
+var LST_Night_1km = ee.ImageCollection('MODIS/006/MOD11A2').select('LST_Night_1km').filter(ee.Filter.date('2000-01-01', '2020-07-27'));
+
+var LST_Night_1km_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2000: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2001: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2002: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2003: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2004: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2005: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2006: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2007: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2008: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2009: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2010: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2011: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2012: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2013: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2014: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2015: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2016: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2017: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2018: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2019: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2020 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2020-01-01', '2020-07-27'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2020: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_2000 = combinedFeatureCollection2.map(LST_Night_1km_func_2000);
+var LST_Night_1km_2001 = LST_Night_1km_2000.map(LST_Night_1km_func_2001);
+var LST_Night_1km_2002 = LST_Night_1km_2001.map(LST_Night_1km_func_2002);
+var LST_Night_1km_2003 = LST_Night_1km_2002.map(LST_Night_1km_func_2003);
+var LST_Night_1km_2004 = LST_Night_1km_2003.map(LST_Night_1km_func_2004);
+var LST_Night_1km_2005 = LST_Night_1km_2004.map(LST_Night_1km_func_2005);
+var LST_Night_1km_2006 = LST_Night_1km_2005.map(LST_Night_1km_func_2006);
+var LST_Night_1km_2007 = LST_Night_1km_2006.map(LST_Night_1km_func_2007);
+var LST_Night_1km_2008 = LST_Night_1km_2007.map(LST_Night_1km_func_2008);
+var LST_Night_1km_2009 = LST_Night_1km_2008.map(LST_Night_1km_func_2009);
+var LST_Night_1km_2010 = LST_Night_1km_2009.map(LST_Night_1km_func_2010);
+var LST_Night_1km_2011 = LST_Night_1km_2010.map(LST_Night_1km_func_2011);
+var LST_Night_1km_2012 = LST_Night_1km_2011.map(LST_Night_1km_func_2012);
+var LST_Night_1km_2013 = LST_Night_1km_2012.map(LST_Night_1km_func_2013);
+var LST_Night_1km_2014 = LST_Night_1km_2013.map(LST_Night_1km_func_2014);
+var LST_Night_1km_2015 = LST_Night_1km_2014.map(LST_Night_1km_func_2015);
+var LST_Night_1km_2016 = LST_Night_1km_2015.map(LST_Night_1km_func_2016);
+print(LST_Night_1km_2016);
+var LST_Night_1km_2017 = LST_Night_1km_2016.map(LST_Night_1km_func_2017);
+var LST_Night_1km_2018 = LST_Night_1km_2017.map(LST_Night_1km_func_2018);
+var LST_Night_1km_2019 = LST_Night_1km_2018.map(LST_Night_1km_func_2019);
+var LST_Night_1km_2020 = LST_Night_1km_2019.map(LST_Night_1km_func_2020);
+print(LST_Night_1km_2020);
+
+Export.table.toDrive({
+  collection: LST_Night_1km_2016, 
+  description: 'LST_Night_1km_2000_2016', 
+  selectors: ['Name', 'LST_Night_1km_2000', 'LST_Night_1km_2001','LST_Night_1km_2002','LST_Night_1km_2003', 'LST_Night_1km_2004','LST_Night_1km_2005','LST_Night_1km_2006','LST_Night_1km_2007','LST_Night_1km_2008', 'LST_Night_1km_2009','LST_Night_1km_2010','LST_Night_1km_2011','LST_Night_1km_2012','LST_Night_1km_2013',
+  'LST_Night_1km_2014', 'LST_Night_1km_2015', 'LST_Night_1km_2016'] 
+});
+
+Export.table.toDrive({
+  collection: LST_Night_1km_2020, 
+  description: 'LST_Night_1km_2017_2020', 
+  selectors: ['Name', 'LST_Night_1km_2017', 'LST_Night_1km_2018','LST_Night_1km_2019','LST_Night_1km_2020'] 
+});

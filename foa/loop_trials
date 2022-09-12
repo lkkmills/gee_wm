@@ -1,0 +1,337 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var test = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.MultiPolygon(
+        [[[[-110.053515625, 44.599360658436225],
+           [-110.053515625, 37.10020168724537],
+           [-95.903125, 37.10020168724537],
+           [-95.903125, 44.599360658436225]]],
+         [[[-89.04765625000002, 40.72342172774081],
+           [-89.04765625000002, 33.80778685733506],
+           [-79.81914062500002, 33.80778685733506],
+           [-79.81914062500002, 40.72342172774081]]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+
+var dataset = ee.Image('CGIAR/SRTM90_V4').select('elevation');
+Map.addLayer(dataset);
+
+var elevation_func = function(feature) {
+  var collection = ee.Image('CGIAR/SRTM90_V4').select('elevation');
+  var clipped = collection.clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({elevation: meanDictionary.get('elevation')})
+};
+
+var elevation = combinedFeatureCollection2.map(elevation_func)
+print(elevation);
+
+var total_precipitation = ee.ImageCollection("ECMWF/ERA5/MONTHLY").select('total_precipitation').filter(ee.Filter.date('2000-01-01', '2019-12-31'));
+//Map.addLayer(dataset2);
+
+var total_precipitation_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2000: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_2000 = combinedFeatureCollection2.map(total_precipitation_func_2000)
+print(total_precipitation_2000);
+
+var total_precipitation = ee.ImageCollection("ECMWF/ERA5/MONTHLY").select('total_precipitation').filter(ee.Filter.date('2000-01-01', '2019-12-31'));
+
+var total_precipitation_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2000: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2001: meanDictionary.get('total_precipitation')})
+};
+
+
+var total_precipitation_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2002: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2003: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2004: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2005: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2006: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2007: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2008: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2009: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2010: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2011: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2012: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2013: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2014: meanDictionary.get('total_precipitation')})
+};
+
+
+var total_precipitation_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2015: meanDictionary.get('total_precipitation')})
+};
+
+
+var total_precipitation_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2016-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2016: meanDictionary.get('total_precipitation')})
+};
+
+
+var total_precipitation_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2017: meanDictionary.get('total_precipitation')})
+};
+
+
+var total_precipitation_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2018: meanDictionary.get('total_precipitation')})
+};
+
+
+var total_precipitation_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(total_precipitation.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({total_precipitation_2019: meanDictionary.get('total_precipitation')})
+};
+
+var total_precipitation_2000 = combinedFeatureCollection2.map(total_precipitation_func_2000);
+var total_precipitation_2001 = total_precipitation_2000.map(total_precipitation_func_2001);
+var total_precipitation_2002 = total_precipitation_2001.map(total_precipitation_func_2002);
+var total_precipitation_2003 = total_precipitation_2002.map(total_precipitation_func_2003);
+var total_precipitation_2004 = total_precipitation_2003.map(total_precipitation_func_2004);
+var total_precipitation_2005 = total_precipitation_2004.map(total_precipitation_func_2005);
+var total_precipitation_2006 = total_precipitation_2005.map(total_precipitation_func_2006);
+var total_precipitation_2007 = total_precipitation_2006.map(total_precipitation_func_2007);
+var total_precipitation_2008 = total_precipitation_2007.map(total_precipitation_func_2008);
+var total_precipitation_2009 = total_precipitation_2008.map(total_precipitation_func_2009);
+var total_precipitation_2010 = total_precipitation_2009.map(total_precipitation_func_2010);
+var total_precipitation_2011 = total_precipitation_2010.map(total_precipitation_func_2011);
+var total_precipitation_2012 = total_precipitation_2011.map(total_precipitation_func_2012);
+var total_precipitation_2013 = total_precipitation_2012.map(total_precipitation_func_2013);
+var total_precipitation_2014 = total_precipitation_2013.map(total_precipitation_func_2014);
+var total_precipitation_2015 = total_precipitation_2014.map(total_precipitation_func_2015);
+var total_precipitation_2016 = total_precipitation_2015.map(total_precipitation_func_2016);
+var total_precipitation_2017 = total_precipitation_2016.map(total_precipitation_func_2017);
+var total_precipitation_2018 = total_precipitation_2017.map(total_precipitation_func_2018);
+var total_precipitation_2019 = total_precipitation_2018.map(total_precipitation_func_2019);
+print(total_precipitation_2010);
+//var total_precipitation_2020 = total_precipitation_2019.map(total_precipitation_func_2020);
+//print(total_precipitation_2020);
+
+
+

@@ -1,0 +1,1758 @@
+// // BFAST-MONITOR: BETA VERSION 2019
+
+// making a title?
+/// video on making a gee app
+///https://www.youtube.com/watch?v=1eXQw8_Wy8k
+
+// var header = ui.Label('BFASTmonitor Deforestation Detection', 
+// {fontSize: '25px', fontWeight:'bold', color:'33B3FF', fontFamily: 'serif'});
+
+// var panel = ui.Panel({
+//   widgets: [header],
+//   style:{width: '300px', position:'middle-right'}});
+// ///adds the panel all the way to the side
+// ui.root.insert(1,panel)
+
+// //another way to add the panel, makes it not all the way on the edge 
+// //Map.add(panel)
+
+// // Create new label for the series of checkboxes
+// var extLabel = ui.Label({value: 'Choose Year for Start of Detection',
+// style: {fontWeight: 'bold', fontSize: '16px', margin: '10px 5px'}});
+// // add checkboxes to the display
+
+// var endLabel = ui.Label({value: 'Choose Year for End of Detection',
+// style: {fontWeight: 'bold', fontSize: '16px', margin: '10px 5px'}});
+// // add checkboxes to the display
+
+// var extCheck = ui.Checkbox('2000'). setValue(false); // false = unchecked
+// var extCheck10 = ui.Checkbox('2010'). setValue(false);
+// var extCheck15 = ui.Checkbox('2015'). setValue(false);
+
+// ///// creating a legend
+
+// // set position of panel
+// var extentLegend = ui.Panel({
+//   style: {
+//     position: 'bottom-left',
+//     padding: '8px 15 px'
+//   }
+// });
+
+// var makeRowa = function(color, name){
+// // Create the label that is actually the colored box
+// var colorBox = ui.Label({
+//   style: {
+//     backgroundColor: '#' + color,
+//     // use padding to give the box height and width.
+//     padding: '8px',
+//     margin: '10px 5px'
+//   }
+// });
+// //create a label with the description text
+// var description = ui.Label({
+//   value: name,
+//   style: {margin: '10px 5px'}
+// });
+// //return the panel
+// return ui.Panel({
+//   widgets: [colorBox, description],
+//   layout: ui.Panel.Layout.Flow('horizontal')
+// });
+  
+// };
+
+// //// Create a palette using the same colors we used for each extent layer
+// // Getting the colors
+// var lgreen = '11D63C';
+// //var yelgreen = '53D611';
+// var pukegreen = 'B5E10E';
+// var yellow = 'F1FF0E';
+// var yelorange = 'FFC40E';
+// var orange = 'FF870E';
+// var red = 'FF1A0E';
+// var darkred = '8A0808';
+// var black = '000000';
+// var white = 'FFFFFF';
+
+// // all the colors for legend
+// var paletteMAPa = [
+//   lgreen,pukegreen, yellow, yelorange, orange, red, darkred
+//   ]
+// // name of each legend value
+// var namesa = ['very unlikely', 'not likely','unlikely','average liklihood' ,'likely','very likely', 'extremely likely' ];
+
+// // // add color and names to legend
+// // for (var i=0; i<7; i++) {
+// //   extentLegend.add(makeRowa(paletteMAPa[i], namesa[i]));
+// // }
+// extentLegend.add(makeRowa(red, 'Region of Significant Deforestation'))
+// extentLegend.add(makeRowa(black, 'Deforestation Detected'))
+// var extCheckNo = ui.Checkbox('No Deforestation Detected'). setValue(false);
+
+// extentLegend.add(extCheckNo)
+
+// ///add a slider
+// // var sliderStart = ui.Slider(1990, 2021, 1);
+// // sliderStart.setValue(2017);  // Set a default value.
+
+// // var sliderEnd = ui.Slider(1990, 2021, 1);
+// // sliderEnd.setValue(2018);
+// // slider.onChange(function(value) {
+// //   Map.layers().get(0).setOpacity(value);
+// // });
+// // panel.add(slider);
+// //if i decide i want to do a stretch color scheme, check the video at 31:30
+// // Add these new widgets to the panel
+
+////////////////////////
+// LAURA'S UI CHANGES //
+//   JULY 29, 2021    //
+////////////////////////
+
+/*
+ * Style defaults
+ */
+
+
+var colors = {'cyan': '#24C1E0', 'transparent': '#11ffee00', 'gray': '#F8F9FA'};
+
+var TITLE_STYLE = {
+  fontWeight: '100',
+  fontSize: '32px',
+  padding: '10px',
+  color: '#616161',
+  backgroundColor: colors.transparent,
+};
+
+var PARAGRAPH_STYLE = {
+  fontSize: '20px',
+  fontWeight: '50',
+  color: '#9E9E9E',
+  padding: '8px',
+  backgroundColor: colors.transparent,
+};
+
+var PARAGRAPH_STYLE2 = {
+  fontSize: '14px',
+  fontWeight: '50',
+  color: '#9E9E9E',
+  padding: '8px',
+  backgroundColor: colors.transparent,
+};
+
+var LABEL_STYLE = {
+  fontWeight: '50',
+  textAlign: 'center',
+  fontSize: '11px',
+  backgroundColor: colors.transparent,
+};
+
+var THUMBNAIL_WIDTH = 128;
+
+var BORDER_STYLE = '4px solid rgba(97, 97, 97, 0.05)';
+
+
+/*
+ * Collection display defaults
+ */
+
+// Landsat 8 TOA
+var COLLECTION_ID = 'LANDSAT/LC08/C01/T1_TOA';
+var START_DATE = '2017-01-01';
+var END_DATE = '2018-01-01';
+var VIZ_PARAMS = {bands: ['B4', 'B3', 'B2'], min: 0, max: 0.4, gamma: 1.5};
+
+var BASE_COLLECTION = ee.ImageCollection(COLLECTION_ID)
+                          .filter(ee.Filter.lte('CLOUD_COVER', 50))
+                          .filterDate(START_DATE, END_DATE);
+
+// Max number of images to use when generating a mosaic.
+var MAX_MOSAIC_SIZE = 20;
+
+/*
+ * Side panel setup
+ */
+
+/**
+ * Return the main side panel, populated with title and app description.
+ */
+function makeSidePanel() {
+  // Create the base side panel, into which other widgets will be added
+  var mainPanel = ui.Panel({
+    layout: ui.Panel.Layout.flow('vertical', true),
+    style: {
+      stretch: 'horizontal',
+      height: '100%',
+      width: '550px',
+      backgroundColor: colors.gray,
+      border: BORDER_STYLE,
+    }
+  });
+
+  // Add the app title to the side panel
+  var titleLabel = ui.Label('Deforestation Monitoring with the BFASTmonitor', TITLE_STYLE);
+  mainPanel.add(titleLabel);
+
+  // Add the app description to the main panel
+  var descriptionText =
+      'This app allows users to visualize areas of potential deforestation in near-real time ' +
+      'by applying the Breaks For Additive Season and Trend (BFAST) method to Landsat 8 ' +
+      'Normalized Difference Moisure Index (NDMI) time series. ';
+  var descriptionLabel = ui.Label(descriptionText, PARAGRAPH_STYLE);
+  mainPanel.add(descriptionLabel);
+  
+  // Add the app description to the main panel
+  var instructionsText =
+      'Instructions for use: ';
+  var instructionsLabel = ui.Label(instructionsText, PARAGRAPH_STYLE);
+  mainPanel.add(instructionsLabel);
+  
+  // Add the app description to the main panel
+  var descriptionText2 =
+      'Users choose a coordinate, and BFAST is applied to each pixel within a 10 km x 10 km ' +
+      'polygon. Expected behavior at each pixel is modeled in a time series, and the pixels that deviate ' +
+      'significantly are classified as breakpoints. The average number of breakpoint pixels is calculated within ' +
+      'each tile of a 1 km x 1 km grid, and tiles with a high probability of potential deforestation are outlined ' +
+      'in red.';
+  var descriptionLabel2 = ui.Label(descriptionText2, PARAGRAPH_STYLE2);
+  mainPanel.add(descriptionLabel2);
+
+  return mainPanel;
+}
+
+/*
+ * Map panel setup
+ */
+
+/** Returns a ui.Map with some UI configuration in place */
+function makeMapPanel() {
+  var map = ui.Map();
+  // Add an informational label
+  map.add(ui.Label('Click the map to visualize deforestation at a select location.'));
+  map.style().set('cursor', 'crosshair');
+  // Don't show the layer list for this app.
+  map.setControlVisibility({layerList: false});
+  return map;
+}
+
+
+/*
+ * Main app initialization
+ */
+
+// Clear the default UI since we're adding our own side and map panels.
+ui.root.clear();
+
+// Create the app's two panels and add them to the ui.root
+var sidePanel = makeSidePanel();
+var mapPanel = makeMapPanel();
+
+// Use a SplitPanel so it's possible to resize the two panels.
+ui.root.add(ui.SplitPanel(sidePanel, mapPanel));
+
+// Add the thumbnail grid to the side panel
+//var thumbnailGrid = makeThumbnailGrid();
+//sidePanel.add(thumbnailGrid);
+
+// Add a click event to the map panel.
+mapPanel.onClick(function(coords) {
+  var point = ee.Geometry.Point(coords.lon, coords.lat);
+  var dot = ui.Map.Layer(point, {color: colors.cyan});
+  point.evaluate(function(geometryBbox) {
+    updateUI(geometryBbox, mapPanel);
+  });
+  // Set the dot to 1 so it's visible on top of the mosaic.
+  mapPanel.layers().set(1, dot);
+});
+
+// Launch the app with an initial point pre-selected
+var initGeometry = ee.Geometry.Point([-60.00, -14.33]);
+mapPanel.centerObject(initGeometry);
+updateUI(mapPanel);
+
+
+// ////////////////// adding date slider
+// var Start_period = ee.Date('1990-01-01');
+// var End_period = ee.Date(Date.now());
+// print(End_period);
+
+// // Look to this website to add functionality to the sliders i think
+// //https://gis.stackexchange.com/questions/352948/creating-dateslider-for-whole-image-collection-in-earth-engine
+// //doing the start slider?
+// ee.Dictionary({start: Start_period, end: End_period})
+//   .evaluate(renderSlider);
+  
+// //doing the end slider?
+// ee.Dictionary({start: Start_period, end: End_period})
+//   .evaluate(renderSliderEnd);
+
+// function renderSlider(dates) {
+//   var startSliderEnd = ui.DateSlider({
+//     start: dates.start.value, 
+//     end: dates.end.value, 
+//     period: 1//, // Every year
+//     // onChange: renderDateRange
+//   })
+//   panel.add(startSliderEnd)
+// }
+
+// function renderSliderEnd(dates) {
+//   var endSlider = ui.DateSlider({
+//     start: dates.start.value, 
+//     end: dates.end.value, 
+//     period: 1//, // Every year
+//     // onChange: renderDateRange
+//   })
+//   panel.add(endSlider)
+// }
+
+// // function renderDateRange(dateRange) {
+// //   var image = collection
+// //     .filterDate(dateRange.start(), dateRange.end())
+// //     .median()
+
+// panel.add(extLabel)
+//     //.add(extCheck)
+//     //.add(extCheck10)
+//     //.add(extCheck15)
+//     // .add(sliderStart)
+//     .add(endLabel)
+//     // .add(sliderEnd)
+//     .add(extentLegend)
+    
+
+
+
+
+// /////////////add functionality to widgets
+// ///////////this is where i need to connect to changing the year displayed
+// ///////ext.2000 should change the years
+// ///extent 2000
+// var doCheckbox = function() {
+//   extCheck.onChange(function(checked){
+//     ext2000.setShown(checked)
+//   })
+// }
+// doCheckbox();
+
+// ////extent 2010
+// var doCheckbox10 = function() {
+//   extCheck10.onChange(function(checked){
+//     ext2010.setShown(checked)
+//   })
+// }
+// doCheckbox10();
+
+// ////extent 2010
+// var doCheckbox10 = function() {
+//   extCheck10.onChange(function(checked){
+//     ext2010.setShown(checked)
+//   })
+// }
+// doCheckbox10();
+
+// ////extent 2015
+// var doCheckbox15 = function() {
+//   extCheck15.onChange(function(checked){
+//     ext2015.setShown(checked)
+//   })
+// }
+// doCheckbox15();
+
+// ////////// Create an inspector Panel with a horizontal layout
+// ///////this will show information when a person clicks on a deforested area
+// var inspector = ui.Panel({
+//   layout: ui.Panel.Layout.flow('horizontal')
+// });
+
+// ///add label to the panel
+// inspector.add(ui.Label({
+//   value:'Click to get Deforestation info',
+//   style: {fontFamily: 'serif'}
+// }));
+
+// // add to default map
+// Map.add(inspector);
+
+//watch the NASA arset video at 39:40 to beable to clip on map and have something happen
+
+// add funcitonality to when the map is clicked
+// this is what I should do when I am done clustering :((
+////// save the fun part for last :'(
+
+
+// Set the region of interest to a point.
+//var newperu: lat2 =-69.58134, lat =-69.02241, lng =-12.8900, lng2 =-12.6526;
+//var peru: lat2 =-69.58108, lat =-69.02646, lng =-12.88777, lng2 =-12.12106;
+//var bolivia: lat2= -62.94023, lat = -18.78287, lng = -18.78287, lng2= -18.06762;
+//var mozambique: lat2 =36.13087, lat = 37.56728, lng =-17.71388, lng2 =-16.53403 
+//var newmozambique: lat2 =36.12234, lat = 36.5975, lng =-17.71089, lng2 =-16.52972 
+var lng = -12.88777;//ymin
+var lat = -69.02646; //xmax
+var lng2= -12.12106; //ymax
+var lat2= -69.58108;//xmin
+
+
+
+
+var region = ee.Geometry.Polygon([[lat2, lng],[lat2, lng2], [ lat, lng2],[lat, lng] ]);
+var midLat = lat2-((lat2 - lat)/2);
+var midLon = lng2-((lng2-lng)/2);
+print(midLat, "midLat")
+print(midLon, 'midLon')
+
+Map.addLayer(region, {color: 'blue'}, 'region');
+
+var roi = ee.Geometry.Point(midLat, midLon);
+
+var point = ee.Geometry.Point(lat2, lng2);
+// Map.addLayer(point,
+//             {'color': 'black'},
+//             'Geometry [black]: point');
+
+//var roi = ee.Geometry.Point(-60.00, -14.33);
+//var roio = ee.Geometry.Point(-69.211188, -12.220112);
+var roio = roi
+//var region = roi
+
+//var region = ee.Geometry.Point([lng, lat]);
+
+//var region = geometry2;
+//var roi = region;
+// set the history and monitoring period
+
+// var historyStart = '2013-01-01';
+// var monitoringEnd = '2018-12-31';
+// var historyEnd = "2016-12-31"
+// var monitoringStart = "2017-01-01";
+
+Map.addLayer(roi, {color: 'red'}, 'roi', false);
+// Set the center of the map
+Map.setCenter(midLat, midLon, 9);
+
+
+//set Bfast-monitor parameters
+
+
+////h is numeric scalar from interval (0,1) specifying the bandwidth relative to the sample size in MOSUM/ME monitoring processes
+var h = 0.25;
+var hxh = h
+var period = 10;
+var alpha = 0.05;
+var atAlpha = 1 - alpha;
+var magnitudeThreshold = -0.000000000000000000000000000000121
+var harmonics = 1;
+
+
+/////////////////////////////////////////////////////
+////CHECK IF USER-DEFINED PARAMETERS ARE OK ////
+/////////////////////////////////////////////////////
+var bfastMonitor = function bfastMonitor(roi,historyStart,historyEnd,monitoringStart,monitoringEnd,h,period,alpha,magnitudeThreshold,harmonics){
+
+
+
+roi = roi||ee.Geometry.Point(midLat, midLon) //-60.00, -14.33
+var roio = roi
+historyStart = historyStart||'2013-01-01'
+monitoringEnd = monitoringEnd||'2018-12-31'
+historyEnd = historyEnd||"2016-12-31"
+monitoringStart = monitoringStart||"2017-01-01"
+h = h||0.25
+var hxh = h
+period = period||10
+alpha = alpha||0.05
+var atAlpha = 1 - alpha;
+magnitudeThreshold = magnitudeThreshold||-0.000000000000000000000000000000121
+harmonics = harmonics||1
+
+/// Check the h parameter
+if (h == 0.25) {
+  h = 0;
+} else if (h == 0.5){
+  h = 1;
+}else if (h == 1){
+  h = 2;
+}else {
+  alert("Error: h parameter can either be 0.25, 0.5, or 1");
+}
+
+///Check alpha. Alpha be equal or less than 0.05
+
+if (alpha > 0.05) {
+  alert("Error: alpha parameter set too large, try alpha = 0.05 or less");
+}
+
+var tTable = [0.950, 0.951, 0.952, 0.953, 0.954, 0.955, 0.956, 0.957, 0.958, 0.959, 0.960, 0.961, 0.962, 0.963, 0.964, 0.965, 0.966, 0.967, 0.968, 0.969,
+0.970, 0.971 ,0.972, 0.973, 0.974, 0.975, 0.976, 0.977, 0.978, 0.979, 0.980, 0.981, 0.982, 0.983, 0.984, 0.985, 0.986, 0.987, 0.988, 0.989, 0.990 ,0.991 ,0.992,
+0.993 ,0.994, 0.995, 0.996, 0.997, 0.998, 0.999];
+
+var alphaIndex = tTable.indexOf(atAlpha)
+if (alphaIndex < 0 || alphaIndex > 49) {
+  alert("Error: for critical values, we only have for alpha parameter ranging from 0.001 to 0.05, try alpha from that range");
+}
+
+if (period == 2) {
+   period  = 0;
+} else if (period  == 4){
+   period  = 1;
+}else if (period  == 6){
+   period  = 2;
+}else if (period  == 8){
+   period  = 3;
+}else if (period  == 10){
+   period  = 4;
+}else {
+  alert("Error: for period parameter, we only have 2, 4, 6, 8,10. Choose one of these values");
+}
+
+///////////////////////////////////////////////////////////////////////////
+// DEFINE KEY FUNCTIONS FOR PRE=PROCESSING
+///////////////////////////////////////////////////////////////////////////
+
+// The dependent variable we are modeling.
+var dependent = 'NDMI';
+
+// Make a list of harmonic frequencies to model.
+// These also serve as band name suffixes.
+var harmonicFrequencies = ee.List.sequence(1, harmonics);
+
+// Function to get a sequence of band names for harmonic terms.
+var constructBandNames = function(base, list) {
+  return ee.List(list).map(function(i) {
+    return ee.String(base).cat(ee.Number(i).int());
+  });
+};
+
+// Construct lists of names for the harmonic terms.
+var cosNames = constructBandNames('cos_', harmonicFrequencies);
+var sinNames = constructBandNames('sin_', harmonicFrequencies);
+
+// Independent variables.
+var independents = ee.List(['constant'])
+  .cat(cosNames).cat(sinNames);
+  
+// Function to add an NDVI band, the dependent variable.
+var addNDVI = function(image) {
+  return image
+    .addBands(image.normalizedDifference(['B4', 'B5'])
+    .rename('NDMI'))
+    .float();
+};
+
+var addNDVI8 = function(image) {
+  return image
+    .addBands(image.normalizedDifference(['B5', 'B6'])
+    .rename('NDMI'))
+    .float();
+};
+
+// Functions to add a time band.
+var addDependents = function(image) {
+  // Compute time in fractional years since the epoch.
+  var years = image.date().difference('1970-01-01', 'year');
+  var timeRadians = ee.Image(years.multiply(2 * Math.PI)).rename('t');
+  var constant = ee.Image(1);
+  return image.addBands(constant).addBands(timeRadians.float());
+};
+
+// Function that returns the year (with a fractional part to indicate progression within
+// a year) that corresponds to the given unix time.
+function unixToYear(unixTime) {
+  return ee.Number(unixTime).divide(365.25 * 24 * 3600 * 1000).add(1970);
+}
+
+// Function to compute the specified number of harmonics
+// and add them as bands.  Assumes the time band is present.
+var addHarmonics = function(freqs) {
+  return function(image) {
+    // Make an image of frequencies.
+    var frequencies = ee.Image.constant(freqs);
+    // This band should represent time in radians.
+    var time = ee.Image(image).select('t');
+    // Get the cosine terms.
+    var cosines = time.multiply(frequencies).cos().rename(cosNames);
+    // Get the sin terms.
+    var sines = time.multiply(frequencies).sin().rename(sinNames);
+    return image.addBands(cosines).addBands(sines);
+  };
+};
+
+////////////////////////////////////////////////
+// LOAD THE IMAGES 
+///////////////////////////////////////////////
+
+// Load a collection of Landsat TOA reflectance images.
+var landsat5Collection = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR');
+var landsat7Collection = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR');
+var landsat8Collection = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR');
+
+//mask the  clouds
+var landsat5Collection1 = landsat5Collection
+  .filterBounds(roi)
+  .filterDate(historyStart, monitoringEnd)
+  //.map(cloudMaskL457)
+     .map(function(image) {return image.mask(image.select('pixel_qa')
+                                               .remap([66,130,322,386],[1,1,1,1],0) // 66..386 -> 1 = not masked
+                                          )
+                                    //.clip(PolygonBuffer)
+                        }
+      )
+   .map(addNDVI);
+  
+var landsat7Collection1 = landsat7Collection
+ .filterBounds(roi)
+ .filterDate(historyStart, monitoringEnd)
+ // .map(cloudMaskL457)
+
+   .map(function(image) {return image.mask(image.select('pixel_qa')
+                                               .remap([66,130,322,386],[1,1,1,1],0) // 66..386 -> 1 = not masked
+                                          )
+                                    //.clip(PolygonBuffer)
+                        }
+      )
+   .map(addNDVI);
+  
+var landsat8Collection1 = landsat8Collection
+  .filterBounds(roi)
+  .filterDate(historyStart, monitoringEnd)
+  //.map(maskL8sr)
+     .map(function(image) {return image.mask(image.select('pixel_qa')
+                                               .remap([66,130,322,386],[1,1,1,1],0) // 66..386 -> 1 = not masked
+                                          )
+                                    //.clip(PolygonBuffer)
+                        }
+      )
+  .map(addNDVI8);
+  
+var landsat5Collection01 = landsat5Collection1
+.select('B1', 'B2','B3', 'B4','B5', 'B7','NDMI')
+.map(function(image){
+  return image.rename(['B1', 'B2','B3', 'B4','B5', 'B7','NDMI']);
+})
+
+var landsat7Collection01 = landsat7Collection1
+.select('B1', 'B2','B3', 'B4','B5', 'B7','NDMI')
+.map(function(image){
+  return image.rename(['B1', 'B2','B3', 'B4','B5', 'B7','NDMI']);
+})
+
+var landsat8Collection01 = landsat8Collection1
+.select('B2', 'B3','B4', 'B5','B6', 'B7','NDMI')
+.map(function(image){
+  return image.rename(['B1', 'B2','B3', 'B4','B5', 'B7', 'NDMI']);
+})
+
+// merge the collections and sort them by time
+  
+var collection_merge = ee.ImageCollection(landsat5Collection01.merge(landsat7Collection01));
+var collection_merge2 = collection_merge.merge(landsat8Collection01);
+
+//print (collection_merge2);
+
+var collection_merge3 = collection_merge2
+ .sort('system:time_start')
+//print (collection_merge3.select('NDMI'));
+
+// subset the collection into history and monitoring period
+var histCollection = collection_merge3.filterDate(historyStart, historyEnd);
+var moniCollection  = collection_merge3.filterDate(monitoringStart, monitoringEnd);
+
+
+/////////////////////////
+//// HISTORY PERIOD ////
+////////////////////////
+
+// Filter to the area of interest, mask clouds, add variables.
+var harmonicLandsat = histCollection
+  .map(addDependents)
+  .map(addHarmonics(harmonicFrequencies));
+
+// The output of the regression reduction is a 4x1 array image.
+var harmonicTrend = harmonicLandsat
+  .select(independents.add(dependent))
+  .reduce(ee.Reducer.linearRegression(independents.length(), 1));
+
+// Turn the array image into a multi-band image of coefficients.
+var harmonicTrendCoefficients = harmonicTrend.select('coefficients')
+  .arrayProject([0])
+  .arrayFlatten([independents]);
+  
+// 3. CALCULATE COMMULATIVE SUM OF RESIDUALS
+
+// Compute fitted values.
+var fittedHarmonic = harmonicLandsat.map(function(image) {
+  return image.addBands(
+    image.select(independents)
+      .multiply(harmonicTrendCoefficients)
+      .reduce('sum')
+      .rename('fitted'));
+});
+
+// Compute the residuals
+var computResiduals = function(image){
+  return image.addBands(
+    image.select('NDMI')
+    .subtract(image.select('fitted'))
+    .reduce('sum')
+    .rename('residual'));
+
+}
+
+var residuals = fittedHarmonic.map(computResiduals);
+
+// Compute squared residuals
+var computsquaredResiduals = function(image){
+  return image.addBands(
+    image.select('residual')
+    .pow(2)
+    .rename('squaredResidual'));
+}
+
+var squaredResiduals = residuals.map(computsquaredResiduals);
+var rndmi = residuals.select('NDMI')
+var nmdi = rndmi.toArray();
+//calculate sigma i.e. sigma = sqrt(sum(e^2)/fm$df.residual)
+var residu = residuals.select('residual')
+var res = residu.toArray();
+var resid = squaredResiduals.select('squaredResidual')
+var residarray = resid.toArray();
+var imageAxis = 0;
+var ResidSum = residarray.arrayReduce("sum", [imageAxis]);
+var coefArray = harmonicTrendCoefficients.toArray();
+var coefLength = coefArray.arrayLength(imageAxis);
+var histtimeseiesLength = residarray.arrayLength(imageAxis);
+var dfresiduals = histtimeseiesLength.subtract(coefLength);
+var ResidSumnorma = ResidSum.divide(dfresiduals);
+var sigma = ResidSumnorma.sqrt();
+
+ /// calculate K, which is N obs in historical sample multiplied by h parameter
+var himage = ee.Image(hxh);
+var ksize =  himage.multiply(histtimeseiesLength).floor();
+
+// Calculate mosum of residuals for history period 
+
+/// Concatenate two images: zer0 and residuals
+var zer0 = ee.Image([0]).toArray().float();
+var bandAxis = 1
+var fi = zer0.arrayRepeat(bandAxis, 1);
+var catImage = ee.ImageCollection([fi,res]);
+var concat = catImage.toArrayPerBand(0);
+var ImToArr = concat.toArray();
+
+/// ...now calculate Cumsum
+var histcumsum = ImToArr.arrayAccum(imageAxis, 'sum');
+var histimZer0 = ee.Image(0).int();
+var histdubImZer0 = histimZer0.arrayRepeat(imageAxis,ksize.int());
+var histfx10 = histdubImZer0.arrayRepeat(bandAxis, 1);
+var histverc= histfx10.toArray().float();
+var histshiftedCumR = ee.ImageCollection([histverc, histcumsum]);
+var histShfCumSumRight1 = histshiftedCumR.toArrayPerBand(imageAxis);
+var histShfCumSumRight = histShfCumSumRight1.toArray()
+var histshiftedCumL = ee.ImageCollection([histcumsum, histverc]);
+var histShfCumSumLeft = histshiftedCumL.toArrayPerBand(imageAxis);
+var histShiftDifference = histShfCumSumLeft.subtract(histShfCumSumRight);
+var histmsk = histShiftDifference.arrayMask(histShfCumSumLeft);
+var histter = ee.Image(0).float().toArray();
+var histtesser = histter.arrayRepeat(bandAxis, 1);
+var histtessermaske = ee.ImageCollection([histtesser, histmsk]);
+var histtessermsk = histtessermaske.toArrayPerBand(imageAxis);
+
+// ...now slash off unwanted first part of Cumsum of residuals to get MOSUM residuals
+var histcotx2 = histtessermsk.arrayLength(imageAxis);
+var histcumKsizeDiff = histcotx2.subtract(ksize).int();
+var histknsiz1 = histimZer0.arrayRepeat(imageAxis, ksize.int());
+var histknsiz2 = histknsiz1.arrayRepeat(bandAxis, 1);
+var histknsiz =histknsiz2.toArray();
+
+var histdcumn = ee.Image(1).multiply(histcumKsizeDiff);
+var histimOnes = ee.Image(1).int();
+var histknm1 = histimOnes.arrayRepeat(imageAxis, histdcumn);
+var histknm2 = histknm1.arrayRepeat(bandAxis, 1);
+var histknm = histknm2.toArray();
+
+var histshmasker = ee.ImageCollection([histknsiz, histknm]);
+var histShfmask = histshmasker.toArrayPerBand(imageAxis);
+var histResmosum = histtessermsk.arrayMask(histShfmask);
+
+/// ...standardise
+var sigmaStanda = sigma.multiply(histtimeseiesLength.sqrt());
+
+var duSigmaStanda = sigmaStanda.arrayRepeat(bandAxis,1);
+var bleng = histResmosum.arrayLength(imageAxis);
+var xSigmaStanda = duSigmaStanda.arrayRepeat(imageAxis,bleng).toArray();
+
+var histResmosumStanda = histResmosum.divide(xSigmaStanda);
+
+
+////////////////////////////
+///CRITICAL VALUE TABLE ///
+////////////////////////////
+
+var criticalVTable = [[[1.227627,1.336231,1.341087,1.341657,1.341825],[1.687323,1.886331,1.899584,1.901299,1.902003],[2.224088,2.704437,2.737148,2.742879,2.745928]],
+[[1.230670,1.338791,1.343916,1.344138,1.344391],[1.691601,1.890238,1.903723,1.905166,1.905759],[2.231672,2.713164,2.743205, 2.749723,2.753326]],
+[[1.232765,1.341468,1.346242,1.346456,1.346603],[1.696334,1.895051,1.907863,1.909372,1.910032],[2.238556,2.722308,2.750227,2.757492,2.760331]],[[1.235641,1.344179,1.348399,1.348852,1.349151],
+[1.701584,1.899687,1.912100,1.913716,1.914301],[2.246716,2.730136,2.757795,2.765451,2.767957]],[[1.238478,1.346586,1.351096,1.351554,1.351786],[1.705517,1.903961,1.916485,1.917941,1.918521],
+[2.254955,2.737834,2.766094,2.772398,2.774493]],[[1.241981,1.349207,1.353765,1.353986,1.354179],[1.711073,1.908307, 1.920913,1.922321,1.923639],[ 2.263672,2.745290,2.772925,2.780656,2.783772]],
+[[1.244816,1.352020,1.356149,1.356345,1.356684],[1.716266,1.912950,1.926254,1.927599,1.928130],[2.271981,2.753501,2.782581,2.788330,2.790409]],[[1.248790,1.354620,1.358915,1.359235,1.359487],
+[1.720193,1.917516,1.931100,1.932476,1.933184],[2.280294,2.761655,2.789957,2.795878,2.797913]],[[1.252395,1.357197,1.361947,1.362265,1.362569],[1.725837,1.922129,1.936171,1.937710,1.938192],
+[2.289980,2.769950,2.797966,2.804613,2.808125]],[[1.254989,1.360500,1.365236,1.365600,1.365772],[1.730801,1.927967,1.941870,1.943303,1.943724],[2.301392,2.777844,2.808374,2.813311,2.815859]],
+[[1.258229,1.363725,1.368277,1.368505,1.368863],[1.736322,1.933243,1.947243,1.948883,1.949207],[2.310398,2.788013,2.816225,2.821322,2.824270]],[[1.262239,1.366679,1.371643,1.372149,1.372374],
+[1.741964,1.939180,1.952111,1.953539,1.954109],[2.320316,2.796900,2.825448,2.831913,2.834508]],[[1.265966,1.370524,1.374604,1.374777,1.374852],[1.747394,1.945610,1.957768,1.959244,1.959426],
+[2.329219,2.807824,2.835817,2.840917,2.843434]],[[1.269240,1.373742,1.377815,1.378134,1.378315],[1.753500,1.950991,1.963491,1.964871,1.965069],[2.339306,2.817101,2.846078,2.851046,2.853604]],
+[[1.272641,1.376577,1.381153,1.381548,1.381751],[1.758805,1.957234,1.969616,1.970576,1.970974],[2.350632,2.828103,2.856533,2.860616,2.862433]],[[1.276040,1.380221,1.384750,1.385074,1.385378],
+[1.765472,1.963210,1.974486,1.975609,1.975930],[2.362393,2.839029,2.866151,2.871058,2.872654]],[[1.279592,1.383943,1.388012,1.388368,1.388473],[1.772518,1.969691,1.980481,1.981478,1.981607],
+[2.373682,2.849856,2.875078,2.878643,2.880942]],[[1.284859,1.387693,1.390913,1.391173,1.391456],[1.779402,1.975368,1.985724,1.987007,1.987355],[2.383993,2.859437,2.885461,2.889821,2.891402]],
+[[1.289184,1.390484,1.394646,1.395081,1.395330],[1.788029,1.981488,1.992285,1.993116,1.993443],[2.396559,2.872062,2.896479,2.900194,2.901336]],[[1.293119,1.394082,1.398722,1.398860,1.399112],
+[1.795241,1.987604,1.997985, 1.998916,1.999079],[2.409003,2.881957,2.906464,2.911006,2.912487]],[[1.297743,1.398436,1.402654,1.403074,1.403188],[1.802223,1.994707,2.004819,2.006503,2.006985],
+[ 2.420513,2.894229,2.918304,2.920887,2.922340]],[[1.302930,1.402841,1.406762,1.407276,1.407490],[1.809158,2.001483,2.012325,2.013257,2.013485],[2.431878,2.905888,2.927930,2.931367,2.933102]],
+[[1.307095,1.407343,1.411457,1.411639,1.411814],[1.816827,2.009906,2.019668,2.020551,2.020959],[2.442134,2.918303,2.939940,2.942373,2.943662]],[[1.311586,1.411896,1.415374,1.415582,1.415698],
+[1.824857,2.018009,2.027714,2.028695, 2.029367],[2.455465,2.928892,2.951336,2.955135,2.955942]],[[1.317376,1.415971,1.419370,1.419562,1.419777],[1.833343,2.026390,2.035115,2.035950,2.036448],
+[2.468240,2.941650,2.962908,2.965146,2.966898]],[[1.323352,1.420220,1.423625,1.423804,1.423819],[1.841864,2.034022,2.042662,2.044230,2.044388],[2.483054,2.955380,2.976538,2.979340, 2.980014]],
+[[1.327864,1.425241,1.428682,1.428849,1.428957],[1.851771,2.042079,2.052127,2.053173,2.053381],[2.500143,2.968288,2.989569,2.992682,2.994808]],[[1.333507,1.430859, 1.433526,1.433628,1.433639],
+[1.861211,2.052014,2.058428,2.059145,2.059377],[2.512775,2.983458,3.002817,3.007144,3.008677]],[[1.339192,1.435554,1.438252,1.438392,1.438405],[1.869505,2.058946,2.065555,2.066094,2.066162],
+[2.527290,3.000886,3.017675,3.021515,3.022463]],[[1.344926,1.440531,1.442914,1.442974, 1.443076],[1.878587,2.066095,2.074048,2.074708,2.074738],[2.544121,3.014506,3.031640,3.033255,3.033942]],
+[[1.350273,1.445440,1.448123,1.448228,1.448236],[1.886953,2.075533,2.082448,2.082848,2.082870],[2.559929,3.030217,3.045733,3.048442,3.049289]],[[1.356197,1.450892,1.453143,1.453262,1.453311],
+[1.899271,2.085649,2.092158,2.092533,2.092569],[2.579905,3.045143,3.062709,3.065217,3.065598]],[[1.362590,1.456028,1.458898,1.458992, 1.459029],[1.909990,2.095269,2.101756,2.101928, 2.101952],
+[2.599545,3.063189,3.081057,3.083965,3.085387]],[[1.369579,1.462782,1.465478,1.465547,1.465578],[1.920444,2.105089,2.111554,2.111633,2.111780],[2.622261,3.082044,3.099112,3.102763,3.103441]],
+[[1.376458,1.469854,1.472349,1.472453,1.472531],[1.933259,2.114999,2.121438,2.121521,2.121702],[2.643282, 3.101187,3.118645,3.121287,3.121690]],[[1.384282,1.476966,1.480404,1.480559,1.480576],
+[1.948464,2.126446,2.133841,2.133936,2.134194],[2.667571,3.121373,3.143574,3.145042,3.145468]],[[1.391945,1.485232,1.487427,1.487522,1.487593], [1.961357,2.138602,2.144182,2.144204,2.144253],
+[2.689127, 3.146294,3.161756,3.163726,3.164096]],[[1.401008,1.492834,1.494943,1.495068,1.495171],[1.978307,2.151764,2.156617,2.156934,2.157615],[2.716153,3.169754,3.188961, 3.192023,3.193316]],
+[[1.411670,1.500951,1.503252,1.503442,1.503842],[1.993349,2.165997,2.173272,2.173545,2.173771],[2.744999,3.198712,3.214096,3.216680,3.217122]],[[1.420877,1.510675,1.511970,1.511986,1.512084],
+[2.010536,2.184522,2.190798,2.191140,2.191611],[2.769564,3.225578,3.237936,3.240050,3.240793]],[[1.433263,1.519837,1.521600,1.521629,1.521645],[2.031463, 2.201170,2.208535,2.208754,2.209073],
+[2.799616,3.252830,3.274006,3.274860,3.276932]],[[1.443600,1.532697,1.533838,1.534082,1.534365],[2.052896,2.218109,2.224369,2.224911,2.225384],[2.842197,3.294485, 3.309482,3.310631,3.311442]],
+[[1.455112,1.544403,1.545380,1.545547,1.545562],[2.073102,2.241080,2.246534,2.246710,2.247286],[2.882628,3.328245,3.339912,3.340922,3.341217]],[[1.471607,1.559106,1.560338,1.560338,1.560361],
+[2.096964,2.264123,2.269144,2.269487,2.269782],[2.923850,3.368009,3.382317,3.383336,3.384313]],[[1.488860,1.575721,1.576582,1.576582,1.576732],[2.121520,2.290532,2.294708,2.295162,2.295703],
+[2.971624,3.413466,3.423838,3.424968,3.425139]],[[1.507300,1.596956,1.597971,1.597971,1.597971],[2.151915,2.320520,2.325255,2.325522,2.325522],[3.029458,3.460251,3.473393,3.474227,3.474227]],
+[[1.531756,1.618122,1.618397,1.618397,1.618397],[2.200397,2.355904,2.358182,2.359174,2.359174],[3.087042,3.515429,3.529342,3.529363,3.529363]],[[1.560381,1.649405,1.649405,1.649405,1.649405],
+[2.247114,2.408982,2.411867,2.411867,2.411867],[3.172736,3.606243, 3.619386, 3.620481,3.620959]],[[1.604588,1.685943,1.685943,1.685943,1.685943],[2.308004,2.464537,2.465797,2.465797,2.465797],
+[3.289425,3.718164,3.734348,3.736920,3.736979]],[[1.673977,1.745509, 1.745509,1.745509,1.745509],[2.434576,2.568862,2.570255,2.570255,2.570255],[3.454727,3.935357,3.941029,3.941029,3.941029]]]
+
+// 1. GET  CRITICAL VALUE FROM THE CRITICAL VALUE TABLE. 
+var tblindex = criticalVTable.slice(alphaIndex);
+var tblind = tblindex[0];
+var htablindex = tblind[h];
+var criticalValue = htablindex[period];
+
+///////////////////////////
+//MONITORING  PERIOD
+//////////////////////////
+
+// Filter to the area of interest, mask clouds, add variables.
+var MonitorLandsat = moniCollection
+  //.map(addNDVI)
+  .map(addDependents)
+  .map(addHarmonics(harmonicFrequencies));
+  
+// Do the prediction.
+
+var predictedValues = MonitorLandsat.map(function(image) {
+  return image.addBands(
+    image.select(independents)
+      .multiply(harmonicTrendCoefficients)
+      .reduce('sum')
+      .rename('predicted'));
+});
+
+var mcomputResiduals = function(image){
+  return image.addBands(
+    image.select('NDMI')
+    .subtract(image.select('predicted'))
+    .reduce('sum')
+    .rename('residual'));
+
+}
+
+// Calculate the MOSUM for monitoring period
+
+///...calculate the Cumsum of residuals and do a shift trick to get MOSUM
+var mresiduals = predictedValues.map(mcomputResiduals);
+var mresid = mresiduals.select('residual')
+var moResiduals = mresid.toArray();
+var histResidual =  res.toArray();
+var moMoresid = ee.ImageCollection([histResidual,moResiduals]);
+var MonResid = moMoresid.toArrayPerBand(imageAxis);
+var moRes = MonResid.toArray()
+
+//print(moRes, 'moRes');
+//Map.addLayer(moRes, {}, 'moRes');
+
+var cumSumRes = moRes.arrayAccum(imageAxis, 'sum'); 
+var imZer0 = ee.Image(0).int();
+var ksizeplu = ksize.add(1)
+var dubImZer0 = imZer0.arrayRepeat(imageAxis,ksize.int());
+var fx10 = dubImZer0.arrayRepeat(bandAxis, 1);
+var verc= fx10.toArray().float();
+var shiftedCumR = ee.ImageCollection([verc, cumSumRes]);
+var ShfCumSumRight1 = shiftedCumR.toArrayPerBand(imageAxis);
+var ShfCumSumRight = ShfCumSumRight1.toArray()
+var shiftedCumL = ee.ImageCollection([cumSumRes, verc]);
+var ShfCumSumLeft = shiftedCumL.toArrayPerBand(imageAxis);
+var ShiftDifference = ShfCumSumLeft.subtract(ShfCumSumRight);
+var msk = ShiftDifference.arrayMask(ShfCumSumLeft);
+var ter = ee.Image(0).float().toArray();
+var tesser = ter.arrayRepeat(bandAxis, 1);
+var tessermaske = ee.ImageCollection([tesser, msk]);
+var tessermsk = tessermaske.toArrayPerBand(imageAxis);
+
+
+
+///... now slash off unwanted first part of Cumsum of residuals to get MOSUM residuals
+var cotx2 = tessermsk.arrayLength(imageAxis);
+var cumKsizeDiff = cotx2.subtract(ksize).int();
+var knsiz1 = imZer0.arrayRepeat(imageAxis, ksize.int());
+var knsiz2 = knsiz1.arrayRepeat(bandAxis, 1);
+var knsiz =knsiz2.toArray();
+
+
+var dcumn = ee.Image(1).multiply(cumKsizeDiff);
+var imOnes = ee.Image(1).int();
+var knm1 = imOnes.arrayRepeat(imageAxis, dcumn);
+var knm2 = knm1.arrayRepeat(bandAxis, 1);
+var knm = knm2.toArray();
+
+var shmasker = ee.ImageCollection([knsiz, knm]);
+var Shfmask = shmasker.toArrayPerBand(imageAxis);
+var moResmosum = tessermsk.arrayMask(Shfmask);
+
+var dumoSigmaStanda = sigmaStanda.arrayRepeat(bandAxis,1);
+var mobleng = moResmosum.arrayLength(imageAxis);
+var moSigmaStanda = dumoSigmaStanda.arrayRepeat(imageAxis,mobleng).toArray();
+
+///... now standardise the mosum
+var moResmosumStanda1 = moResmosum.divide(moSigmaStanda);
+var moResmosumStanda = moResmosumStanda1.abs();
+///...Time stamp...needed for time of change later
+
+// Number of milliseconds in a day.
+var MSEC_PER_DAY = 365.25 * 24 * 3600 * 1000;
+
+function makeDate(image) {
+  // Create a band containing the time of each image,
+  // converted to days since the epoch (1/1/1970).
+  var md = image.metadata("system:time_start").divide(MSEC_PER_DAY).add(1970);
+  // Copy the mask from band 0.
+  var mask = image.select(0).mask();
+  return md.mask(mask);
+}
+
+var vsr = MonitorLandsat.map(makeDate);
+
+
+var time = vsr.toArray();
+
+///...magnitude ..needed for magnitude change later
+
+var magnTudmas = moResiduals;
+
+
+
+/// 3.Calculate the critical borders
+
+///.. generating a sequence of values  from N obs in historical sample to N obs in monitoring sample with 
+ //interval of 1 interval and this is not a straight forward procedure
+ 
+ 
+var monisize1 = moResiduals.arrayLength(imageAxis);
+var signb = ee.Image(1).toArray()
+var kplushistzie = signb.add(histtimeseiesLength);
+
+//logPlus
+var fo1 =  kplushistzie.divide(histtimeseiesLength);
+var foLogplus1 = fo1.log().max(1);
+
+//border
+var foLop1 = foLogplus1.multiply(2);
+var foLopSq1 = foLop1.sqrt();
+var foLopSqx = foLopSq1.arrayRepeat(imageAxis,monisize1.int());
+var criticalBorder1 = foLopSqx.multiply(ee.Image(criticalValue));
+var criticalBorder = criticalBorder1.arrayRepeat(bandAxis, 1);
+ 
+
+///...now create masks to mask out parts that belong to the history period
+
+var yeOnes = ee.Image(1).int();
+//var timeMa = time.arrayLength(imageAxis)
+var moRepeat1 = yeOnes.arrayRepeat(imageAxis, monisize1.int()).toArray();
+var moRepeat  = moRepeat1.arrayRepeat(bandAxis, 1);
+var rMa = moResmosumStanda.arrayLength(imageAxis);
+var rt = rMa.subtract(monisize1);
+var rtx = ee.Image(0).int();
+var rhRepeat1 = rtx.arrayRepeat(imageAxis, rt.int()).toArray();
+var rhRepeat  = rhRepeat1.arrayRepeat(bandAxis, 1);
+
+var rZOnesx = ee.ImageCollection([rhRepeat,moRepeat]);
+var rMZOnesxo = rZOnesx.toArrayPerBand(0);
+var rMZexOnesx = rMZOnesxo.arrayRepeat(bandAxis, 1);
+
+/// ...now start masking 
+var xmoResmosumStanda = moResmosumStanda.arrayMask(rMZexOnesx);
+var  chiefMasker = xmoResmosumStanda.divide(criticalBorder).int();
+
+/// 4. Check if a break is detected
+
+///... Now mask out the positions where critical boundary is not closed
+// you do this for change, time and magnitude of change image
+var change = xmoResmosumStanda.arrayMask(chiefMasker);
+var timechange = time.arrayMask(chiefMasker);
+var magniofchange = magnTudmas.arrayMask(chiefMasker);
+
+
+
+///...mask out the positions where the magnitude of change is positive
+
+
+///... now slice out the first position the change has occured
+var firstChange = change.arraySlice(0,0,1).toArray();
+var timeOfchange = timechange.arraySlice(0,0,1).toArray();
+////this used for final magnitude map;
+var magnitude = magniofchange.arraySlice(0,0,1).toArray();
+var criticalBorder1 = criticalBorder.arraySlice(0,0,1).toArray();
+print('the magnitued of change thing', magnitude)
+/////...mask out locations where no change is detected;
+//this is where maeve starts to edit
+
+
+var time0x = ee.Image(0).int().toArray();
+// i think this duplicates the array:
+var timZx = time0x.arrayRepeat(bandAxis,1);
+// creates a stack of images:
+///mas turns into the map displayed for magnitude
+var mas = ee.ImageCollection([magnitude,timZx]);
+var timOChx = ee.ImageCollection([timeOfchange,timZx]);
+var firstChx = ee.ImageCollection([firstChange,timZx]);
+
+//array for every band for time fo change?
+var timeOfCvx = timOChx.toArrayPerBand(0);
+var tMa = mas.toArrayPerBand(0);
+var firsttCha = firstChx.toArrayPerBand(0);
+
+//collapses the array based on sum or max value
+var cox = tMa.arrayReduce('sum', [imageAxis]);
+var Timecox = timeOfCvx.arrayReduce("max", [imageAxis]);
+var firsttChab = firsttCha.arrayReduce('max', [imageAxis]);
+
+////maeve trying to show the full image?
+var coxey = cox.arrayFlatten([['x'],['y']]);
+
+// result.randomVisualizer(), {}, // min: -0.7, max:-.3,'palette' : 'red', 'yellow'
+//Map.addLayer(coxey, {min: -0.7, max:-.3, 'palette' : 'F4FA58,FFFF00,F7D358,F7D358,FFBF00,FF4000,B43104,8A0808'}, 'Magnitude of maybe not change');
+
+
+
+var Cnk1 = cox.mask(cox.arrayGet([0,0]).neq(0)).toArray();
+var timeCnk1 = Timecox.mask(Timecox.arrayGet([0,0]).neq(0)).toArray();
+var firtsChnk = firsttChab.mask(firsttChab.arrayGet([0,0]).neq(0)).toArray();
+var firstCha = firtsChnk.subtract(criticalBorder1);
+
+///... flatten the array to allow for use of palletes
+var timeCnk2 = timeCnk1.arrayFlatten([['x'],['y']]);
+var Cnk = Cnk1.arrayFlatten([['x'],['y']]);
+var firstChaDif = firstCha.arrayFlatten([['x'],['y']]);
+
+
+
+
+///end of what maeve edits
+////// this is what goes in the map layer
+timeCnk2 = timeCnk2.select(['.*'],['breakTime']).set({'bfast:label' : 'Time of change', 'bfast:result' : 'breakTime'})
+Cnk = Cnk.select(['.*'],['breakMagnitude']).set({'bfast:label' : 'Magnitude of change', 'bfast:result' : 'breakMagnitude'})
+// Map.addLayer(Cnk, {min: -0.7, max:-.3,'palette' : 'F4FA58,FFFF00,F7D358,F7D358,FFBF00,FF4000,B43104,8A0808'}, 'Magnitude of change', false);
+print(Cnk, 'cnk type')
+var new_cnk = Cnk.clip(region)
+new_cnk = new_cnk.select(['.*'],['breakMagnitude']).set({yes_mag: 1})
+print(new_cnk)
+
+
+// var region = ee.Geometry.Polygon([[lat2, lng],[lat2, lng2], [ lat, lng2],[lat, lng] ]);
+
+// // Define arbitrary thresholds on the 6-bit nightlights image.
+// // var zones = Cnk.gt(-.7).add(Cnk.gt(-.3)).add(Cnk.gt(0));
+// // isolates teh points in the raster that between -.7 and -.3
+// var zones = Cnk.gte(-.7).add(Cnk.lte(-.3));
+// zones = zones.updateMask(zones.neq(0));
+// //var zones = .updateMask(zones2);
+// //Map.addLayer(zones, {'palette': 'black'}, 'zone');
+// // Rob also had the idea to convert the raster to ones and zero
+
+
+// // Convert the zones of the thresholded nightlights to vectors.
+// var vectors = zones.addBands(Cnk).reduceToVectors({
+//   geometry: region,
+//   crs: Cnk.projection(),
+//   scale: 500,
+//   geometryType: 'polygon',
+//   eightConnected: false,
+//   labelProperty: 'zone',
+//   reducer: ee.Reducer.mean()
+// });
+
+// //Map.addLayer(zones, {min: 0, max: 2, palette: ['yellow' ,'black', 'blue']}, 'raster');
+
+// // Make a display image for the vectors, add it to the map.
+// var display = ee.Image(0).updateMask(0).paint(vectors, '000000', 3);
+// //Map.addLayer(display, {palette: '000000'}, 'vectors', false);
+
+///// Another idea
+//////// 1) create a raster with binary of 0: no deforestation, 1: yes deforestation
+//////// 2) apply a 1km summation filter across every square
+/////////////divide the region into polygons and use this to sum the pixels inside
+//////// 3) if the sum of a square greater than a certain square, keep it
+//////// 4) if a square is touching another square, merge it
+
+///// 1) Remap values
+var Cnkreclass = ee.Image(1)
+          .where(Cnk.lt(-.7), 0)
+          .where(Cnk.gte(-.7).and(Cnk.lte(-.3)), 1)
+          .where(Cnk.gt(-.3), 0);
+
+//clipping binary raster (doesnt work)
+// var Cnkreclip = Cnk.updateMask(region)
+var Cnkreclass = Cnkreclass.clip(region)
+// Map.addLayer(Cnkreclass,{min:0, max: 1, 'palette': 'FFFFFF, 000000'}, 'cnk reclass');
+// var yes_filter = Cnkreclass.filter(ee.Filter.eq('constant', 1));
+// var filter = ee.Feature(Cnkreclass.filter(ee.Filter.eq('consant', 1))) //Cnkreclass.eq(1)
+// print(Cnkreclass, 'cnk reaclasd')
+// Map.addLayer(filter, {'color': 'blue'}, 'filter')
+// Map.addLayer(Cnkreclass, {}, 'cnkreclass');
+
+// var lights = Cnkreclass.select('constant');
+// Define arbitrary thresholds on the 6-bit stable lights band.
+// var zones = lights.eq(1);
+// Display the thresholded image as three distinct zones near Paris.
+
+// Map.addLayer(zones, {min:0 , max: 1, palette: ['white','red']}, 'development zones');
+
+///// 2) Apply a 1km summation filter across every square:: ideas:
+////////// convolve over the image
+////////// use a for loop to search through the image, sum with ee.Reducer.count(), and save the polygons to a new layer --> incase of error use BestEffort
+//////////Use neighborhood reducer: https://developers.google.com/earth-engine/guides/reducers_reduce_neighborhood
+// Compute standard deviation (SD) as texture of the NDVI.
+// var neighreduce = Cnkreclass.reduceNeighborhood({
+//   reducer: ee.Reducer.sum(),
+//   kernel: ee.Kernel.square({radius: 3, 
+//                             units: 'pixels', 
+//                             normalize: false}),
+//   skipMasked: false,
+//   optimization: 'window'
+// }); //.updateMask(region)
+
+// Map.addLayer(neighreduce, {min: 1000}, 'reduce neighborhood')
+
+////// Creating a grid
+//// https://developers.google.com/earth-engine/tutorials/community/drawing-tools
+// pixelLonLat returns an image with each pixel labeled with longitude and
+// latitude values.
+// var lonLat = ee.Image.pixelLonLat();
+
+// // Select the longitude and latitude bands, multiply by a large number then
+// // truncate them to integers.
+// var lonGrid = lonLat
+//   .select('longitude')
+//   .multiply(10000000)
+//   .toInt();
+  
+// print(lonGrid, 'longrid');
+
+//Map.addLayer(lonGrid, {}, 'longrid')
+
+// var latGrid = lonLat
+//   .select('latitude')
+//   .multiply(10000000)
+//   .toInt();
+// print(latGrid, 'latgrid');
+
+// var lat_dis = latGrid.reduceToVectors({
+//     geometry: region, // This is undefined until you draw a geometry.
+//     scale: 1000,
+//     geometryType: 'polygon',
+//   });
+// Map.addLayer(lat_dis)
+// var region = ee.Geometry.Polygon([[lat2, lng],[lat2, lng2], [ lat, lng2],[lat, lng] ]);
+
+
+// print(polygonArea, 'polyarea')
+
+
+// To produce the grid, multiply the latitude and longitude images and then use
+// reduce to vectors at the 10km resolution to group the grid into vectors.
+// var grid = lonGrid
+//   .multiply(latGrid)
+//   .reduceToVectors({
+//     geometry: region, // This is undefined until you draw a geometry.
+//     scale: 1000,
+//     geometryType: 'polygon',
+//   });
+// Map.addLayer(grid, {}, 'grid', false);
+
+// 3) Create the grid
+//// Source: https://code.earthengine.google.com/cf1d2e6e8c6375d33c48f0a121293bb0
+//// https://code.earthengine.google.com/cf1d2e6e8c6375d33c48f0a121293bb0
+// var lng = -12.88777;//ymin
+// var lat = -69.02646; //xmax
+// var lng2= -12.12106; //ymax
+// var lat2= -69.58108;//xmin
+
+// 1) Create bounding box (here, centered just left of Hawaii)
+//in the morning maeve switch points back
+// FUCKING FINALLY IT WORKED!!!! at least for this hemisphere lololol 
+// var lng = -12.88777;//ymin
+// var lat = -69.02646; //xmax
+// var lng2= -12.12106; //ymax
+// var lat2= -69.58108;//xmin
+
+
+//the real version
+// var lon_start = lat;//lng;
+// var lon_end =  lat2;//lng2;
+// var lat_start = lng;//lat; 
+// var lat_end = lng2;//lat2;
+
+var lon_start = lat2;//lng;
+var lon_end =  lat;//lng2;
+var lat_start = lng2;//lat; 
+var lat_end = lng;//lat2;
+
+var point = ee.Geometry.Point(lat2, lng2);
+// Map.addLayer(point,
+//             {'color': 'black'},
+//             'Geometry [black]: point top??');
+             
+var point2 = ee.Geometry.Point(lat, lng);
+// Map.addLayer(point2,
+//             {'color': 'black'},
+//             'Geometry [black]: point');
+// Define a Point object.
+
+// Apply the coordinates method to the Point object.
+
+// 2) Decide no. of (in this case: equally sized) cells
+// Print polygon area in square kilometers.
+
+//do this later
+// print('Polygon area: ', region.area().divide(1000 * 1000));
+var num_te = region.area().divide(1000 * 1000);
+var num_try = parseInt(num_te)
+
+
+//this is not the part that takes forever
+var num_cells = 5000;
+var lon_edge = (lon_end-lon_start)/Math.sqrt(num_cells);
+
+var lat_edge = (lat_end-lat_start)/Math.sqrt(num_cells);
+
+// 3) Create the grid
+var polys = [];
+var polys_line = [];
+var cell_id = 0;
+// for western (negative) longitude?
+for (var lon = lon_start; lon <= lon_end; lon += lon_edge) {
+  var x1 = lon;
+  // print('x1', x1)
+  var x2 = lon + lon_edge;
+  // this is for negative latitude (southern hemisphere)
+  for (var lati = lat_start; lati >= lat_end; lati += lat_edge) {
+    cell_id = cell_id + 1;
+    var y1 = lati;
+    var y2 = lati + lat_edge;
+  // this is for positive latitude (northern hemisphere)
+  // for (var lati = lat_start; lati > lat_end; lati -= lat_edge) {
+  //   cell_id = cell_id + 1;
+  //   var y1 = lati;
+  //   var y2 = lati - lat_edge;
+  //   print(y2, 'this is ye');
+
+    polys.push(ee.Feature(ee.Geometry.Rectangle(x1, y1, x2, y2), {label: cell_id}));
+  }
+}
+var grid = ee.FeatureCollection(polys);
+// var polygonArea = grid.area({'maxError': 1});
+
+// poly im checking
+var poly_check = polys[108];
+var grid_geo = Cnkreclass.clip(grid);
+// var grid_clip = grid.clip(region)
+//Map.addLayer(grid, {'color': 'red'}, 'grid', false)
+
+var poly_geo = Cnkreclass.clip(polys[107]);
+// poly_geo = poly_geo.clip(poly_check);
+// Map.addLayer(grid_geo, {}, 'grid clip');
+print(poly_geo.geometries, 'ggridlkd')
+
+print(polys[1], 'poly');
+// Map.addLayer(grid, {}, 'grid');
+
+
+///// Summing what's inside the grid
+
+
+// Map.addLayer(poly_check, {'palette': 'red', 'width': 5}, 'a poly')
+print(polys.length, 'ply size')
+
+
+// Reduce the region. The region parameter is the Feature geometry.
+//write a loop that checks through every polygon and gets the sum :/
+
+// var poly_clip = [];
+// var poly_FeaClip = [];
+
+// var poly_tile;
+// for (poly_tile in polys){
+//   var meanDictionary = Cnkreclass.reduceRegion({
+//   reducer: ee.Reducer.mean(),
+//   geometry: polys[poly_tile].geometry(),
+//   scale: 90,
+//   maxPixels: 1e9
+// });
+//   //clipping to the binary magnitude raster
+//   var poly_geo = Cnkreclass.clip(polys[poly_tile].geometry());
+//   poly_clip.push(ee.Image(poly_geo, {label: meanDictionary}));
+//   // poly_FeaClip.push(ee.Feature(poly_geo, {label: meanDictionary}).set('magnitude', 'jesus'));
+// }
+
+// var poly_grid = ee.ImageCollection(poly_clip);
+// var poly_feaGrid = ee.FeatureCollection(poly_FeaClip);
+// // Map.addLayer(poly_grid, {}, 'poly grid clip')
+// var species = poly_feaGrid.get('magnitude');
+// print(species, 'mag print');
+
+// //trying to visualize the mean values
+// var polyMeans = poly_grid.select('.mean');
+// Map.addLayer(polyMeans, {}, 'polymeans')
+
+// Below are separate functions to scrape NDVI within each grid tile for each year 2000 - 2020.
+// The mean NDVI value is recorded for each year for each polygon and can be exported to Drive.
+
+// var region = ee.Geometry.Polygon([[lat2, lng],[lat2, lng2], [ lat, lng2],[lat, lng] ]);
+
+// var region = ee.Geometry.Rectangle([lng, lat, lng2, lat2])
+// var region = ee.Geometry.Polygon([[lat2, lng],[lat2, lng2], [ lat, lng2],[lat, lng] ]);
+
+print(Cnkreclass.select('constant'), 'cnk constant')
+// print(poly_feaGrid, 'polt fea')
+
+// lauras code function for mapping over feature collection
+//this is the good stuff
+var ndvi_func_2000 = function(feature) {
+  var clipped = Cnkreclass.clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 300,
+    maxPixels: 1e10
+  });
+  return feature.set({avg_value: meanDictionary.get('constant')})//NDVI_2000
+};
+var ndvi_2000 = grid.map(ndvi_func_2000); //uses feature collection
+
+// Map.addLayer(ndvi_2000, {}, 'lauras try');
+// // print(ndvi_2000.first(), 'dnfi ')
+var mean_threshold = .6
+var yes_deforest = ee.FeatureCollection(ndvi_2000.filter(ee.Filter.lte('avg_value', mean_threshold)));
+    print(yes_deforest)
+    
+//visualize for the app 
+// var layer_checkbox = ui.Checkbox('Show Default layer', true);
+
+// layer_checkbox.onChange(function(checked) {
+//   // Shows or hides the first map layer based on the checkbox's value.
+//   Map.layers().get(4).setShown(checked);
+//   Map.layers().get(5).setShown(checked);
+// });
+
+// Map.addLayer(Cnkreclass, {}, 'binary points')
+// Map.addLayer(yes_deforest, {'color':'red'}, 'Deforest Detected')
+
+// panel.add(layer_checkbox);
+//testing 
+
+// var clipped = new_cnk.clip(polys[100].geometry());
+// print(clipped.bandNames(), 'clipped 2')
+// Map.addLayer(clipped,{}, 'clipped');
+// var meanDictionary = clipped.reduceRegion({
+//   reducer: ee.Reducer.mean(),
+//   geometry: polys[100].geometry(),
+//   scale: 300,
+//   maxPixels: 1e10
+// });
+// print(meanDictionary, 'mena dicnt dio')
+// var ndvi_image = ee.Image(ndvi_2000[1]);
+// print(ndvi_image.get('constant'), 'ndvi bandname');
+
+// var func_check = poly_grid.mean().clip(poly_feaGrid.first().geometry())
+// Map.addLayer(func_check, {}, 'func check');
+// print(func_check, 'what is func check')
+
+// Maeves code for mapping over image collection
+
+// var test_func = function(feature){
+//   print(feature, 'tester')
+//   return feature
+// }
+
+// var func_try = poly_feaGrid.map(test_func)
+var addArea = function(feature) {
+  // print(feature.first(), 'inside tester')
+  return feature.set({areaHa: feature.geometry().area().divide(100 * 100)});
+};
+
+// Map the area getting function over the FeatureCollection.
+var areaAdded = grid.map(addArea);
+
+// Print the first feature from the collection with the added property.
+print('First feature:', areaAdded.first());
+
+// var image_func = function(feature) {
+//   print(poly_grid, 'poly grid in function')
+//   print(feature, 'feature')
+//   var clipped = feature.mean();
+//   print(clipped, 'checking inside function clip')
+//   var meanDictionary = clipped.reduceRegion({
+//     reducer: ee.Reducer.mean(),
+//     geometry: feature.geometry().getInfo(),
+//     scale: 300,
+//     maxPixels: 1e9
+//   });
+//   return feature.set({avg_value: meanDictionary.get('constant')})//NDVI_2000
+// };
+// var func_result = poly_grid.map(image_func); //uses image collection
+// print(func_result)
+// Map.addLayer(func_result, {}, 'func result')
+
+//testing the function
+var test = Cnkreclass.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: result,
+    scale: 300,
+    maxPixels: 1e9
+  });
+  
+
+polys[1].set({avg_value: test.get('constant')})
+print(test, 'test')
+
+
+//Today's Goals: display the grouped polygons, ideas on how to do this
+/////1) loop through every polygon, if it meets a certain threshold add it to a new layer
+/////2) add attribute to each polygon when it is created (preferred): make a map layer that displays these polygons at a color of choice
+////////// Need to:
+///////////////figure out how to access these attributes... then access in active map layer
+/////////////// okay idea: take the mean value per polygon, if it is over like 80% label as '1' if not: '0'
+/// I want to take the average value of pixels per tile and be able to use this value as basis for map visualization
+//// NEW DIRECTION: map a function :)
+
+
+
+
+
+  
+// var meanMod13 = poly_grid.reduce(ee.Reducer.mean())
+// print(meanMod13, 'mean mod13')
+// Map.addLayer(meanMod13,{},'Mean NDVI')
+
+// var zonalStats = meanMod13.reduceRegion({
+//     geometry: grid,
+//     reducer: ee.Reducer.mean(),
+//     scale: 300,
+//     bestEffort: true
+// });
+// print(zonalStats, 'zonalStates')
+
+//testing if output is an integer
+var meanDictionary3 = Cnkreclass.reduceRegion({
+  reducer: ee.Reducer.mean().combine({
+    reducer2: ee.Reducer.stdDev(),
+    sharedInputs: true
+  }),//reducer: ee.Reducer.mean(),
+  geometry: region,
+  scale: 300,
+  maxPixels: 1e9});
+
+print(meanDictionary3, 'object mean dict 3');
+
+var meanDictionary4 = Cnkreclass.reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: region,
+  scale: 300,
+  maxPixels: 1e9});
+
+
+var meansImage = meanDictionary4.toImage();
+
+// Map.addLayer(meansImage, {min:.3, max: 1, color:'green'}, 'mean image')
+print(meansImage.bandNames(), 'dict image?')
+print(meanDictionary4, 'the dict')
+
+// var str_dict =  meanDictionary3.toString() //String(meanDictionary3);  //JSON.stringify(meanDictionary3);
+// print(str_dict, 'string dict');
+// var int_dict =  parseInt(str_dict); //str_dict.val(); // 
+// print(int_dict, 'mean dict');
+// print(typeof(int_dict), 'type dict...');
+
+//another try
+// Run reduceToVectors per class by masking all other classes.
+//https://gis.stackexchange.com/questions/255433/conversion-from-raster-to-vector-in-google-earth-engine/256054
+// this is pretty good at making polygons
+var classes = ee.List([0, 1])
+  .map(function(n) {
+    var classImage = Cnkreclass.eq(ee.Number(n));
+    var vectors = classImage.updateMask(classImage)
+      .reduceToVectors({
+        reducer: ee.Reducer.countEvery(), 
+        geometry: region, 
+        scale: 300,
+        maxPixels: 1e8})
+      .geometry();
+    return ee.Feature(vectors, {"class": n});
+  });
+var result = ee.FeatureCollection(classes);
+//Map.addLayer(result, 'result');
+
+//find the values inside
+// var image_result = ee.Image(image_result)
+// var hist = image_result.reduceRegion({reducer: ee.Reducer.minMax(), 
+//   geometry: region,
+//   scale:500,
+//   maxPixels: 1e9});
+  
+// print(hist)
+
+//try doing it with the polygon layer
+var meanDictionary2 = (Cnkreclass.reduceRegion(
+    {
+        'reducer': ee.Reducer.count(),
+        'geometry': result.geometry().getInfo(),
+        'scale': 300,
+        'maxPixels': 1e9
+    }
+)
+                 )
+print(meanDictionary2, 'meandict 2')
+// var meanDictionary = Cnkreclass.reduceRegion({
+//   reducer: ee.Reducer.sum(),
+//   geometry: poly_check.geometry(),
+//   scale: 30,
+//   maxPixels: 1e9
+// });
+
+// The result is a Dictionary.  Print it.
+// print(meanDictionary, 'mean dict');
+
+
+
+
+
+
+
+// Compute temporal metrics for prediction
+var b1_median_mon = MonitorLandsat.select('B1')
+    .median();
+var b1_median_his = histCollection.select('B1')
+    .median();
+    
+var b2_median_mon = MonitorLandsat.select('B2')
+    .median();
+var b2_median_his = histCollection.select('B2')
+    .median();   
+    
+var b3_median_mon = MonitorLandsat.select('B3')
+    .median();
+var b3_median_his = histCollection.select('B3')
+    .median(); 
+    
+var b4_median_mon = MonitorLandsat.select('B4')
+    .median();
+var b4_median_his = histCollection.select('B4')
+    .median(); 
+
+var b5_median_mon = MonitorLandsat.select('B5')
+    .median();
+var b5_median_his = histCollection.select('B5')
+    .median(); 
+    
+var b7_median_mon = MonitorLandsat.select('B7')
+    .median();
+var b7_median_his = histCollection.select('B7')
+    .median();  
+ var ndmi_median_mon = MonitorLandsat.select('NDMI')
+    .median();
+var ndmi_median_his = histCollection.select('NDMI')
+    .median();  
+var monrest = mresiduals.select('residual')
+    .median()
+    .float(); 
+var hisrest = residuals.select('residual')
+    .median()
+    .float(); 
+// Compute temporal metrics for prediction
+var b1_ratio_median = b1_median_his.divide(b1_median_mon);
+var b2_ratio_median = b2_median_his.divide(b2_median_mon);
+var b3_ratio_median = b3_median_his.divide(b3_median_mon);
+var b4_ratio_median = b4_median_his.divide(b4_median_mon);
+var b5_ratio_median = b5_median_his.divide(b5_median_mon);
+var b7_ratio_median = b7_median_his.divide(b7_median_mon);
+var ndmires_ratio_median = hisrest.divide(monrest);
+var ndmi_ratio_median = ndmi_median_his.divide(ndmi_median_mon);
+
+
+//Map.addLayer(timeCnk2, {min: 2017, max: 2018,'palette' : '00BFFF,CC2EFA,A901DB,6A0888,5858FA,0101DF,2E2EFE,0B0B61'},"Time of change");
+//Map.addLayer(Cnk, {min: -1, max:0,'palette' : '11D63C,11D63C,B5E10E,F1FF0E,FFC40E,FF870E,FF1A0E,8A0808'}, 'Magnitude of change', false);
+//Map.addLayer(criticalBorder1 , {}, 'Time of change');
+
+print(timeCnk2, 'Time of Break');
+print(Cnk, 'Magnitude of Break');
+
+
+// Testing clustering
+//The input variable works
+var input2 = ee.Image(Cnk);
+print(input2, 'input 2')
+// trying to reduce to vector
+// var vectors = Cnkreclass.reduceToVectors({
+//   geometry: region,
+//   crs: Cnk.projection(),
+//   scale: 1000,
+//   geometryType: 'polygon',
+//   eightConnected: false,
+//   labelProperty: 'breaks',
+//   reducer: ee.Reducer.count()
+// });
+
+// var display = ee.Image(0).updateMask(0).paint(vectors, '000000', 3);
+// Map.addLayer(display, {}, 'vectors');
+
+
+// Map.addLayer(input, {}, 'input layer', false)
+// print(input);
+
+// // export for evaluation
+// Export.image.toDrive({
+//   image: input,
+//   description: 'InputForClassification'
+// })
+
+// //export table
+// Export.table.toDrive({
+//   collection:input,
+//   description: 'tableofInput'
+// });
+
+// Set region based on the points input
+//var region = ee.Geometry.Rectangle([lng, lat, lng2, lat2])
+//I think region already defined at beginning
+// var region = ee.Geometry.Polygon([[lat2, lng],[lat2, lng2], [ lat, lng2],[lat, lng] ]);
+
+// //Map.addLayer(region, {}, 'area of intrest', false)
+// //Notes for Maeve: look more into what tileScale does
+// var input = ee.ImageCollection(vectors);
+// input = ee.Image(input);
+
+// var training = input.sample({
+//   region: region,
+//   scale: 100,
+//   numPixels: 500,
+//   tileScale: 16,
+//   geometries: true
+// });
+// // Nothing shows up, idk if it works
+// //Map.addLayer(training,{'palette': 'black'}, 'training', false)
+// print(training, 'this is the training') // ???? idk if the training worked
+
+// // Instantiate the clusterer and train it
+// // ideally well want two groups i thin
+// var num_cluster = 5
+// var clusterer = ee.Clusterer.wekaKMeans(num_cluster,2, true).train(training);
+// // Cluster the input using the trained clusterer.
+// var result = input.cluster(clusterer);
+// // Display the clusters with random colors.
+// //Map.addLayer(result.randomVisualizer(), {}, 'clusters');
+
+// // //Testing min distance classifier
+
+// // //Train the classifier
+// // var classifier = ee.Classifier.minimumDistance().train(training);
+
+// // //Run the classification
+// // var classified = input.classify(classifier);
+
+// // //Extract out just the agriculture
+// // var agric = classified.updateMask(classified.eq(1));
+// // // Uniquely label the agric areas.
+// var objectId = result.connectedComponents({
+//   connectedness: ee.Kernel.plus(1),
+//   maxSize: 100
+// });
+
+// var minArea = 1000;
+// var maxSize = 200;
+// var pixelCount = result.connectedPixelCount(maxSize);
+// var minPixelCount = ee.Image(minArea).divide(ee.Image.pixelArea());
+// var agricFin = result.updateMask(pixelCount.gte(minPixelCount));
+//Map.addLayer(agricFin, {'palette': 'blue'}, 'agricfine');
+// var min_classifier = ee.Classifier.minimumDistance().train(training);
+// //training?
+// var result_class = input.classify(min_classifier);
+// // Display
+// Map.addLayer(result.randomVisualizer(), {}, 'classes?');
+
+// // Testing filtering out unconnected pixels
+// var minArea = 1000;
+// var maxSize = 200;
+// var pixelCount = input.connectedPixelCount(maxSize);
+// var minPixelCount = ee.Image(minArea).divide(ee.Image.pixelArea());
+// var agricFin = input.updateMask(pixelCount.gte(minPixelCount));
+// Map.addLayer(agricFin, {}, 'agricFin');
+
+
+// testing connected components
+// Uniquely label the hotspot image objects.
+
+// var objectId = input.connectedComponents({
+//   connectedness: ee.Kernel.plus(1),
+//   maxSize: 128
+// });
+
+// Display the uniquely ID'ed objects to the Map.
+// Map.addLayer(objectId.randomVisualizer(), null, 'Objects');
+
+// End of testin clustering
+var band_metrics = ee.Image(b1_ratio_median)
+.addBands(b2_ratio_median)
+.addBands(b3_ratio_median)
+.addBands(b4_ratio_median)
+.addBands(b5_ratio_median)
+.addBands(b7_ratio_median)
+.addBands(ndmi_ratio_median)
+.addBands(ndmires_ratio_median)
+.addBands(firstChaDif.toFloat())
+.addBands(Cnk.toFloat());
+
+var band_metrics_masked = band_metrics.mask(timeCnk2);
+
+var bfastResults = ee.ImageCollection([moRes,timeCnk2,Cnk,criticalBorder1,band_metrics_masked]).set({
+  'bfast:historyStart' : historyStart,
+  'bfast:historyEnd' : historyEnd,
+  'bfast:monitoringStart' : monitoringStart,
+  'bfast:monitoringEnd' : monitoringEnd,
+  'bfast:h' : h,
+  'bfast:period' : period,
+  'bfast:alpha' : alpha,
+  'bfast:magnitudeThreshold' : magnitudeThreshold,
+  'bfast:harmonics' : harmonics
+})
+
+var results = {
+  'bfastResults' : bfastResults,
+  'residuals' : residuals,
+  'predictedValues' :predictedValues,
+  'mresiduals' : mresiduals
+}
+return results
+}
+exports.bfastMonitor = bfastMonitor;
+
+// testing
+var test = bfastMonitor()
+print(test.bfastResults, 'bfastMonitor() results');
+
+////////////// Final adding the Map layers

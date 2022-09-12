@@ -1,0 +1,117 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("users/lkmills/geo2_mx1960_2015");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// BBox dimensions (km), Mexico ADM2
+// May 2021
+
+function distanceBetween(coord1, coord2) {
+  return ee.Geometry.Point(coord1).distance(
+    ee.Geometry.Point(coord2)
+  );
+}
+
+// Baja California Sur
+
+var baja = ee.FeatureCollection('users/lkmills/geo2_mx1960_2015')
+    .filter("ADMIN_NAME == 'Comondu, Mulege, Paz, La, Cabos, Los, Loreto'");
+  
+var bbox_baja = baja.geometry().bounds();
+print('Baja California Sur bounding box:', bbox_baja.coordinates());
+
+var listCoords_baja = ee.Array.cat(bbox_baja.coordinates(), 1); 
+
+var coord1_baja = [listCoords_baja.get([1,0]), listCoords_baja.get([1,1])];
+var coord2_baja = [listCoords_baja.get([2,0]), listCoords_baja.get([2,1])];
+var coord4_baja = [listCoords_baja.get([4,0]), listCoords_baja.get([4,1])];
+
+var width_baja = distanceBetween(coord1_baja, coord4_baja).divide(1000);
+var height_baja = distanceBetween(coord1_baja, coord2_baja).divide(1000);
+
+print('Baja California Sur bbox width (km):', width_baja);
+print('Baja California Sur bbox height (km):', height_baja);
+
+// Natividad
+
+var natividad = ee.FeatureCollection('users/lkmills/geo2_mx1960_2015').filter("ADMIN_NAME == 'Natividad'");
+  
+var bbox_natividad = natividad.geometry().bounds();
+print('Natividad bounding box:', bbox_natividad.coordinates());
+
+var listCoords_natividad = ee.Array.cat(bbox_natividad.coordinates(), 1); 
+
+var coord1_natividad = [listCoords_natividad.get([1,0]), listCoords_natividad.get([1,1])];
+var coord2_natividad = [listCoords_natividad.get([2,0]), listCoords_natividad.get([2,1])];
+var coord4_natividad = [listCoords_natividad.get([4,0]), listCoords_natividad.get([4,1])];
+
+var width_natividad = distanceBetween(coord1_natividad, coord4_natividad).divide(1000);
+var height_natividad = distanceBetween(coord1_natividad, coord2_natividad).divide(1000);
+
+print('Natividad bbox width (km):', width_natividad);
+print('Natividad bbox height (km):', height_natividad);
+
+// Function to return bbox width and height for each ADM2. Export to Google Drive.
+  // Works but can't run for all ADM2s yet. Inconsistency in one of the columns that I have to find.
+  // 'Error: Error in map(ID=000000000000000006e7): Array.cat: Concatenation requires at least one array.'
+
+var bbox_func = function(feature) {
+  var bbox = feature.geometry().bounds();
+  var listCoords = ee.Array.cat(bbox.coordinates(), 1);
+  var coord1 = [listCoords.get([1,0]), listCoords.get([1,1])];
+  var coord2 = [listCoords.get([2,0]), listCoords.get([2,1])];
+  var coord4 = [listCoords.get([4,0]), listCoords.get([4,1])]; 
+  
+  function distanceBetween(coord1, coord2) {
+  return ee.Geometry.Point(coord1).distance(
+    ee.Geometry.Point(coord2)
+  );
+}
+  return feature.set({width: distanceBetween(coord1, coord4).divide(1000), 
+                      height: distanceBetween(coord1, coord2).divide(1000)});
+};
+
+var mex_adm2 = ee.FeatureCollection('users/lkmills/geo2_mx1960_2015');
+
+var mex_adm2_bbox = mex_adm2.map(bbox_func);
+print(mex_adm2_bbox.first());
+
+// Export.table.toDrive({
+//   collection: mex_adm2_bbox, 
+//   description: 'mex_adm2_bbox', 
+//   selectors: ['ADMIN_NAME', 'GEOLEVEL2', 'height', 'width'] 
+// });
+
+// Visualization
+
+Map.setCenter(-101.66, 21.31, 5);
+
+Map.addLayer(baja, {'color': 'red'}, 'Baja California Sur');
+
+Map.addLayer(bbox_baja,
+            {'color': 'red'},
+            'bbox_baja');
+
+var point1_baja = ee.Geometry.Point([-109.41397027896355,22.86994450876419]);
+var point2_baja = ee.Geometry.Point([-109.41397027896355,28.00000232204317]);
+var point3_baja = ee.Geometry.Point([-115.75044209344128,28.00000232204317]);
+var point4_baja = ee.Geometry.Point([-115.75044209344128,22.86994450876419]);
+
+Map.addLayer(point1_baja, {color: 'blue'}, 'point1_baja');
+Map.addLayer(point2_baja, {color: 'blue'}, 'point2_baja');
+Map.addLayer(point3_baja, {color: 'blue'}, 'point3_baja');
+Map.addLayer(point4_baja, {color: 'blue'}, 'point4_baja');
+
+Map.addLayer(natividad, {'color': 'red'}, 'Natividad');
+
+Map.addLayer(bbox_natividad,
+            {'color': 'red'},
+            'bbox_natividad');
+
+var point1_natividad = ee.Geometry.Point([-96.41549454824396,17.29492216701792]);
+var point2_natividad = ee.Geometry.Point([-96.41549454824396,17.31012770154425]);
+var point3_natividad = ee.Geometry.Point([-96.43754479817214,17.31012770154425]);
+var point4_natividad = ee.Geometry.Point([-96.43754479817214,17.29492216701792]);
+
+Map.addLayer(point1_natividad, {color: 'blue'}, 'point1_natividad');
+Map.addLayer(point2_natividad, {color: 'blue'}, 'point2_natividad');
+Map.addLayer(point3_natividad, {color: 'blue'}, 'point3_natividad');
+Map.addLayer(point4_natividad, {color: 'blue'}, 'point4_natividad');

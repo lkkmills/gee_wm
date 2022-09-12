@@ -1,0 +1,57 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var test_3polys = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.MultiPolygon(
+        [[[[7.716140201630255, 10.923013835183877],
+           [7.716140201630255, 8.49752530206312],
+           [11.407546451630255, 8.49752530206312],
+           [11.407546451630255, 10.923013835183877]]],
+         [[[16.593093326630253, 3.516873256703318],
+           [16.593093326630253, 0.9702092238827581],
+           [20.548171451630253, 0.9702092238827581],
+           [20.548171451630253, 3.516873256703318]]],
+         [[[22.042312076630253, -5.35007771443381],
+           [22.042312076630253, -8.577601199408036],
+           [27.491530826630253, -8.577601199408036],
+           [27.491530826630253, -5.35007771443381]]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+
+var gfc2014 = ee.Image('UMD/hansen/global_forest_change_2015');
+var lossIn2012 = gfc2014.select(['lossyear']).eq(12); // Only have to specify year when not latest
+var areaImage = lossIn2012.multiply(ee.Image.pixelArea());
+
+var hansen_func = function(feature) {
+  var collection = ee.Image("UMD/hansen/global_forest_change_2019_v1_7").select(['lossyear']);
+  var clipped = collection.clip(feature.geometry());
+  var areaImage = clipped.multiply(ee.Image.pixelArea());
+  var stats = areaImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({area_loss_sqm: stats.get('lossyear')})
+};
+
+var area_loss_sqm_2019 = combinedFeatureCollection2.map(hansen_func);
+print(area_loss_sqm_2019);
+
+
+

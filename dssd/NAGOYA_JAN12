@@ -1,0 +1,156 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var imageCollection = ee.ImageCollection("NOAA/DMSP-OLS/CALIBRATED_LIGHTS_V4");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+///////////////////////////////////////////////////////////////
+//                                                           //
+//  Accessing Google Earth Engine, GeoQuery, GeoBoundaries,  //
+//                and other new data sources                 //
+//                                                           //
+//          DATA SCIENCE FOR SUSTAINABLE DEVELOPMENT         //                     
+//                     JANUARY 12, 2022                      //
+//                                                           //
+///////////////////////////////////////////////////////////////
+
+// Self-paced GEE tutorials: https://developers.google.com/earth-engine/tutorials/tutorials
+
+//////////////
+//  PART 1  //
+//////////////
+
+// 1 - UPLOAD PHL ADM1 SHAPEFILE FROM GEOBOUNDARIES AS AN ASSET
+
+// Read more: https://developers.google.com/earth-engine/guides/table_upload
+// Read more: https://thegeoict.com/blog/2019/08/05/uploading-a-shapefile-to-google-earth-engine/
+
+// 2 - IMPORT THE SHAPEFILE INTO THE CONSOLE AS A FEATURECOLLECTION
+
+// In the Earth Engine API, a FeatureCollection is defined as a group of related features.
+// A shapefile is imported as a group of features. The shapefile we downloaded from geoBoundaries
+// is a group of individual polygons (each province in the Philippines) grouped into one.
+// Each province is a feature, so the whole shapefile is a FeatureCollection, or group of features.
+
+// Read more: https://developers.google.com/earth-engine/guides/feature_collections
+
+var phl_adm1 = ee.FeatureCollection('users/lkmills/geoBoundaries-PHL-ADM1_simplified1');
+print('PHL ADM1: ', phl_adm1); // Print data in right-hand console
+
+Map.setCenter(122.69, 11.68, 6); // Center the map on the Philippines
+Map.addLayer(phl_adm1, {color: 'green'}, 'PHL ADM1'); // Visualize data on map
+
+//////////////
+//  PART 2  //
+//////////////
+
+// COLLECT NIGHTTIME LIGHT DATA FOR EACH PROVINCE
+
+// Import nighttime lights data from the GEE data catalog
+// Read more: https://developers.google.com/earth-engine/datasets/catalog/NOAA_DMSP-OLS_NIGHTTIME_LIGHTS
+var nighttimeLights = ee.ImageCollection("NOAA/DMSP-OLS/NIGHTTIME_LIGHTS").filter(ee.Filter.date('2000-01-01', '2014-01-01'));
+
+// Make a list of years (2000 - 2013) for which we want nighttime lights data 
+var years_nighttime = ee.List.sequence(2000, 2013, 1).map(function(year){
+  var start = ee.Number(year);
+  var end = start.add(ee.Number(1));
+  var sumYear = nighttimeLights.select('stable_lights')
+                              .filter(ee.Filter.calendarRange(start, end, 'year')).mean();
+  return sumYear.set('year', start);
+});
+
+// Get the total annual luminosity for each province
+var nighttimeLights = ee.ImageCollection(years_nighttime).map(function(img){
+  var rR = img.reduceRegions({collection: phl_adm1,
+                            reducer: ee.Reducer.mean(),
+                            scale: 250,
+                            tileScale: 4});
+  return rR.map(function(feat){
+    return feat.set('year', img.get('year'));
+  });
+  
+}).flatten();
+print('Nighttime Lights: ', nighttimeLights);
+
+// Export the data to Google Drive
+Export.table.toDrive({
+  collection: nighttimeLights, 
+  description: 'nighttimeLights', 
+  selectors: ['shapeName', 'year', 'mean'] 
+});
+
+//////////////
+//  PART 3  //
+//////////////
+
+// COLLECT VEGETATION HEALTH DATA FOR EACH PROVINCE
+
+// Function for the Normalized Difference Vegetation Index (NDVI).
+// NDVI is used to measure vegetation health on a scale of 0 to 1.
+// Lower values indicate barren or unhealthy vegetation. Higher values
+// indicate greenness and healthy vegetation.
+var modisNDVI = ee.ImageCollection('MODIS/006/MOD13Q1').filterBounds(phl_adm1)
+              .select('NDVI')
+              .map(function(img){
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);});
+
+// Make a list of years (2000 - 2021) for which we want mean NDVI data  
+var years_ndvi = ee.List.sequence(2000, 2021, 1).map(function(year){
+  var start = ee.Number(year);
+  var end = start.add(ee.Number(1));
+  var ndviMeanYear = modisNDVI.select('NDVI_rescaled')
+                              .filter(ee.Filter.calendarRange(start, end, 'year')).mean();
+  return ndviMeanYear.set('year', start);
+});
+
+// Get the annual mean NDVI for each province
+var ndviMean = ee.ImageCollection(years_ndvi).map(function(img){
+  var rR = img.reduceRegions({collection: phl_adm1,
+                            reducer: ee.Reducer.mean(),
+                            scale: 250,
+                            tileScale: 4});
+  return rR.map(function(feat){
+    return feat.set('year', img.get('year'));
+  });
+  
+}).flatten();
+print('Mean NDVI: ', ndviMean.first());
+
+// Export the data to Google Drive
+Export.table.toDrive({
+  collection: ndviMean, 
+  description: 'ndviMean', 
+  selectors: ['shapeName', 'year', 'mean'] 
+});
+
+//////////////
+//  PART 4  //
+//////////////
+
+// Function to calculate mean elevation for each province
+var elevation_func = function(feature) {
+  var collection = ee.Image('CGIAR/SRTM90_V4').select('elevation');
+  var clipped = collection.clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({elevation: meanDictionary.get('elevation')});
+};
+
+var dataset = ee.Image('CGIAR/SRTM90_V4').select('elevation');
+Map.addLayer(dataset, {min: 0, max: 60}, 'elevation data');
+
+
+// Apply elevation function to the province data
+var elevation = phl_adm1.map(elevation_func);
+print('Elevation: ', elevation);
+
+// Export the data to Google Drive
+Export.table.toDrive({
+  collection: elevation, 
+  description: 'elevation', 
+  selectors: ['shapeName', 'elevation'] 
+});

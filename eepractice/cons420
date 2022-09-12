@@ -1,0 +1,141 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.LinearRing(
+        [[-122.12703188133023, 38.55037082875636],
+         [-119.44304925572655, 39.57871521438378],
+         [-119.82276422154686, 38.42263080561778],
+         [-122.12703188133023, 38.55037082875636]]),
+    geometry2 = 
+    /* color: #98ff00 */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[-121.44771081578514, 37.85236963268084],
+          [-121.44771081578514, 36.52206597766685],
+          [-117.80024987828514, 36.52206597766685],
+          [-117.80024987828514, 37.85236963268084]]], null, false),
+    geometry3 = 
+    /* color: #0b4a8b */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-118.9133305035726, 38.42352718214849],
+          [-118.28218794690527, 38.43585367263876],
+          [-117.91609189735807, 37.94872217762008],
+          [-116.20531461464323, 37.74770098658268],
+          [-116.10821194278158, 39.03764293523473],
+          [-118.7282218717233, 38.71825440030298]]]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// // //// TOOL OF THE DAY ////
+
+// // DEFINE AREA OF INTEREST WITH POINT
+
+var point = ee.Geometry.Point(-77.685026, -0.190520);
+// Map.addLayer(point, {color: 'red'}, 'point');
+
+-77.685026, -0.19052
+
+// // VISUALIZE THE LEAST CLOUDY LANDSAT 8 IMAGE AT THIS POINT IN THE YEAR 2020
+
+// Load in the USGS Landsat 8 Collection 1 Tier 1 TOA Reflectance dataset
+var l8 = ee.ImageCollection('LANDSAT/LT05/C01/T1_TOA');
+
+// Filter the l8 collection to get only the images that intersect the point
+var spatialFiltered = l8.filterBounds(point);
+
+// Filter the l8 collection to get only the images produced in the year 2020
+var temporalFiltered = spatialFiltered.filterDate('2005-01-01', '2010-12-31');
+
+// Sort the collection from least to most cloudy
+var sorted = temporalFiltered.sort('CLOUD_COVER');
+
+// Get the first (least cloudy) image
+var image = sorted.first();
+
+// Display the RBG image
+Map.centerObject(image, 7);
+Map.addLayer(image, {}, 'default RGB');
+
+// Change the displayed bands to return a true-color composite
+var visParams = {bands: ['B3', 'B2', 'B1'], max: 0.3};
+Map.addLayer(image, visParams, 'true-color composite');
+print('image', image);
+
+// select the first 11 bands
+var lsat = image.select(ee.List.sequence(0,6));
+print(lsat);
+
+Export.image.toDrive({
+  image: lsat,
+  description: 'imageToDriveExample',
+  scale: 30,
+  region: geometry
+});
+
+// var dataset1 = ee.ImageCollection('LANDSAT/LT05/C01/T1_TOA')
+//                   .filterDate('2011-01-01', '2011-12-31');
+// var dataset = dataset1.filterBounds(point);
+// var trueColor321 = dataset.select(['B3', 'B2', 'B1']);
+// var trueColor321Vis = {
+//   min: 0.0,
+//   max: 0.4,
+//   gamma: 1.2,
+// };
+// Map.setCenter(6.746, 46.529, 6);
+// Map.addLayer(trueColor321, trueColor321Vis, 'True Color (321)');
+
+
+// Export a cloud-optimized GeoTIFF.
+
+
+// https://developers.google.com/earth-engine/guides/image_math
+
+
+// COLLECT NDVI VALUES ACROSS HUNDREDS OF POLYGONS
+
+// var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+// var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+// var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+// var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+// var combinedFeatureCollection1 = first.merge(second);
+// var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+// Map.addLayer(combinedFeatureCollection2, {color: 'purple'}, 'Combined FeatureCollection');
+// print(combinedFeatureCollection2);
+
+// var modisNDVI = ee.ImageCollection('MODIS/006/MOD13Q1')
+//               .select('NDVI')
+//               .map(
+//                       function(img) {
+//                         var rescaled_NDVI = img.select('NDVI')
+//                                                 .multiply(0.0001)
+//                                                 .rename('NDVI_rescaled');
+//                         return img.addBands(rescaled_NDVI);
+                   
+//   }
+// );
+
+// var ndvi_func_2020 = function(feature) {
+//   var collection = ee.ImageCollection(modisNDVI.filterDate('2020-01-01', '2020-08-07'));
+//   var clipped = collection.mean().clip(feature.geometry());
+//   var meanDictionary = clipped.reduceRegion({
+//     reducer: ee.Reducer.mean(),
+//     geometry: feature.geometry(),
+//     scale: 30,
+//     maxPixels: 1e9
+//   });
+//   return feature.set({NDVI_2020: meanDictionary.get('NDVI_rescaled')})
+// };
+
+// var ndvi_2020 = combinedFeatureCollection2.map(ndvi_func_2020);
+// print(ndvi_2020);
+
+// Export.table.toDrive({
+//   collection: ndvi_2020, 
+//   description: 'cons420_ndvi', 
+//   selectors: ['Name', 'NDVI_2020'] 
+// });

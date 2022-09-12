@@ -1,0 +1,41 @@
+var gfc2014 = ee.Image('UMD/hansen/global_forest_change_2015');
+Map.addLayer(gfc2014);
+
+Map.addLayer(gfc2014, {bands: ['treecover2000']}, 'treecover2000');
+
+// Landsat7 bands 5, 4, 3 = false color composite, year 2015? I think 2014
+// Healthy vegetation as green and soil as mauve
+Map.addLayer(
+    gfc2014, {bands: ['last_b50', 'last_b40', 'last_b30']}, 'false color');
+    
+// Year 2000 tree cover in US (green)
+//Map.addLayer(gfc2014, {bands: ['loss', 'treecover2000', 'gain']}, 'green');
+
+// Forest loss = red, forest gain = blue, green = 2000 tree cover >> HOW TO SHOW BINARY BAND VALUES
+// Visualization parameter "max" to set range to which image data stretched
+// US forest loss (red), year 2000 forest cover (green) and gain (blue)
+Map.addLayer(gfc2014, {
+  bands: ['loss', 'treecover2000', 'gain'],
+  max: [1, 255, 1]
+}, 'forest cover, loss, gain');
+
+// Color distortion, make separate palettes for single band images
+Map.addLayer(gfc2014, {
+  bands: ['treecover2000'],
+  palette: ['000000', '00FF00']
+}, 'forest cover palette');
+
+// Brighten the image
+Map.addLayer(gfc2014, {
+  bands: ['treecover2000'],
+  palette: ['000000', '00FF00'],
+  max: 100
+}, 'forest cover percent');
+
+// Mask image so all areas in which forest cover is zero will be transparent
+Map.addLayer(gfc2014.mask(gfc2014), {
+  bands: ['treecover2000'],
+  palette: ['000000', '00FF00'],
+  max: 100
+}, 'forest cover masked'); // Only ok if delete all code above
+

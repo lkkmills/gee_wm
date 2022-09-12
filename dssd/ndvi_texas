@@ -1,0 +1,63 @@
+////////////////////////////////////////////////
+// Google Earth Engine (GEE) Script for Maddie//
+////////////////////////////////////////////////
+
+// Import shapefile of the treatment site.
+var roi = ee.FeatureCollection('users/lkmills/GRIP_Treatment_Poly');
+Map.addLayer(roi, {color: 'red'}, 'ROI');
+Map.setCenter(-98.5932, 32.5685, 11);
+
+// Import the Landsat 8 TOA image collection.
+var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA');
+
+// Map a function over the Landsat 8 TOA collection to add an NDVI band.
+var withNDVI = l8.map(function(image) {
+  var ndvi = image.normalizedDifference(['B5', 'B4']).rename('NDVI');
+  return image.addBands(ndvi);
+});
+
+// Create a chart of mean NDVI over time within the ROI.
+var chart = ui.Chart.image.series({
+  imageCollection: withNDVI.select('NDVI'),
+  region: roi.geometry(),
+  reducer: ee.Reducer.mean(),
+  scale: 30
+}).setOptions({
+  title: 'Treatment Site, 2013 - 2021',
+  hAxis:
+    {title: 'Time', titleTextStyle: {italic: false, bold: true}},
+  vAxis: 
+    {title: 'NDVI',
+    titleTextStyle: {italic: false, bold: true}
+  },
+});
+
+// Display the chart in the console.
+print(chart);
+
+///////////////////////////////////////
+// SAME CODE BUT FOR THE CONTROL SITE//
+///////////////////////////////////////
+
+// Import shapefile of the treatment site.
+var roi2 = ee.FeatureCollection('users/lkmills/GRIP_ControlSite');
+Map.addLayer(roi2, {color: 'orange'}, 'ROI2');
+
+// Create a chart of mean NDVI over time within the ROI2.
+var chart2 = ui.Chart.image.series({
+  imageCollection: withNDVI.select('NDVI'),
+  region: roi2.geometry(),
+  reducer: ee.Reducer.mean(),
+  scale: 30
+}).setOptions({
+  title: 'Control Site, 2013 - 2021',
+  hAxis:
+    {title: 'Time', titleTextStyle: {italic: false, bold: true}},
+  vAxis: 
+    {title: 'NDVI',
+    titleTextStyle: {italic: false, bold: true}
+  },
+});
+
+// Display the chart in the console.
+print(chart2);

@@ -1,0 +1,434 @@
+//// AFP - DSSD GIS WORKSHOP
+//// GOOGLE EARTH ENGINE (GEE) DEMO
+//// AUGUST 5, 2021
+
+//// LOAD DATA FROM THE ARMED CONFLICT LOCATION & EVENT DATA PROJECT (ACLED)
+
+var acled = ee.FeatureCollection('users/lkmills/Demo_Data');
+Map.addLayer(acled, {'color': 'red'}, 'ACLED');
+print(acled.limit(50), 'ACLED data (first 50 entries)');
+
+// // // //// LOAD COUNTRY FEATURES FROM THE LARGE SSCALE INTERNATIONAL BOUNDARY (LSIB) DATASET ////
+
+// var nigeria = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017').filter(ee.Filter.eq('country_na', 'Nigeria'));
+
+// Map.addLayer(nigeria, {color: 'gray'}, 'Nigeria');
+// Map.setCenter(8.129, 9.335, 6);
+
+// // //// FILTER THE DATA BY COUNTRY AND SUB-EVENT TYPE
+
+// var acled_filter = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'");
+
+// var acledStats = acled_filter.aggregate_histogram("year");
+// print(acledStats, 'Abductions by year');
+
+// Map.addLayer(acled_filter, {color: 'red'}, 'acled_filter');
+
+// //// VISUALIZE RESULTS BY YEAR
+
+// var chart_by_year = ui.Chart.array.values({
+//   array: acledStats.values(),
+//   axis: 0,
+//   xLabels: acledStats.keys()
+// }).setChartType('ColumnChart')
+//   .setOptions({
+//     title: 'Abductions/Forced Disappearance Events in Nigeria (2018 - 2021)',
+//     hAxis: {title: 'Year', format: '####'},
+//     vAxis: {title: 'Number of Events'},
+//     legend: { position: "none" },
+//     lineWidth: 1,
+//     pointSize: 3,
+//   });
+// print(chart_by_year);
+
+// // //// CREATE A LEGEND FOR THE MAP
+
+// // //// SET POSITION OF THE LEGEND PANEL
+// // var legend = ui.Panel({
+// //   style: {
+// //     position: 'bottom-left',
+// //     padding: '8px 15px'
+// //   }
+// // });
+ 
+// // //// CREATE LEGEND TITLE
+// // var legendTitle = ui.Label({
+// //   value: 'Abduction/Forced Disappearance Events by Year',
+// //   style: {
+// //     fontWeight: 'bold',
+// //     fontSize: '18px',
+// //     margin: '0 0 4px 0',
+// //     padding: '0'
+// //     }
+// // });
+ 
+// // //// ADD THE TITLE TO THE PANEL
+// // legend.add(legendTitle);
+ 
+// // //// CREATE AND STYLE 1 ROW OF THE LEGEND
+// // var makeRow = function(color, name) {
+ 
+// //       // Create the label that is actually the colored box.
+// //       var colorBox = ui.Label({
+// //         style: {
+// //           backgroundColor: '#' + color,
+// //           // Use padding to give the box height and width.
+// //           padding: '8px',
+// //           margin: '0 0 4px 0'
+// //         }
+// //       });
+ 
+// //       // Create the label filled with the description text.
+// //       var description = ui.Label({
+// //         value: name,
+// //         style: {margin: '0 0 4px 6px'}
+// //       });
+ 
+// //       // Return the panel
+// //       return ui.Panel({
+// //         widgets: [colorBox, description],
+// //         layout: ui.Panel.Layout.Flow('horizontal')
+// //       });
+// // };
+ 
+// // //// PALETTE WITH THE COLORS
+// // var palette =['FF0000', 'FFA500', '067200', '0000FF'];
+ 
+// // //// NAME OF THE LEGEND CONTENTS
+// // var names = ['2018', '2019', '2020', '2021'];
+ 
+// // //// ADD THE COLORS AND NAMES
+// // for (var i = 0; i < 4; i++) {
+// //   legend.add(makeRow(palette[i], names[i]));
+// //   }  
+ 
+// // //// ADD LEGEND TO MAP
+// // Map.add(legend);
+
+// //// DISPLAY ABDUCTION STATISTICS BY YEAR AND PERPETRATOR (CODED AS 'ACTOR1') IN A STACKED BAR CHART
+
+// var acledStats_actors = acled_filter.aggregate_histogram("actor1");
+// print(acledStats_actors, 'Abduction stats by perpetrator (2018 - 2021)');
+
+// //// PERPETRATORS PLACED INTO SIX CATEGORIES
+//     // 1) STATE FORCES (NIGERIA)
+//     // 2) FULANI ETHNIC MILITIA AND/OR PASTORALISTS (NIGERIA)
+//     // 3) ISLAMIC STATE (WEST AFRICA) AND/OR BOKO HARAM
+//     // 4) COMMUNAL MILITIA
+//     // 5) UNIDENTIFIED ARMED GROUP (NIGERIA)
+//     // 6) OTHER
+
+// //////////
+// // 2018 //
+// //////////
+
+// var acled_filter_2018 = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2018")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'");
+        
+// //Map.addLayer(acled_filter_2018, {color: 'red'}, '2018 abductions/forced disappearances');
+
+// var acledStats_2018 = acled_filter_2018.aggregate_histogram("actor1");
+// //print(acledStats_2018, 'acledStats2018');
+
+// var dict_2018 = {
+//   '01_events': ee.Number(acledStats_2018.values().get(4)),
+//   '02_events': ee.Number(acledStats_2018.values().get(1)),
+//   '03_events': ee.Number(acledStats_2018.values().get(2)),
+//   '04_events': ee.Number(acledStats_2018.values().get(0))
+//                   .add(ee.Number(acledStats_2018.values().get(6))),
+//   '05_events': ee.Number(acledStats_2018.values().get(5)),
+//   '06_events': ee.Number(acledStats_2018.values().get(3)),
+//   'year': '2018'
+// };
+
+// var feat_2018 = ee.Feature(null, dict_2018);
+// print(feat_2018, '2018');
+
+// //////////
+// // 2019 //
+// //////////
+
+// var acled_filter_2019 = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2019")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'");
+        
+// //Map.addLayer(acled_filter_2019, {color: 'orange'}, '2019 abductions/forced disappearances');
+
+// var acledStats_2019 = acled_filter_2019.aggregate_histogram("actor1");
+// //print(acledStats_2019, 'acledStats2019');
+
+// var dict_2019 = {
+//   '01_events': ee.Number(acledStats_2019.values().get(2))
+//                   .add(ee.Number(acledStats_2019.values().get(7))),
+//   '02_events': ee.Number(acledStats_2019.values().get(0)),
+//   '03_events': ee.Number(acledStats_2019.values().get(1)),
+//   '04_events': ee.Number(acledStats_2019.values().get(3))
+//                   .add(ee.Number(acledStats_2019.values().get(4)))
+//                   .add(ee.Number(acledStats_2019.values().get(8))),
+//   '05_events': ee.Number(acledStats_2019.values().get(7)),
+//   '06_events': ee.Number(acledStats_2019.values().get(5)),
+//   'year': '2019'
+// };
+
+// var feat_2019 = ee.Feature(null, dict_2019);
+// print(feat_2019, '2019');
+
+// //////////
+// // 2020 //
+// //////////
+
+// var acled_filter_2020 = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2020")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'");
+        
+// //Map.addLayer(acled_filter_2020, {color: 'green'}, '2020 abductions/forced disappearances');
+
+// var acledStats_2020 = acled_filter_2020.aggregate_histogram("actor1");
+// //print(acledStats_2020);
+
+// var dict_2020 = {
+//   '01_events': ee.Number(0),
+//   '02_events': acledStats_2020.values().get(2),
+//   '03_events': ee.Number(acledStats_2020.values().get(1))
+//                   .add(ee.Number(acledStats_2020.values().get(3)))
+//                   .add(ee.Number(acledStats_2020.values().get(4))),
+//   '04_events': ee.Number(acledStats_2020.values().get(5))
+//                   .add(ee.Number(acledStats_2020.values().get(6)))
+//                   .add(ee.Number(acledStats_2020.values().get(7)))
+//                   .add(ee.Number(acledStats_2020.values().get(10)))
+//                   .add(ee.Number(acledStats_2020.values().get(11))),
+//   '05_events': ee.Number(acledStats_2020.values().get(9)),
+//   '06_events': ee.Number(acledStats_2020.values().get(0))
+//                   .add(ee.Number(acledStats_2020.values().get(8))),
+//   'year': '2020'
+// };
+
+// var feat_2020 = ee.Feature(null, dict_2020);
+// print(feat_2020, '2020');
+
+// //////////
+// // 2021 //
+// //////////
+
+// var acled_filter_2021 = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2021")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'");
+        
+// //Map.addLayer(acled_filter_2021, {color: 'blue'}, '2021 abductions/forced disappearances');
+
+// var acledStats_2021 = acled_filter_2021.aggregate_histogram("actor1");
+// //print(acledStats_2021);
+
+// var dict_2021 = {
+//   '01_events': ee.Number(0),
+//   '02_events': ee.Number(acledStats_2021.values().get(1)),
+//   '03_events': ee.Number(acledStats_2021.values().get(2))
+//                   .add(ee.Number(acledStats_2021.values().get(3))),
+//   '04_events': ee.Number(acledStats_2021.values().get(0))
+//                   .add(ee.Number(acledStats_2021.values().get(4)))
+//                   .add(ee.Number(acledStats_2021.values().get(5)))
+//                   .add(ee.Number(acledStats_2021.values().get(6)))
+//                   .add(ee.Number(acledStats_2021.values().get(7)))
+//                   .add(ee.Number(acledStats_2021.values().get(9))),
+//   '05_events': ee.Number(acledStats_2021.values().get(8)),
+//   '06_events': ee.Number(0),
+//   'year': '2021'
+// };
+
+// var feat_2021 = ee.Feature(null, dict_2021);
+// print(feat_2021, '2021');
+
+// var features_list = ee.FeatureCollection([feat_2018, feat_2019, feat_2020, feat_2021]);
+// print(features_list);
+
+// var chart_by_actor =
+//     ui.Chart.feature
+//         .byFeature({
+//           features: features_list.select('[0-9][0-9]_events|year'),
+//           xProperty: 'year'
+//         })
+//         .setSeriesNames([
+//           'States Forces (Nigeria)', 'Fulani Ethnic Militia and/or Pastoralists (Nigeria)', 
+//           'Islamic State (West Africa) and/or Boko Haram', 'Communal Militia', 'Unidentified Armed Group (Nigeria)', 'Other'
+//         ])
+//         .setChartType('ColumnChart')
+//         .setOptions({
+//           title: 'Abductions/Forced Disappearance Events in Nigeria (January 2018 - April 2021)',
+//           hAxis:
+//               {title: 'Year', titleTextStyle: {italic: false, bold: true}},
+//           vAxis: {
+//             title: 'Number of Events',
+//             titleTextStyle: {italic: false, bold: true}
+//           },
+//           colors: [
+//             '26697c', '5f9ac9', 'f8b87b', 'bb5209', 'f57e16', 'c5c5c5'
+//           ],
+//           isStacked: 'absolute'
+//         });
+// print(chart_by_actor);
+
+// //// VISUALIZE ADUCATIONS BY PERPETRATOR IN THE YEAR 2020
+
+// var nga_adm2 = ee.FeatureCollection('users/lkmills/geoBoundariesSimplified-3_0_0-NGA-ADM2');
+// Map.addLayer(nga_adm2, {color: 'gray'}, 'Nigeria ADM2');
+
+// var state_forces = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2020")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'")
+//         .filter(ee.Filter.or(ee.Filter.eq('actor1','Military Forces of Nigeria (2015-)'), 
+//                               ee.Filter.eq('actor1','Police Forces of Nigeria (2015-)')));
+                              
+// var fulani = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2020")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'")
+//         .filter("actor1 == 'Military Forces of Nigeria (2015-)'");
+                              
+// var islamic_state = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2020")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'")
+//         .filter(ee.Filter.or(ee.Filter.eq('actor1','Boko Haram - Jamaatu Ahli is-Sunnah lid-Dawati wal-Jihad'), 
+//                               ee.Filter.eq('actor1','Islamic State (West Africa)'),
+//                               ee.Filter.eq('actor1','Islamic State (West Africa) - Lake Chad Faction'),
+//                               ee.Filter.eq('actor1','Islamic State (West Africa) - Lake Chad Faction and/or Boko Haram - Jamaatu Ahli is-Sunnah lid-Dawati wal-Jihad'),
+//                               ee.Filter.eq('actor1','Islamic State (West Africa) and/or Boko Haram - Jamaatu Ahli is-Sunnah lid-Dawati wal-Jihad')));
+                              
+// var communal_militia = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2020")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'")
+//         .filter(ee.Filter.or(ee.Filter.eq('actor1','Atibe Communal Militia (Nigeria)'), 
+//                               ee.Filter.eq('actor1','Benue Communal Militia (Nigeria)'),
+//                               ee.Filter.eq('actor1','Kaduna Communal Militia (Nigeria)'),
+//                               ee.Filter.eq('actor1','Katsina Communal Militia (Nigeria)'),
+//                               ee.Filter.eq('actor1','Niger Communal Militia (Nigeria)'),
+//                               ee.Filter.eq('actor1','Ogwu-Aniocha Communal Militia (Nigeria)'),
+//                               ee.Filter.eq('actor1','Olo Communal Militia (Nigeria)'),
+//                               ee.Filter.eq('actor1','Sokoto Communal Militia (Nigeria)'),
+//                               ee.Filter.eq('actor1','Unidentified Communal Militia (Nigeria)'),
+//                               ee.Filter.eq('actor1','Zamfara Communal Militia (Nigeria)')));
+                              
+// var unidentified_armed_group = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2020")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'")
+//         .filter("actor1 == 'Unidentified Armed Group (Nigeria)'");
+                              
+// var other = acled
+//         .filter("country == 'Nigeria'")
+//         .filter("year == 2020")
+//         .filter("sub_event_type == 'Abduction/forced disappearance'")
+//         .filter(ee.Filter.or(ee.Filter.eq('actor1','APC: All Progressives Congress'), 
+//                               ee.Filter.eq('actor1','Pirates (Nigeria)')));
+                              
+// // Define a spatial filter as geometries that intersect.
+// var spatialFilter = ee.Filter.intersects({
+//   leftField: '.geo',
+//   rightField: '.geo',
+//   maxError: 10
+// });
+
+// // Define a save all join.
+// var saveAllJoin = ee.Join.saveAll({
+//   matchesKey: 'unidentified_armed_group',
+// });
+
+// // Apply the join.
+// var intersectJoined = saveAllJoin.apply(nga_adm2, unidentified_armed_group, spatialFilter);
+
+// // Add event count per ADM2 as a property.
+// intersectJoined = intersectJoined.map(function(nga_adm2) {
+//   var n_unidentified_armed_group = ee.List(nga_adm2.get('unidentified_armed_group')).size();
+//   return nga_adm2.set('num_unidentified_armed_group_events', n_unidentified_armed_group);
+// });
+
+// print(intersectJoined, 'ADM2 with aductions/forced disappearances by unidentified armed groups');
+// Map.addLayer(intersectJoined, {color: 'red'}, 'ADM2 with aductions/forced disappearances by unidentified armed groups');
+
+// Export.table.toDrive({
+//   collection: intersectJoined, 
+//   description: 'adm2_unidentified_armed_groups_2020', 
+//   selectors: ['shapeName', 'num_unidentified_armed_group_events'] 
+// });
+
+// Map.addLayer(state_forces, {color: '26697c'}, 'State Forces (Nigeria)');
+// Map.addLayer(fulani, {color: '5f9ac9'}, 'Fulani Ethnic Militia and/or Pastoralists (Nigeria)');
+// Map.addLayer(islamic_state, {color: 'f8b87b'}, 'Islamic State (West Africa) and/or Boko Haram');
+// Map.addLayer(communal_militia, {color: 'bb5209'}, 'Communal Militia');
+// Map.addLayer(unidentified_armed_group, {color: 'f57e16'}, 'Unidentified Armed Group (Nigeria)');
+// Map.addLayer(other, {color: 'c5c5c5'}, 'Other');
+
+// //// CREATE A LEGEND FOR THE MAP
+
+// //// SET POSITION OF THE LEGEND PANEL
+// var legend = ui.Panel({
+//   style: {
+//     position: 'bottom-left',
+//     padding: '8px 15px'
+//   }
+// });
+ 
+// //// CREATE LEGEND TITLE
+// var legendTitle = ui.Label({
+//   value: 'Abduction/Forced Disappearance Events in 2020 by Perpetrator',
+//   style: {
+//     fontWeight: 'bold',
+//     fontSize: '18px',
+//     margin: '0 0 4px 0',
+//     padding: '0'
+//     }
+// });
+ 
+// //// ADD THE TITLE TO THE PANEL
+// legend.add(legendTitle);
+ 
+// //// CREATE AND STYLE 1 ROW OF THE LEGEND
+// var makeRow = function(color, name) {
+ 
+//       // Create the label that is actually the colored box.
+//       var colorBox = ui.Label({
+//         style: {
+//           backgroundColor: '#' + color,
+//           // Use padding to give the box height and width.
+//           padding: '8px',
+//           margin: '0 0 4px 0'
+//         }
+//       });
+ 
+//       // Create the label filled with the description text.
+//       var description = ui.Label({
+//         value: name,
+//         style: {margin: '0 0 4px 6px'}
+//       });
+ 
+//       // Return the panel
+//       return ui.Panel({
+//         widgets: [colorBox, description],
+//         layout: ui.Panel.Layout.Flow('horizontal')
+//       });
+// };
+ 
+// //// PALETTE WITH THE COLORS
+// var palette =['26697c', '5f9ac9', 'f8b87b', 'bb5209', 'f57e16', 'c5c5c5'];
+ 
+// //// NAME OF THE LEGEND CONTENTS
+// var names = ['State Forces (Nigeria)', 'Fulani Ethnic Militia and/or Pastoralists (Nigeria)', 
+//               'Islamic State (West Africa) and/or Boko Haram', 'Communal Militia',
+//               'Unidentified Armed Group (Nigeria)', 'Other'];
+ 
+// //// ADD THE COLORS AND NAMES
+// for (var i = 0; i < 6; i++) {
+//   legend.add(makeRow(palette[i], names[i]));
+//   }  
+ 
+// //// ADD LEGEND TO MAP
+// Map.add(legend);

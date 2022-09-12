@@ -1,0 +1,126 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var l8SR = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
+    l7 = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR"),
+    water = ee.Image("JRC/GSW1_2/GlobalSurfaceWater");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+/**
+ * Function to mask clouds based on the pixel_qa band of Landsat SR data.
+ * @param {ee.Image} image Input Landsat SR image
+ * @return {ee.Image} Cloudmasked Landsat image
+ */
+var cloudMaskL457 = function(image) {
+  var qa = image.select('pixel_qa');
+  // If the cloud bit (5) is set and the cloud confidence (7) is high
+  // or the cloud shadow bit is set (3), then it's a bad pixel.
+  var cloud = qa.bitwiseAnd(1 << 5)
+                  .and(qa.bitwiseAnd(1 << 7))
+                  .or(qa.bitwiseAnd(1 << 3));
+  // Remove edge pixels that don't occur in all bands
+  var mask2 = image.mask().reduce(ee.Reducer.min());
+  return image.updateMask(cloud.not()).updateMask(mask2);
+};
+
+var point = ee.Geometry.Point([115.30904, -8.6891]);
+
+var dataset = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+                  .filterBounds(point)
+                  .filterDate('2020-01-01', '2020-12-31')
+                  .map(cloudMaskL457);
+
+var visParams = {
+  bands: ['B3', 'B2', 'B1'],
+  min: 0,
+  max: 3000,
+  gamma: 1.4,
+};
+Map.addLayer(dataset.median(), visParams);
+
+print(dataset.median());
+
+var nir = dataset.median().select('B4');
+var sir2 = dataset.select('B7');
+var sir1 = dataset.median().select('B5');
+var tir1 = dataset.select('B6');
+
+var ndbi_landsat = (sir1.subtract(nir)).divide(nir.add(sir1)).rename('NDBI');
+Map.addLayer(ndbi_landsat, {
+  min: -1, //for ('b4') -.1,.4
+  max: .3,
+  palette: [
+    'FFFFFF','FF0000'
+  ],
+  }, "NDBI", true);
+  
+
+// var point = ee.Geometry.Point([115.30904, -8.6891]);
+
+// // Import the Landsat 8 TOA image collection.
+
+
+// // Get the least cloudy image in 2015.
+// var landsat_toa = ee.Image(
+//   l7.filterBounds(point)
+//     .filterDate('2020-01-01', '2020-12-31')
+//     .sort('CLOUD_COVER')
+//     .median()
+// );
+
+// //var landsat_toa = l8SR.reduce(ee.Reducer.mode());
+
+
+// //UI from Landsat
+
+// //L7 Values
+// var nir = landsat_toa.select('B4');
+// var sir2 = landsat_toa.select('B7');
+// var sir1 = landsat_toa.select('B5');
+// var tir1 = landsat_toa.select('B6');
+
+// /*
+// var nir = landsat_toa.select('B5');
+// var sir2 = landsat_toa.select('B7');
+// var sir1 = landsat_toa.select('B6');
+// var tir1 = landsat_toa.select('B10');
+// */
+// //NDBI (Normalised Difference Built-Up Index)
+// Map.addLayer(nir, {palette: ['white','green']}, "nir", false);
+// Map.addLayer(sir1, {palette: ['white','green']}, "sir1", false);
+// Map.addLayer(landsat_toa, false)
+
+// var ndbi_landsat = (sir1.subtract(nir)).divide(nir.add(sir1)).rename('NDBI');
+// Map.addLayer(ndbi_landsat, {
+//   min: -0.1, //for ('b4') -.1,.4
+//   max: 0.3,
+//   palette: [
+//     'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+//     '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+//     '012E01', '011D01', '011301'
+//   ],
+//   }, "NDBI", true);
+
+// var ui_landsat = (sir2.subtract(nir)).divide(nir.add(sir2)).rename('UI');
+// var uiMasked = ui_landsat.updateMask(ui_landsat.gte(0.0));
+// Map.addLayer(ui_landsat, {
+//   min: -0.2, //for ('b4') -.2,.2
+//   max: 0.3,
+//   palette: [
+//   'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+//     '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+//     '012E01', '011D01', '011301'
+//   ],
+// }, "UI", false);
+// //EBBI EBBI (Enhanced Built-Up and Bareness Index)
+// var ebbi_landsat = (sir1.subtract(nir)).divide(((tir1.add(sir1)).sqrt()).multiply(10)).rename('EBBI');
+// //var ebbiMasked = ebbi_landsat.updateMask(ebbi_landsat.gte(0.15));
+// //var ebbiMasked = ebbiMasked.updateMask(ebbiMasked.lte(0.3));
+// Map.addLayer(ebbi_landsat, {
+//   min: 0.1, //for ('b4') .1,.8
+//   max: 1.0,
+//   palette: [
+//   'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+//     '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+//     '012E01', '011D01', '011301'
+//   ],
+//   }, "EBBI", false);
+
+// //IBI

@@ -1,0 +1,741 @@
+// MODIS Time-Series NDVI for the Democratic Republic of the Congo (DRC)
+// Annual Metrics, 2000-2020
+
+// Load country features from Large Scale International Boundary (LSIB) dataset.
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+
+// Subset target country feature from countries.
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+  // FIPS code = CG, https://en.wikipedia.org/wiki/List_of_FIPS_country_codes
+
+// Use inspector to find center of target country.
+Map.setCenter(23, -3, 5.5);
+
+// Visualization parameters and charted annual metrics.
+  // 2000-2001 >> 0001
+var ndvi0001 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0001 = ui.Chart.image.seriesByRegion(ndvi0001, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2000-2001',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0001);
+var ndvi0001 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+                  .select('NDVI');
+var ndviVis0001 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0001.mean().clip(drcongo), ndviVis0001, '2000-2001');  
+  
+  // 2001-2002 >> 0102
+var ndvi0102 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2001-01-01', '2001-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0102 = ui.Chart.image.seriesByRegion(ndvi0102, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2001-2002',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0102);
+var ndvi0102 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2001-01-01', '2001-12-31'))
+                  .select('NDVI');
+var ndviVis0102 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0102.mean().clip(drcongo), ndviVis0102, '2001-2002');  
+  
+  // 2002-2003 >> 0203
+var ndvi0203 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2002-01-01', '2002-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0203 = ui.Chart.image.seriesByRegion(ndvi0203, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2002-2003',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0203);
+var ndvi0203 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2002-01-01', '2002-12-31'))
+                  .select('NDVI');
+var ndviVis0203 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0203.mean().clip(drcongo), ndviVis0203, '2002-2003');
+
+  // 2003-2004 >> 0304
+var ndvi0304 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2003-01-01', '2003-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0304 = ui.Chart.image.seriesByRegion(ndvi0304, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2003-2004',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0304);
+var ndvi0304 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2003-01-01', '2003-12-31'))
+                  .select('NDVI');
+var ndviVis0304 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0304.mean().clip(drcongo), ndviVis0304, '2003-2004');
+
+  // 2004-2005 >> 0405
+var ndvi0405 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2004-01-01', '2004-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0405 = ui.Chart.image.seriesByRegion(ndvi0405, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2004-2005',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0405);
+var ndvi0405 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2004-01-01', '2004-12-31'))
+                  .select('NDVI');
+var ndviVis0405 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0405.mean().clip(drcongo), ndviVis0405, '2004-2005');
+
+  // 2005-2006 >> 0506
+var ndvi0506 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2005-01-01', '2005-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0506 = ui.Chart.image.seriesByRegion(ndvi0506, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2005-2006',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0506);
+var ndvi0506 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2005-01-01', '2005-12-31'))
+                  .select('NDVI');
+var ndviVis0506 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0506.mean().clip(drcongo), ndviVis0506, '2005-2006');
+
+  // 2006-2007 >> 0607
+var ndvi0607 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2006-01-01', '2006-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0607 = ui.Chart.image.seriesByRegion(ndvi0607, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2006-2007',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0607);
+var ndvi0607 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2006-01-01', '2006-12-31'))
+                  .select('NDVI');
+var ndviVis0607 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0607.mean().clip(drcongo), ndviVis0607, '2006-2007');
+
+  // 2007-2008 >> 0708
+var ndvi0708 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2007-01-01', '2007-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0708 = ui.Chart.image.seriesByRegion(ndvi0708, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2007-2008',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0708);
+var ndvi0708 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2007-01-01', '2007-12-31'))
+                  .select('NDVI');
+var ndviVis0708 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0708.mean().clip(drcongo), ndviVis0708, '2007-2008');
+
+  // 2008-2009 >> 0809
+var ndvi0809 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2008-01-01', '2008-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0809 = ui.Chart.image.seriesByRegion(ndvi0809, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2008-2009',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0809);
+var ndvi0809 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2008-01-01', '2008-12-31'))
+                  .select('NDVI');
+var ndviVis0809 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0809.mean().clip(drcongo), ndviVis0809, '2008-2009');
+  
+  // 2009-2010 >> 0910
+var ndvi0910 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2009-01-01', '2009-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0910 = ui.Chart.image.seriesByRegion(ndvi0910, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2009-2010',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0910);
+var ndvi0910 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2009-01-01', '2009-12-31'))
+                  .select('NDVI');
+var ndviVis0910 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0910.mean().clip(drcongo), ndviVis0910, '2009-2010');
+  
+  // 2010-2011 >> 1011
+var ndvi1011 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2010-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1011 = ui.Chart.image.seriesByRegion(ndvi1011, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2010-2011',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1011);
+var ndvi1011 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2010-01-01', '2010-12-31'))
+                  .select('NDVI');
+var ndviVis1011 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1011.mean().clip(drcongo), ndviVis1011, '2010-2011');
+  
+  // 2011-2012 >> 1112
+var ndvi1112 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2011-01-01', '2011-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1112 = ui.Chart.image.seriesByRegion(ndvi1112, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2011-2012',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1112);
+var ndvi1112 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2011-01-01', '2011-12-31'))
+                  .select('NDVI');
+var ndviVis1112 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1112.mean().clip(drcongo), ndviVis1112, '2011-2012');
+  
+  // 2012-2013 >> 1213
+var ndvi1213 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2012-01-01', '2012-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1213 = ui.Chart.image.seriesByRegion(ndvi1213, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2012-2013',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1213);
+var ndvi1213 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2012-01-01', '2012-12-31'))
+                  .select('NDVI');
+var ndviVis1213 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1213.mean().clip(drcongo), ndviVis1213, '2012-2013');
+  
+  // 2013-2014 >> 1314
+var ndvi1314 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2013-01-01', '2013-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1314 = ui.Chart.image.seriesByRegion(ndvi1314, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2013-2014',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1314);
+var ndvi1314 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2013-01-01', '2013-12-31'))
+                  .select('NDVI');
+var ndviVis1314 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1314.mean().clip(drcongo), ndviVis1314, '2013-2014');
+  
+  // 2014-2015 >> 1415
+var ndvi1415 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2014-01-01', '2014-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1415 = ui.Chart.image.seriesByRegion(ndvi1415, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2014-2015',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1415);
+var ndvi1415 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2014-01-01', '2014-12-31'))
+                  .select('NDVI');
+var ndviVis1415 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1415.mean().clip(drcongo), ndviVis1415, '2014-2015');
+  
+  // 2015-2016 >> 1516
+var ndvi1516 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2015-01-01', '2015-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1516 = ui.Chart.image.seriesByRegion(ndvi1516, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2015-2016',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1516);
+var ndvi1516 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2015-01-01', '2015-12-31'))
+                  .select('NDVI');
+var ndviVis1516 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1516.mean().clip(drcongo), ndviVis1516, '2015-2016'); 
+  
+  // 2016-2017 >> 1617
+var ndvi1617 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2016-01-01', '2016-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1617 = ui.Chart.image.seriesByRegion(ndvi1617, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2016-2017',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1617);
+var ndvi1617 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2016-01-01', '2016-12-31'))
+                  .select('NDVI');
+var ndviVis1617 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1617.mean().clip(drcongo), ndviVis1617, '2016-2017'); 
+  
+  // 2017-2018 >> 1718
+var ndvi1718 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2017-01-01', '2017-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1718 = ui.Chart.image.seriesByRegion(ndvi1718, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2017-2018',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1718);
+var ndvi1718 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2017-01-01', '2017-12-31'))
+                  .select('NDVI');
+var ndviVis1718 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1617.mean().clip(drcongo), ndviVis1617, '2017-2018'); 
+  
+  // 2018-2019 >> 1819
+var ndvi1819 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2018-01-01', '2018-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1819 = ui.Chart.image.seriesByRegion(ndvi1819, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2018-2019',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1819);
+var ndvi1819 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2018-01-01', '2018-12-31'))
+                  .select('NDVI');
+var ndviVis1819 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1819.mean().clip(drcongo), ndviVis1819, '2018-2019'); 
+  
+  // 2019-2020 >> 1920
+var ndvi1920 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2019-01-01', '2019-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_1920 = ui.Chart.image.seriesByRegion(ndvi1920, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2019-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_1920);
+var ndvi1920 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2019-01-01', '2019-12-31'))
+                  .select('NDVI');
+var ndviVis1920 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi1920.mean().clip(drcongo), ndviVis1920, '2019-2020'); 
+
+  // Jan 2020 - June 2020 >> 2020
+var ndvi2020 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2020-01-01', '2020-06-09'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_2020 = ui.Chart.image.seriesByRegion(ndvi2020, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_2020);
+var ndvi2020 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2020-01-01', '2020-06-09'))
+                  .select('NDVI');
+var ndviVis2020 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi2020.mean().clip(drcongo), ndviVis2020, '2020');
+
+// Next steps = visualizations/how to export, integrate protected area dataset
+
+
+
+
+
+
+
+
+
+
+
+

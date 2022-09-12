@@ -1,0 +1,98 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var test = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[-6.150969981749803, 14.06431479651122],
+          [-6.150969981749803, 10.371317907862675],
+          [-0.8775324817498031, 10.371317907862675],
+          [-0.8775324817498031, 14.06431479651122]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+//Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+//Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+Map.addLayer(combinedFeatureCollection2, {color: 'yellow'}, 'Combined FeatureCollection');
+
+var gfc2019 = ee.Image('UMD/hansen/global_forest_change_2019_v1_7');
+var lossIn2019 = gfc2019.select(['lossyear']).eq(19); // Only have to specify year when not latest
+var areaImage = lossIn2019.multiply(ee.Image.pixelArea());
+
+var gfc2019_clip = gfc2019.clip(combinedFeatureCollection2);
+Map.addLayer(gfc2019_clip.mask(gfc2019_clip), {
+  bands: ['treecover2000'],
+  palette: ['000000', '00FF00'],
+  max: 100
+}, 'forest cover masked');
+
+var loss_clip = lossIn2019.clip(combinedFeatureCollection2);
+Map.addLayer(loss_clip.updateMask(loss_clip),
+            {palette: ['red']}, 'Loss');
+            
+//var polyFeature = ee.Feature(test);
+            
+//var stats = areaImage.reduceRegion({
+  //reducer: ee.Reducer.sum(),
+  //geometry: polyFeature.geometry(),
+  //scale: 30,
+  //maxPixels: 1e9
+//});
+//print(
+  //'Area lost in test_geometry:',
+  //stats.get('lossyear'),
+  //'square meters'
+//);
+
+var addHansen = function(feature) {
+  var gfc2019 = ee.Image('UMD/hansen/global_forest_change_2019_v1_7');
+  var lossIn2019 = gfc2019.select(['lossyear']);
+  var areaImage = lossIn2019.multiply(ee.Image.pixelArea());
+  var stats = areaImage.reduceRegion({
+      reducer: ee.Reducer.sum(),
+      geometry: polyFeature.geometry(),
+      scale: 30,
+      maxPixels: 1e9
+  });
+  return feature.set({area_lost_sqm: stats.get('lossyear')});
+};
+
+var getHansen = combinedFeatureCollection2.map(addHansen);
+
+print(getHansen.first());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

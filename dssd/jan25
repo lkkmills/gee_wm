@@ -1,0 +1,16 @@
+var leyte = ee.FeatureCollection('users/lkmills/Leyte');
+Map.addLayer(leyte, {color: '0000FF'}, 'Leyte');
+
+var centroids = function(feature) {
+  return feature.set({centroid: feature.geometry().centroid().coordinates()});
+}
+
+var centroids_leyte = leyte.map(centroids);
+print(centroids_leyte);
+Map.addLayer(centroids_leyte, {color: 'purple'}, 'centroids_leyte');
+
+Export.table.toDrive({
+  collection: centroids_leyte, 
+  description: 'centroids_leyte', 
+  selectors: ['Name', 'centroid'] 
+});

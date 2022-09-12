@@ -1,0 +1,55 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[117.25797731344116, 0.450956990808607],
+          [117.25797731344116, 0.08703949421848249],
+          [117.62189943258178, 0.08703949421848249],
+          [117.62189943258178, 0.450956990808607]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var modisNDVI = ee.ImageCollection('MODIS/006/MOD13Q1')
+              .select('NDVI')
+              .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+                   
+  }
+);
+
+var point = ee.Geometry.Point([117.44, 0.27]);
+Map.addLayer(point, {color: 'red'}, 'point');
+
+// Apply the buffer method to the Point object.
+var pointBuffer = point.buffer({'distance': 20000});
+
+//Map.addLayer(pointBuffer, {color: 'red'}, 'buffer');
+
+var modis_filter = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2019-01-01', '2019-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_ndvi = ui.Chart.image.seriesByRegion(modis_filter, geometry, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI at 117.440, 0.447',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+
+print(TS_ndvi);
+

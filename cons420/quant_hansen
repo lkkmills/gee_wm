@@ -1,0 +1,51 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var imageCollection = ee.ImageCollection("MODIS/MOD09GA_NDVI"),
+    geometry = 
+    /* color: #d63d3d */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[117.25794854440784, 0.45231522051494605],
+          [117.25794854440784, 0.0897710538861328],
+          [117.61912408151721, 0.0897710538861328],
+          [117.61912408151721, 0.45231522051494605]]], null, false),
+    image = ee.Image("UMD/hansen/global_forest_change_2020_v1_8");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Quantifying Forest Loss in 2019 with Hansen Global Forest Change v1.8 (2000-2020)
+// CONS 420
+
+// Visualize centroid of 20 km x 20 km region of deforestion in September 2019.
+var point = ee.Geometry.Point([117.44, 0.27]);
+Map.addLayer(point, {color: 'red'}, 'point');
+
+// Create the 20 km x 20 km square buffer around the point.
+var pointBuffer = point.buffer({'distance': 20000});
+//Map.addLayer(pointBuffer, {color: 'red'}, 'buffer');
+
+// Load the Hansen dataset and select the 'lossyear' band.
+  // lossyear = Year of gross forest cover loss event.
+  // Filter it to be 2019 data.
+var gfc2014 = ee.Image("UMD/hansen/global_forest_change_2020_v1_8");
+var lossImage = gfc2014.select(['lossyear']).eq(19);
+var areaImage = lossImage.multiply(ee.Image.pixelArea());
+
+// Sum the values of forest loss pixels in the ROI.
+var stats = areaImage.reduceRegion({
+  reducer: ee.Reducer.sum(),
+  geometry: geometry,
+  scale: 30,
+  maxPixels: 1e9
+});
+print('Pixels representing loss: ', stats.get('lossyear'), 'square meters');
+
+// Clip forest loss to ROI boundary.
+var loss_clip = lossImage.clip(geometry);
+
+// Display forest loss in pink #DC6C9A.
+  // Change basemap to satellite.
+Map.addLayer(loss_clip.updateMask(loss_clip),
+    {palette: ['DC6C9A']}, 'Loss');

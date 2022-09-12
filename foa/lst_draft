@@ -1,0 +1,1836 @@
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+
+var burkinafaso = countries.filter(ee.Filter.eq('country_co', 'UV'));
+//Map.addLayer(burkinafaso, styleParams, 'Burkina Faso');
+
+var mali = countries.filter(ee.Filter.eq('country_co', 'ML'));
+//Map.addLayer(mali, styleParams, 'Mali');
+
+var niger = countries.filter(ee.Filter.eq('country_co', 'NG'));
+//Map.addLayer(niger, styleParams, 'Niger');
+
+var senegal = countries.filter(ee.Filter.eq('country_co', 'SG'));
+//Map.addLayer(senegal, styleParams, 'Senegal');
+
+var gambia = countries.filter(ee.Filter.eq('country_co', 'GA'));
+//Map.addLayer(gambia, styleParams, 'Gambia');
+
+var ethiopia = countries.filter(ee.Filter.eq('country_co', 'ET'));
+//Map.addLayer(ethiopia, styleParams, 'Ethiopia');
+
+var mauritania = countries.filter(ee.Filter.eq('country_co', 'MR'));
+//Map.addLayer(mauritania, styleParams, 'Mauritania');
+
+var nigeria = countries.filter(ee.Filter.eq('country_co', 'NI'));
+//Map.addLayer(nigeria, styleParams, 'Nigeria');
+
+var sudan = countries.filter(ee.Filter.eq('country_co', 'SU'));
+//Map.addLayer(sudan, styleParams, 'Sudan');
+
+var fiji = countries.filter(ee.Filter.eq('country_co', 'FJ'));
+//Map.addLayer(fiji, styleParams, 'Fiji');
+
+var haiti = countries.filter(ee.Filter.eq('country_co', 'HA'));
+//Map.addLayer(haiti, styleParams, 'Haiti');
+
+//
+
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+//Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+
+//print(first);
+
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+//Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+
+//print(second);
+
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+//Map.addLayer(third, {color: '0000FF'}, '2019-2020'); // blue
+
+//print(third);
+
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+//Map.addLayer(fourth, {color: '0000FF'}, 'Fiji points');
+
+
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+
+//print(combinedFeatureCollection2);
+
+Map.addLayer(combinedFeatureCollection2, {color: 'yellow'}, 'Combined FeatureCollection');
+
+var minimum_2m_air_temperature = ee.ImageCollection("ECMWF/ERA5/MONTHLY").select('minimum_2m_air_temperature').filter(ee.Filter.date('2000-01-01', '2020-06-01'));
+
+var minimum_2m_air_temperature_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2000: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2001: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+
+var minimum_2m_air_temperature_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2002: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2003: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2004: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2005: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2006: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2007: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2008: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2009: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2010: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2011: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2012: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2013: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+var minimum_2m_air_temperature_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2014: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+
+var minimum_2m_air_temperature_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2015: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+
+var minimum_2m_air_temperature_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2016: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+
+var minimum_2m_air_temperature_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2017: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+
+var minimum_2m_air_temperature_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2018: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+
+var minimum_2m_air_temperature_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2019: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+
+var minimum_2m_air_temperature_func_2020 = function(feature) {
+  var collection = ee.ImageCollection(minimum_2m_air_temperature.filterDate('2020-01-01', '2020-06-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({minimum_2m_air_temperature_2020: meanDictionary.get('minimum_2m_air_temperature')})
+};
+
+
+var minimum_2m_air_temperature_2000 = combinedFeatureCollection2.map(minimum_2m_air_temperature_func_2000);
+var minimum_2m_air_temperature_2001 = minimum_2m_air_temperature_2000.map(minimum_2m_air_temperature_func_2001);
+var minimum_2m_air_temperature_2002 = minimum_2m_air_temperature_2001.map(minimum_2m_air_temperature_func_2002);
+var minimum_2m_air_temperature_2003 = minimum_2m_air_temperature_2002.map(minimum_2m_air_temperature_func_2003);
+var minimum_2m_air_temperature_2004 = minimum_2m_air_temperature_2003.map(minimum_2m_air_temperature_func_2004);
+var minimum_2m_air_temperature_2005 = minimum_2m_air_temperature_2004.map(minimum_2m_air_temperature_func_2005);
+var minimum_2m_air_temperature_2006 = minimum_2m_air_temperature_2005.map(minimum_2m_air_temperature_func_2006);
+var minimum_2m_air_temperature_2007 = minimum_2m_air_temperature_2006.map(minimum_2m_air_temperature_func_2007);
+var minimum_2m_air_temperature_2008 = minimum_2m_air_temperature_2007.map(minimum_2m_air_temperature_func_2008);
+var minimum_2m_air_temperature_2009 = minimum_2m_air_temperature_2008.map(minimum_2m_air_temperature_func_2009);
+var minimum_2m_air_temperature_2010 = minimum_2m_air_temperature_2009.map(minimum_2m_air_temperature_func_2010);
+var minimum_2m_air_temperature_2011 = minimum_2m_air_temperature_2010.map(minimum_2m_air_temperature_func_2011);
+var minimum_2m_air_temperature_2012 = minimum_2m_air_temperature_2011.map(minimum_2m_air_temperature_func_2012);
+var minimum_2m_air_temperature_2013 = minimum_2m_air_temperature_2012.map(minimum_2m_air_temperature_func_2013);
+var minimum_2m_air_temperature_2014 = minimum_2m_air_temperature_2013.map(minimum_2m_air_temperature_func_2014);
+var minimum_2m_air_temperature_2015 = minimum_2m_air_temperature_2014.map(minimum_2m_air_temperature_func_2015);
+var minimum_2m_air_temperature_2016 = minimum_2m_air_temperature_2015.map(minimum_2m_air_temperature_func_2016);
+var minimum_2m_air_temperature_2017 = minimum_2m_air_temperature_2016.map(minimum_2m_air_temperature_func_2017);
+var minimum_2m_air_temperature_2018 = minimum_2m_air_temperature_2017.map(minimum_2m_air_temperature_func_2018);
+var minimum_2m_air_temperature_2019 = minimum_2m_air_temperature_2018.map(minimum_2m_air_temperature_func_2019);
+var minimum_2m_air_temperature_2020 = minimum_2m_air_temperature_2019.map(minimum_2m_air_temperature_func_2020);
+
+//print(minimum_2m_air_temperature_2020);
+//Export.table.toDrive({
+  //collection: minimum_2m_air_temperature_2020, 
+  //description: 'minimum_2m_air_temperature_2020', 
+  //selectors: ['Name', 'minimum_2m_air_temperature_2000', 'minimum_2m_air_temperature_2001','minimum_2m_air_temperature_2002','minimum_2m_air_temperature_2003',
+  //'minimum_2m_air_temperature_2004','minimum_2m_air_temperature_2005','minimum_2m_air_temperature_2006','minimum_2m_air_temperature_2007','minimum_2m_air_temperature_2008',
+  //'minimum_2m_air_temperature_2009','minimum_2m_air_temperature_2010','minimum_2m_air_temperature_2011','minimum_2m_air_temperature_2012','minimum_2m_air_temperature_2013',
+  //'minimum_2m_air_temperature_2014', 'minimum_2m_air_temperature_2015', 'minimum_2m_air_temperature_2016', 'minimum_2m_air_temperature_2017', 'minimum_2m_air_temperature_2018','minimum_2m_air_temperature_2019','minimum_2m_air_temperature_2020'] 
+//});
+
+var maximum_2m_air_temperature = ee.ImageCollection("ECMWF/ERA5/MONTHLY").select('maximum_2m_air_temperature').filter(ee.Filter.date('2000-01-01', '2020-06-01'));
+
+var maximum_2m_air_temperature_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2000: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2001: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+
+var maximum_2m_air_temperature_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2002: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2003: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2004: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2005: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2006: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2007: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2008: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2009: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2010: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2011: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2012: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2013: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+var maximum_2m_air_temperature_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2014: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+
+var maximum_2m_air_temperature_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2015: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+
+var maximum_2m_air_temperature_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2016: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+
+var maximum_2m_air_temperature_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2017: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+
+var maximum_2m_air_temperature_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2018: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+
+var maximum_2m_air_temperature_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2019: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+
+var maximum_2m_air_temperature_func_2020 = function(feature) {
+  var collection = ee.ImageCollection(maximum_2m_air_temperature.filterDate('2020-01-01', '2020-06-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({maximum_2m_air_temperature_2020: meanDictionary.get('maximum_2m_air_temperature')})
+};
+
+
+var maximum_2m_air_temperature_2000 = combinedFeatureCollection2.map(maximum_2m_air_temperature_func_2000);
+var maximum_2m_air_temperature_2001 = maximum_2m_air_temperature_2000.map(maximum_2m_air_temperature_func_2001);
+var maximum_2m_air_temperature_2002 = maximum_2m_air_temperature_2001.map(maximum_2m_air_temperature_func_2002);
+var maximum_2m_air_temperature_2003 = maximum_2m_air_temperature_2002.map(maximum_2m_air_temperature_func_2003);
+var maximum_2m_air_temperature_2004 = maximum_2m_air_temperature_2003.map(maximum_2m_air_temperature_func_2004);
+var maximum_2m_air_temperature_2005 = maximum_2m_air_temperature_2004.map(maximum_2m_air_temperature_func_2005);
+var maximum_2m_air_temperature_2006 = maximum_2m_air_temperature_2005.map(maximum_2m_air_temperature_func_2006);
+var maximum_2m_air_temperature_2007 = maximum_2m_air_temperature_2006.map(maximum_2m_air_temperature_func_2007);
+var maximum_2m_air_temperature_2008 = maximum_2m_air_temperature_2007.map(maximum_2m_air_temperature_func_2008);
+var maximum_2m_air_temperature_2009 = maximum_2m_air_temperature_2008.map(maximum_2m_air_temperature_func_2009);
+var maximum_2m_air_temperature_2010 = maximum_2m_air_temperature_2009.map(maximum_2m_air_temperature_func_2010);
+var maximum_2m_air_temperature_2011 = maximum_2m_air_temperature_2010.map(maximum_2m_air_temperature_func_2011);
+var maximum_2m_air_temperature_2012 = maximum_2m_air_temperature_2011.map(maximum_2m_air_temperature_func_2012);
+var maximum_2m_air_temperature_2013 = maximum_2m_air_temperature_2012.map(maximum_2m_air_temperature_func_2013);
+var maximum_2m_air_temperature_2014 = maximum_2m_air_temperature_2013.map(maximum_2m_air_temperature_func_2014);
+var maximum_2m_air_temperature_2015 = maximum_2m_air_temperature_2014.map(maximum_2m_air_temperature_func_2015);
+var maximum_2m_air_temperature_2016 = maximum_2m_air_temperature_2015.map(maximum_2m_air_temperature_func_2016);
+var maximum_2m_air_temperature_2017 = maximum_2m_air_temperature_2016.map(maximum_2m_air_temperature_func_2017);
+var maximum_2m_air_temperature_2018 = maximum_2m_air_temperature_2017.map(maximum_2m_air_temperature_func_2018);
+var maximum_2m_air_temperature_2019 = maximum_2m_air_temperature_2018.map(maximum_2m_air_temperature_func_2019);
+var maximum_2m_air_temperature_2020 = maximum_2m_air_temperature_2019.map(maximum_2m_air_temperature_func_2020);
+
+print(maximum_2m_air_temperature_2020);
+Export.table.toDrive({
+  collection: maximum_2m_air_temperature_2020, 
+  description: 'maximum_2m_air_temperature_2020', 
+  selectors: ['Name', 'maximum_2m_air_temperature_2000', 'maximum_2m_air_temperature_2001','maximum_2m_air_temperature_2002','maximum_2m_air_temperature_2003',
+  'maximum_2m_air_temperature_2004','maximum_2m_air_temperature_2005','maximum_2m_air_temperature_2006','maximum_2m_air_temperature_2007','maximum_2m_air_temperature_2008',
+  'maximum_2m_air_temperature_2009','maximum_2m_air_temperature_2010','maximum_2m_air_temperature_2011','maximum_2m_air_temperature_2012','maximum_2m_air_temperature_2013',
+  'maximum_2m_air_temperature_2014', 'maximum_2m_air_temperature_2015', 'maximum_2m_air_temperature_2016', 'maximum_2m_air_temperature_2017', 'maximum_2m_air_temperature_2018','maximum_2m_air_temperature_2019','maximum_2m_air_temperature_2020'] 
+});
+
+var dewpoint_2m_temperature = ee.ImageCollection("ECMWF/ERA5/MONTHLY").select('dewpoint_2m_temperature').filter(ee.Filter.date('2000-01-01', '2020-06-01'));
+
+var dewpoint_2m_temperature_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2000: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2001: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+
+var dewpoint_2m_temperature_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2002: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2003: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2004: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2005: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2006: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2007: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2008: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2009: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2010: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2011: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2012: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2013: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+var dewpoint_2m_temperature_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2014: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+
+var dewpoint_2m_temperature_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2015: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+
+var dewpoint_2m_temperature_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2016: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+
+var dewpoint_2m_temperature_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2017: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+
+var dewpoint_2m_temperature_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2018: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+
+var dewpoint_2m_temperature_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2019: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+
+var dewpoint_2m_temperature_func_2020 = function(feature) {
+  var collection = ee.ImageCollection(dewpoint_2m_temperature.filterDate('2020-01-01', '2020-06-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({dewpoint_2m_temperature_2020: meanDictionary.get('dewpoint_2m_temperature')})
+};
+
+
+var dewpoint_2m_temperature_2000 = combinedFeatureCollection2.map(dewpoint_2m_temperature_func_2000);
+var dewpoint_2m_temperature_2001 = dewpoint_2m_temperature_2000.map(dewpoint_2m_temperature_func_2001);
+var dewpoint_2m_temperature_2002 = dewpoint_2m_temperature_2001.map(dewpoint_2m_temperature_func_2002);
+var dewpoint_2m_temperature_2003 = dewpoint_2m_temperature_2002.map(dewpoint_2m_temperature_func_2003);
+var dewpoint_2m_temperature_2004 = dewpoint_2m_temperature_2003.map(dewpoint_2m_temperature_func_2004);
+var dewpoint_2m_temperature_2005 = dewpoint_2m_temperature_2004.map(dewpoint_2m_temperature_func_2005);
+var dewpoint_2m_temperature_2006 = dewpoint_2m_temperature_2005.map(dewpoint_2m_temperature_func_2006);
+var dewpoint_2m_temperature_2007 = dewpoint_2m_temperature_2006.map(dewpoint_2m_temperature_func_2007);
+var dewpoint_2m_temperature_2008 = dewpoint_2m_temperature_2007.map(dewpoint_2m_temperature_func_2008);
+var dewpoint_2m_temperature_2009 = dewpoint_2m_temperature_2008.map(dewpoint_2m_temperature_func_2009);
+var dewpoint_2m_temperature_2010 = dewpoint_2m_temperature_2009.map(dewpoint_2m_temperature_func_2010);
+var dewpoint_2m_temperature_2011 = dewpoint_2m_temperature_2010.map(dewpoint_2m_temperature_func_2011);
+var dewpoint_2m_temperature_2012 = dewpoint_2m_temperature_2011.map(dewpoint_2m_temperature_func_2012);
+var dewpoint_2m_temperature_2013 = dewpoint_2m_temperature_2012.map(dewpoint_2m_temperature_func_2013);
+var dewpoint_2m_temperature_2014 = dewpoint_2m_temperature_2013.map(dewpoint_2m_temperature_func_2014);
+var dewpoint_2m_temperature_2015 = dewpoint_2m_temperature_2014.map(dewpoint_2m_temperature_func_2015);
+var dewpoint_2m_temperature_2016 = dewpoint_2m_temperature_2015.map(dewpoint_2m_temperature_func_2016);
+var dewpoint_2m_temperature_2017 = dewpoint_2m_temperature_2016.map(dewpoint_2m_temperature_func_2017);
+var dewpoint_2m_temperature_2018 = dewpoint_2m_temperature_2017.map(dewpoint_2m_temperature_func_2018);
+var dewpoint_2m_temperature_2019 = dewpoint_2m_temperature_2018.map(dewpoint_2m_temperature_func_2019);
+var dewpoint_2m_temperature_2020 = dewpoint_2m_temperature_2019.map(dewpoint_2m_temperature_func_2020);
+
+print(dewpoint_2m_temperature_2020);
+Export.table.toDrive({
+  collection: dewpoint_2m_temperature_2020, 
+  description: 'dewpoint_2m_temperature_2020', 
+  selectors: ['Name', 'dewpoint_2m_temperature_2000', 'dewpoint_2m_temperature_2001','dewpoint_2m_temperature_2002','dewpoint_2m_temperature_2003',
+  'dewpoint_2m_temperature_2004','dewpoint_2m_temperature_2005','dewpoint_2m_temperature_2006','dewpoint_2m_temperature_2007','dewpoint_2m_temperature_2008',
+  'dewpoint_2m_temperature_2009','dewpoint_2m_temperature_2010','dewpoint_2m_temperature_2011','dewpoint_2m_temperature_2012','dewpoint_2m_temperature_2013',
+  'dewpoint_2m_temperature_2014', 'dewpoint_2m_temperature_2015', 'dewpoint_2m_temperature_2016', 'dewpoint_2m_temperature_2017', 'dewpoint_2m_temperature_2018','dewpoint_2m_temperature_2019','dewpoint_2m_temperature_2020'] 
+});
+
+var surface_pressure = ee.ImageCollection("ECMWF/ERA5/MONTHLY").select('surface_pressure').filter(ee.Filter.date('2000-01-01', '2020-06-01'));
+
+var surface_pressure_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2000: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2001: meanDictionary.get('surface_pressure')})
+};
+
+
+var surface_pressure_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2002: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2003: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2004: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2005: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2006: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2007: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2008: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2009: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2010: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2011: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2012: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2013: meanDictionary.get('surface_pressure')})
+};
+
+var surface_pressure_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2014: meanDictionary.get('surface_pressure')})
+};
+
+
+var surface_pressure_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2015: meanDictionary.get('surface_pressure')})
+};
+
+
+var surface_pressure_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2016: meanDictionary.get('surface_pressure')})
+};
+
+
+var surface_pressure_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2017: meanDictionary.get('surface_pressure')})
+};
+
+
+var surface_pressure_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2018: meanDictionary.get('surface_pressure')})
+};
+
+
+var surface_pressure_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2019: meanDictionary.get('surface_pressure')})
+};
+
+
+var surface_pressure_func_2020 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2020-01-01', '2020-06-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2020: meanDictionary.get('surface_pressure')})
+};
+
+
+var surface_pressure_2000 = combinedFeatureCollection2.map(surface_pressure_func_2000);
+var surface_pressure_2001 = surface_pressure_2000.map(surface_pressure_func_2001);
+var surface_pressure_2002 = surface_pressure_2001.map(surface_pressure_func_2002);
+var surface_pressure_2003 = surface_pressure_2002.map(surface_pressure_func_2003);
+var surface_pressure_2004 = surface_pressure_2003.map(surface_pressure_func_2004);
+var surface_pressure_2005 = surface_pressure_2004.map(surface_pressure_func_2005);
+var surface_pressure_2006 = surface_pressure_2005.map(surface_pressure_func_2006);
+var surface_pressure_2007 = surface_pressure_2006.map(surface_pressure_func_2007);
+var surface_pressure_2008 = surface_pressure_2007.map(surface_pressure_func_2008);
+var surface_pressure_2009 = surface_pressure_2008.map(surface_pressure_func_2009);
+var surface_pressure_2010 = surface_pressure_2009.map(surface_pressure_func_2010);
+var surface_pressure_2011 = surface_pressure_2010.map(surface_pressure_func_2011);
+var surface_pressure_2012 = surface_pressure_2011.map(surface_pressure_func_2012);
+var surface_pressure_2013 = surface_pressure_2012.map(surface_pressure_func_2013);
+var surface_pressure_2014 = surface_pressure_2013.map(surface_pressure_func_2014);
+var surface_pressure_2015 = surface_pressure_2014.map(surface_pressure_func_2015);
+var surface_pressure_2016 = surface_pressure_2015.map(surface_pressure_func_2016);
+var surface_pressure_2017 = surface_pressure_2016.map(surface_pressure_func_2017);
+var surface_pressure_2018 = surface_pressure_2017.map(surface_pressure_func_2018);
+var surface_pressure_2019 = surface_pressure_2018.map(surface_pressure_func_2019);
+var surface_pressure_2020 = surface_pressure_2019.map(surface_pressure_func_2020);
+
+print(surface_pressure_2020);
+Export.table.toDrive({
+  collection: surface_pressure_2020, 
+  description: 'surface_pressure_2020', 
+  selectors: ['Name', 'surface_pressure_2000', 'surface_pressure_2001','surface_pressure_2002','surface_pressure_2003',
+  'surface_pressure_2004','surface_pressure_2005','surface_pressure_2006','surface_pressure_2007','surface_pressure_2008',
+  'surface_pressure_2009','surface_pressure_2010','surface_pressure_2011','surface_pressure_2012','surface_pressure_2013',
+  'surface_pressure_2014', 'surface_pressure_2015', 'surface_pressure_2016', 'surface_pressure_2017', 'surface_pressure_2018','surface_pressure_2019','surface_pressure_2020'] 
+});
+
+var mean_sea_level_pressure = ee.ImageCollection("ECMWF/ERA5/MONTHLY").select('mean_sea_level_pressure').filter(ee.Filter.date('2000-01-01', '2020-06-01'));
+
+var mean_sea_level_pressure_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2000: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2001: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+
+var mean_sea_level_pressure_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2002: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2003: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2004: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2005: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2006: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2007: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2008: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2009: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2010: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2011: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2012: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2013: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+var mean_sea_level_pressure_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2014: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+
+var mean_sea_level_pressure_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2015: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+
+var mean_sea_level_pressure_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2016: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+
+var mean_sea_level_pressure_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2017: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+
+var mean_sea_level_pressure_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2018: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+
+var mean_sea_level_pressure_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2019: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+
+var mean_sea_level_pressure_func_2020 = function(feature) {
+  var collection = ee.ImageCollection(mean_sea_level_pressure.filterDate('2020-01-01', '2020-06-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({mean_sea_level_pressure_2020: meanDictionary.get('mean_sea_level_pressure')})
+};
+
+
+var mean_sea_level_pressure_2000 = combinedFeatureCollection2.map(mean_sea_level_pressure_func_2000);
+var mean_sea_level_pressure_2001 = mean_sea_level_pressure_2000.map(mean_sea_level_pressure_func_2001);
+var mean_sea_level_pressure_2002 = mean_sea_level_pressure_2001.map(mean_sea_level_pressure_func_2002);
+var mean_sea_level_pressure_2003 = mean_sea_level_pressure_2002.map(mean_sea_level_pressure_func_2003);
+var mean_sea_level_pressure_2004 = mean_sea_level_pressure_2003.map(mean_sea_level_pressure_func_2004);
+var mean_sea_level_pressure_2005 = mean_sea_level_pressure_2004.map(mean_sea_level_pressure_func_2005);
+var mean_sea_level_pressure_2006 = mean_sea_level_pressure_2005.map(mean_sea_level_pressure_func_2006);
+var mean_sea_level_pressure_2007 = mean_sea_level_pressure_2006.map(mean_sea_level_pressure_func_2007);
+var mean_sea_level_pressure_2008 = mean_sea_level_pressure_2007.map(mean_sea_level_pressure_func_2008);
+var mean_sea_level_pressure_2009 = mean_sea_level_pressure_2008.map(mean_sea_level_pressure_func_2009);
+var mean_sea_level_pressure_2010 = mean_sea_level_pressure_2009.map(mean_sea_level_pressure_func_2010);
+var mean_sea_level_pressure_2011 = mean_sea_level_pressure_2010.map(mean_sea_level_pressure_func_2011);
+var mean_sea_level_pressure_2012 = mean_sea_level_pressure_2011.map(mean_sea_level_pressure_func_2012);
+var mean_sea_level_pressure_2013 = mean_sea_level_pressure_2012.map(mean_sea_level_pressure_func_2013);
+var mean_sea_level_pressure_2014 = mean_sea_level_pressure_2013.map(mean_sea_level_pressure_func_2014);
+var mean_sea_level_pressure_2015 = mean_sea_level_pressure_2014.map(mean_sea_level_pressure_func_2015);
+var mean_sea_level_pressure_2016 = mean_sea_level_pressure_2015.map(mean_sea_level_pressure_func_2016);
+var mean_sea_level_pressure_2017 = mean_sea_level_pressure_2016.map(mean_sea_level_pressure_func_2017);
+var mean_sea_level_pressure_2018 = mean_sea_level_pressure_2017.map(mean_sea_level_pressure_func_2018);
+var mean_sea_level_pressure_2019 = mean_sea_level_pressure_2018.map(mean_sea_level_pressure_func_2019);
+var mean_sea_level_pressure_2020 = mean_sea_level_pressure_2019.map(mean_sea_level_pressure_func_2020);
+
+print(mean_sea_level_pressure_2020);
+Export.table.toDrive({
+  collection: mean_sea_level_pressure_2020, 
+  description: 'mean_sea_level_pressure_2020', 
+  selectors: ['Name', 'mean_sea_level_pressure_2000', 'mean_sea_level_pressure_2001','mean_sea_level_pressure_2002','mean_sea_level_pressure_2003',
+  'mean_sea_level_pressure_2004','mean_sea_level_pressure_2005','mean_sea_level_pressure_2006','mean_sea_level_pressure_2007','mean_sea_level_pressure_2008',
+  'mean_sea_level_pressure_2009','mean_sea_level_pressure_2010','mean_sea_level_pressure_2011','mean_sea_level_pressure_2012','mean_sea_level_pressure_2013',
+  'mean_sea_level_pressure_2014', 'mean_sea_level_pressure_2015', 'mean_sea_level_pressure_2016', 'mean_sea_level_pressure_2017', 'mean_sea_level_pressure_2018','mean_sea_level_pressure_2019','mean_sea_level_pressure_2020'] 
+});
+
+var LST_Night_1km = ee.ImageCollection('MODIS/006/MOD11A2').select('LST_Night_1km').filter(ee.Filter.date('2000-01-01', '2020-07-27'));
+
+var LST_Night_1km_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2000: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2001: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2002: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2003: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2004: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2005: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2006: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2007: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2008: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2009: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2010: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2011: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2012: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2013: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2014: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2015: meanDictionary.get('LST_Night_1km')})
+};
+
+var LST_Night_1km_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2016: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2017: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2018: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2019: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_func_2020 = function(feature) {
+  var collection = ee.ImageCollection(LST_Night_1km.filterDate('2020-01-01', '2020-07-27'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({LST_Night_1km_2020: meanDictionary.get('LST_Night_1km')})
+};
+
+
+var LST_Night_1km_2000 = combinedFeatureCollection2.map(LST_Night_1km_func_2000);
+var LST_Night_1km_2001 = LST_Night_1km_2000.map(LST_Night_1km_func_2001);
+var LST_Night_1km_2002 = LST_Night_1km_2001.map(LST_Night_1km_func_2002);
+var LST_Night_1km_2003 = LST_Night_1km_2002.map(LST_Night_1km_func_2003);
+var LST_Night_1km_2004 = LST_Night_1km_2003.map(LST_Night_1km_func_2004);
+var LST_Night_1km_2005 = LST_Night_1km_2004.map(LST_Night_1km_func_2005);
+var LST_Night_1km_2006 = LST_Night_1km_2005.map(LST_Night_1km_func_2006);
+var LST_Night_1km_2007 = LST_Night_1km_2006.map(LST_Night_1km_func_2007);
+var LST_Night_1km_2008 = LST_Night_1km_2007.map(LST_Night_1km_func_2008);
+var LST_Night_1km_2009 = LST_Night_1km_2008.map(LST_Night_1km_func_2009);
+var LST_Night_1km_2010 = LST_Night_1km_2009.map(LST_Night_1km_func_2010);
+var LST_Night_1km_2011 = LST_Night_1km_2010.map(LST_Night_1km_func_2011);
+var LST_Night_1km_2012 = LST_Night_1km_2011.map(LST_Night_1km_func_2012);
+var LST_Night_1km_2013 = LST_Night_1km_2012.map(LST_Night_1km_func_2013);
+var LST_Night_1km_2014 = LST_Night_1km_2013.map(LST_Night_1km_func_2014);
+var LST_Night_1km_2015 = LST_Night_1km_2014.map(LST_Night_1km_func_2015);
+var LST_Night_1km_2016 = LST_Night_1km_2015.map(LST_Night_1km_func_2016);
+print(LST_Night_1km_2016);
+var LST_Night_1km_2017 = LST_Night_1km_2016.map(LST_Night_1km_func_2017);
+var LST_Night_1km_2018 = LST_Night_1km_2017.map(LST_Night_1km_func_2018);
+var LST_Night_1km_2019 = LST_Night_1km_2018.map(LST_Night_1km_func_2019);
+var LST_Night_1km_2020 = LST_Night_1km_2019.map(LST_Night_1km_func_2020);
+print(LST_Night_1km_2020);
+
+Export.table.toDrive({
+  collection: LST_Night_1km_2016, 
+  description: 'LST_Night_1km_2000_2016', 
+  selectors: ['Name', 'LST_Night_1km_2000', 'LST_Night_1km_2001','LST_Night_1km_2002','LST_Night_1km_2003', 'LST_Night_1km_2004','LST_Night_1km_2005','LST_Night_1km_2006','LST_Night_1km_2007','LST_Night_1km_2008', 'LST_Night_1km_2009','LST_Night_1km_2010','LST_Night_1km_2011','LST_Night_1km_2012','LST_Night_1km_2013',
+  'LST_Night_1km_2014', 'LST_Night_1km_2015', 'LST_Night_1km_2016'] 
+});
+
+Export.table.toDrive({
+  collection: LST_Night_1km_2020, 
+  description: 'LST_Night_1km_2017_2020', 
+  selectors: ['Name', 'LST_Night_1km_2017', 'LST_Night_1km_2018','LST_Night_1km_2019','LST_Night_1km_2020'] 
+});

@@ -1,0 +1,111 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017"),
+    image = ee.Image("UMD/hansen/global_forest_change_2019_v1_7"),
+    image2 = ee.Image("FORMA/FORMA_500m");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Yearly forest loss in the Democratic Republic of the Congo (DR Congo)
+// detected primarily between 2001-2019 >> visualization and charted yearly loss
+
+// Load country features from Large Scale International Boundary (LSIB) dataset.
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+
+// Subset the DR Congo feature from countries.
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+  // FIPS code = CG, https://en.wikipedia.org/wiki/List_of_FIPS_country_codes
+
+// Get the loss image using Hansen v1.7 (2000-2019).
+// Band: loss, forest loss during study period, or primarily 2001-2019.
+var gfc2019 = ee.Image('UMD/hansen/global_forest_change_2019_v1_7');
+  // Green represents where the study detected forest in the year 2000.
+  // Image masked upon visualization to make areas in which forest cover is zero transparent.
+var lossImage = gfc2019.select(['loss']);
+var lossAreaImage = lossImage.multiply(ee.Image.pixelArea());
+  // Pink is estimated forest loss over the study period (2001-2019).
+var gainImage =  gfc2019.select(['gain']);
+var treeCover = gfc2019.select(['treecover2000']);
+
+// Band: lossYear, year of gross forest cover loss event, 0-19, 20 objects.
+  // Instead of multiplying the loss image with the area image and then
+  // summing over the result to get a measure of area, use a grouped reducer
+  // so the pixel areas will be summed and grouped according to the value 
+  // in lossYear band.
+var lossYear = gfc2019.select(['lossyear']);
+var lossByYear = lossAreaImage.addBands(lossYear).reduceRegion({
+  reducer: ee.Reducer.sum().group({
+    groupField: 1
+    }),
+  geometry: drcongo,
+  scale: 30,
+  maxPixels: 1e10
+});
+print(lossByYear);
+
+// Use format() to convert year dict keys from 0-19 to 2001-2019.
+var statsFormatted = ee.List(lossByYear.get('groups'))
+  .map(function(el) {
+    var d = ee.Dictionary(el);
+    return [ee.Number(d.get('group')).format("20%02d"), d.get('sum')];
+  });
+var statsDictionary = ee.Dictionary(statsFormatted.flatten());
+print(statsDictionary);
+
+// Chart dictionary results.
+var chart = ui.Chart.array.values({
+  array: statsDictionary.values(),
+  axis: 0,
+  xLabels: statsDictionary.keys()
+}).setChartType('ColumnChart')
+  .setOptions({
+    title: 'Yearly Forest Loss in DR Congo',
+    hAxis: {title: 'Year', format: '####'},
+    vAxis: {title: 'Area (square meters)'},
+    legend: { position: "none" },
+    lineWidth: 1,
+    pointSize: 3
+  });
+print(chart);
+
+// Map visualization of DR Congo forest loss 2001-2019.
+
+// Clip forest coverage to DR Congo boundary.
+var gfc2019_clip = gfc2019.clip(drcongo);
+
+// Display forest extent in green #ACCA64.
+Map.addLayer(gfc2019_clip.mask(gfc2019_clip), {
+  bands: ['treecover2000'],
+  palette: ['000000', 'ACCA64'],
+  max: 100
+}, 'DR Congo Forest Cover Masked');
+
+// Clip forest loss to DR Congo boundary.
+var loss_clip = lossImage.clip(drcongo);
+
+// Display forest loss in pink #DC6C9A.
+Map.addLayer(loss_clip.updateMask(loss_clip),
+    {palette: ['DC6C9A']}, 'Loss');
+            
+// Clip forest gain to DR Congo boundary.
+var gain_clip = gainImage.clip(drcongo);
+
+// Display forest gain in blue #4600FF.
+Map.addLayer(gain_clip.updateMask(gain_clip),
+            {palette: ['4600FF']}, 'Forest Gain');
+            
+// Use Forest Monitoring for Action (FORMA) data for 2020 deforestation analysis.
+
+// Convert dates from milliseconds to seconds.
+var start = ee.Date('2020-01-01').millis().divide(1000);
+var end = ee.Date('2020-02-28').millis().divide(1000);
+
+// Load the FORMA 500 dataset.
+var forma = ee.Image('FORMA/FORMA_500m');
+
+// Create a binary layer from dates.
+var forma2020 = forma.gte(start).and(forma.lte(end));
+
+Map.setCenter(15.87, -0.391, 7);
+Map.addLayer(
+  forma2020.mask(forma2020),
+  {palette: ['FF0000']},
+  'FORMA alerts in 2020'
+);

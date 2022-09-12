@@ -1,0 +1,108 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var point = /* color: #d63000 */ee.Geometry.Point([-118.25128423386323, 34.05095239257059]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA');
+
+var spatialFiltered = l8.filterBounds(point);
+print('spatialFiltered', spatialFiltered);
+
+var temporalFiltered = spatialFiltered.filterDate('2015-01-01', '2015-12-31');
+print('temporalFiltered', temporalFiltered);
+
+// This will sort from least to most cloudy.
+var sorted = temporalFiltered.sort('CLOUD_COVER');
+
+// Get the first (least cloudy) image.
+var scene = sorted.first();
+
+Map.centerObject(scene, 9);
+Map.addLayer(scene, {}, 'default RGB');
+
+var visParams = {bands: ['B4', 'B3', 'B2'], max: 0.3};
+Map.addLayer(scene, visParams, 'true-color composite');
+
+var visParam = {bands: ['B5', 'B4', 'B3'], max: 0.3};
+Map.addLayer(scene, visParam, 'color-infrared');
+
+var landsat2016 = l8.filterDate('2016-01-01', '2016-12-31');
+Map.addLayer(landsat2016, visParams, 'l8 collection');
+
+// Get the median over time, in each band, in each pixel.
+var median = l8.filterDate('2016-01-01', '2016-12-31').median();
+
+// Make a handy variable of visualization parameters.
+var visParams = {bands: ['B4', 'B3', 'B2'], max: 0.3};
+
+// Display the median composite.
+Map.addLayer(median, visParams, 'median');
+
+// Load or import the Hansen et al. forest change dataset:
+var hansenImage = ee.Image('UMD/hansen/global_forest_change_2015');
+
+// Select the land/water mask.
+var datamask = hansenImage.select('datamask');
+
+// Create a binary mask.
+var mask = datamask.eq(1);
+
+// Update the composite mask with the water mask.
+var maskedComposite = median.updateMask(mask);
+Map.addLayer(maskedComposite, visParams, 'masked');
+
+// Make a water image out of the mask.
+var water = mask.not();
+
+// Mask water with itself to mask all the zeros (non-water).
+water = water.mask(water);
+
+// Make an image collection of visualization images.
+var mosaic = ee.ImageCollection([
+  median.visualize(visParams),
+  water.visualize({palette: '000044'}),
+]).mosaic();
+
+// Display the mosaic.
+Map.addLayer(mosaic, {}, 'custom mosaic');
+
+// Get the least cloudy image in 2015.
+var image = ee.Image(
+  l8.filterBounds(point)
+    .filterDate('2015-01-01', '2015-12-31')
+    .sort('CLOUD_COVER')
+    .first()
+);
+
+// Compute the Normalized Difference Vegetation Index (NDVI).
+var nir = image.select('B5');
+var red = image.select('B4');
+var ndvi = nir.subtract(red).divide(nir.add(red)).rename('NDVI');
+
+// Display the result.
+Map.centerObject(image, 9);
+var ndviParams = {min: -1, max: 1, palette: ['blue', 'white', 'green']};
+Map.addLayer(ndvi, ndviParams, 'NDVI image');
+
+var ndvi = image.normalizedDifference(['B5', 'B4']).rename('NDVI');
+
+var addNDVI = function(image) {
+  var ndvi = image.normalizedDifference(['B5', 'B4']).rename('NDVI');
+  return image.addBands(ndvi);
+};
+
+// Test the addNDVI function on a single image.
+var ndvi = addNDVI(image).select('NDVI');
+
+var withNDVI = l8.map(addNDVI);
+
+// Make a "greenest" pixel composite.
+var greenest = withNDVI.qualityMosaic('NDVI');
+
+// Display the result.
+var visParams = {bands: ['B4', 'B3', 'B2'], max: 0.3};
+Map.addLayer(greenest, visParams, 'Greenest pixel composite');
+
+// Map a function over the Landsat 8 TOA collection to add an NDVI band.
+var withNDVI = l8.map(function(image) {
+  var ndvi = image.normalizedDifference(['B5', 'B4']).rename('NDVI');
+  return image.addBands(ndvi);
+});

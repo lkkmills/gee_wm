@@ -1,0 +1,29 @@
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+//Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+//Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+Map.addLayer(combinedFeatureCollection2, {color: 'yellow'}, 'Combined FeatureCollection');
+
+var gfc2019 = ee.Image('UMD/hansen/global_forest_change_2019_v1_7');
+var lossIn2019 = gfc2019.select(['lossyear']).eq(19); // Only have to specify year when not latest
+var areaImage = lossIn2019.multiply(ee.Image.pixelArea());
+
+var surface_pressure_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(surface_pressure.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({surface_pressure_2002: meanDictionary.get('surface_pressure')})
+};
+
+var hansen_func = function(feature) {
+  var lossIn2019 = gfc2019.select(['lossyear'])
+  var areaImage = lossIn2019.multiply(ee.Image.pixelArea())
+}

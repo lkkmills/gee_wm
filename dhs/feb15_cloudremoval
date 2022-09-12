@@ -1,0 +1,43 @@
+// Define a point of interest. Use the UI Drawing Tools to import a point
+// geometry and name it "point" or set the point coordinates with the
+// ee.Geometry.Point() function as demonstrated here.
+var point = ee.Geometry.Point([-122.292, 37.9018]);
+
+// Import the Landsat 8 TOA image collection.
+var l8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA');
+
+// Get the least cloudy image in 2015.
+var image = ee.Image(
+  l8.filterBounds(point)
+    .filterDate('2015-01-01', '2015-12-31')
+    .sort('CLOUD_COVER')
+    .first()
+);
+
+var visParams = {bands: ['B4', 'B3', 'B2'], max: 0.3};
+Map.addLayer(image, visParams, 'true-color composite');
+
+
+
+var nighttimeLights = ee.ImageCollection('NOAA/DMSP-OLS/NIGHTTIME_LIGHTS').filter(ee.Filter.date('2000-01-01', '2020-08-07')).select('avg_vis');
+
+var nighttimeLights_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({avg_vis_2000: meanDictionary.get('avg_vis')})
+};
+
+
+
+var collection = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA');
+
+// Define reference conditions from the first 10 years of data.
+var reference = collection.filterDate('2013-01-01', '2020-12-31')
+  // Sort chronologically in descending order.
+  .sort('system:time_start', false);

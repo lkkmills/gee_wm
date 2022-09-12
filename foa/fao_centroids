@@ -1,0 +1,37 @@
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+
+print(first);
+
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+
+print(second);
+
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+Map.addLayer(third, {color: '0000FF'}, '2019-2020'); // blue
+
+print(third);
+
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+Map.addLayer(fourth, {color: '0000FF'}, 'Fiji points');
+
+
+var combinedFeatureCollection1 = first.merge(second);
+print(combinedFeatureCollection1);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+Map.addLayer(combinedFeatureCollection2, {color: 'yellow'}, 'Combined FeatureCollection');
+
+var centroids = function(feature) {
+  return feature.set({centroid: feature.geometry().centroid().coordinates()});
+}
+
+var centroids_fao = combinedFeatureCollection2.map(centroids);
+print(centroids_fao);
+Map.addLayer(centroids_fao, {color: 'purple'}, 'centroids_fao');
+
+Export.table.toDrive({
+  collection: centroids_fao, 
+  description: 'centroids_fao', 
+  selectors: ['Name', 'centroid'] 
+});

@@ -1,0 +1,71 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var image = ee.Image("UMD/hansen/global_forest_change_2019_v1_7");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Load country boundaries from LSIB.
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+// Get a feature collection with just the Congo feature.
+var congo = countries.filter(ee.Filter.eq('country_co', 'CF'));
+
+// Get the loss image.
+// This dataset is updated yearly, so we get the latest version.
+var gfc2017 = ee.Image('UMD/hansen/global_forest_change_2017_v1_5');
+var lossImage = gfc2017.select(['loss']); //2017 loss image, .eq(year) when want specific one that's not latest
+var lossAreaImage = lossImage.multiply(ee.Image.pixelArea());
+
+var lossImage_2 = gfc2017.select(['loss']).eq(2); //2017 loss image, .eq(year) when want specific one that's not latest
+var lossAreaImage_2 = lossImage_2.multiply(ee.Image.pixelArea());
+
+print(lossAreaImage);
+
+var lossYear = gfc2017.select(['lossyear']);
+var lossByYear = lossAreaImage.addBands(lossYear).reduceRegion({
+  reducer: ee.Reducer.sum().group({
+    groupField: 1
+    }),
+  geometry: congo,
+  scale: 30,
+  maxPixels: 1e9
+});
+
+// format() to convert year values from 0-14 to 2000-2014
+var statsFormatted = ee.List(lossByYear.get('groups'))
+  .map(function(el) {
+    var d = ee.Dictionary(el);
+    return [ee.Number(d.get('group')).format("20%02d"), d.get('sum')];
+  });
+var statsDictionary = ee.Dictionary(statsFormatted.flatten());
+print(statsDictionary);
+
+// Chart dictionary results
+var chart = ui.Chart.array.values({
+  array: statsDictionary.values(),
+  axis: 0,
+  xLabels: statsDictionary.keys()
+}).setChartType('ColumnChart')
+  .setOptions({
+    title: 'Yearly Forest Loss in Congo (2000-2017)',
+    hAxis: {title: 'Year', format: '####'},
+    vAxis: {title: 'Area (square meters)'},
+    legend: { position: "none" },
+    lineWidth: 1,
+    pointSize: 3
+  });
+print(chart);
+
+// Loss visualization, Congo
+
+var gfc2017_clip = gfc2017.clip(congo);
+
+Map.addLayer(gfc2017_clip.mask(gfc2017_clip), {
+  bands: ['treecover2000'],
+  palette: ['000000', '00FF00'],
+  max: 100
+}, 'forest cover masked');
+
+var loss_clip = lossAreaImage.clip(congo);
+
+Map.addLayer(loss_clip.updateMask(loss_clip),
+            {palette: ['red']}, 'Loss');
+            
+
+

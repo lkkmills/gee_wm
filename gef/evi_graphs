@@ -1,0 +1,120 @@
+// Yearly MEAN EVI for GEF Projects in Specified WDPA Regions and ADM1 levels
+
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+Map.setCenter(23.5, -2.5, 6);
+
+var modisEVI = ee.ImageCollection('MODIS/006/MOD13Q1')
+              .select('EVI')
+              .map(
+                      function(img) {
+                        var rescaled_EVI = img.select('EVI')
+                                                .multiply(0.0001)
+                                                .rename('EVI_rescaled');
+                        return img.addBands(rescaled_EVI);
+                   
+  }
+);
+                    
+var modisEVI_year = modisEVI.filter(ee.Filter.calendarRange(2000, 2020, 'year'));
+
+var interval = 1;
+var increment = 'year';
+var start = '2000-01-01';
+var startDate = ee.Date(start);
+var secondDate = startDate.advance(interval, increment).millis();
+var increase = secondDate.subtract(startDate.millis());
+var list = ee.List.sequence(startDate.millis(), ee.Date('2020-08-07').millis(), increase);
+
+var year_list = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008',
+                '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017',
+                '2018', '2019', '2020'];
+                
+// Parc National de la Garamba >> WDPA
+var garamba = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Garamba')
+  ));
+Map.addLayer(garamba, {}, 'Garamba');
+  
+var composites_garamba = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisEVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(garamba).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: garamba,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_garamba = ee.Dictionary.fromLists(year_list, composites_garamba.aggregate_array('EVI'));
+//print('Parc national de la Garamba', out_dict_garamba);
+
+var evi_garamba = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('EVI')
+                    .map(
+                      function(img) {
+                        var rescaled_EVI = img.select('EVI')
+                                                .multiply(0.0001)
+                                                .rename('EVI_rescaled');
+                        return img.addBands(rescaled_EVI);
+  }
+);
+var TS_garamba = ui.Chart.image.seriesByRegion(evi_garamba, garamba, ee.Reducer.mean(), 'EVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['EVI'])
+  .setOptions({
+    title: 'EVI Garamba 2010-2020',
+    vAxis: {title: 'EVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_garamba);
+
+// Virunga
+
+var virunga = ee.FeatureCollection('users/lkmills/virunga');
+Map.addLayer(virunga, {}, 'Virunga');
+  
+var composites_virunga = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisEVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(virunga).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: virunga,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_virunga = ee.Dictionary.fromLists(year_list, composites_virunga.aggregate_array('EVI'));
+print('Parc national des Virunga', out_dict_virunga);
+
+var evi_virunga = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('EVI')
+                    .map(
+                      function(img) {
+                        var rescaled_EVI = img.select('EVI')
+                                                .multiply(0.0001)
+                                                .rename('EVI_rescaled');
+                        return img.addBands(rescaled_EVI);
+  }
+);
+
+var TS_virunga = ui.Chart.image.seriesByRegion(evi_virunga, virunga, ee.Reducer.mean(), 'EVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['EVI'])
+  .setOptions({
+    title: 'EVI Virunga 2010-2020',
+    vAxis: {title: 'EVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_virunga);

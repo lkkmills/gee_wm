@@ -1,0 +1,44 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("users/lkmills/geoBoundariesSimplified-3_0_0-BRA-ADM1"),
+    table2 = ee.FeatureCollection("WCMC/WDPA/current/polygons"),
+    table3 = ee.FeatureCollection("users/lkmills/test_brazil");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var brazil = countries.filter(ee.Filter.eq('country_co', 'BR'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(brazil, styleParams, 'Brazil');
+Map.setCenter(-53.19, -7.44, 3);
+
+var wdpa_polygon = ee.FeatureCollection('WCMC/WDPA/current/polygons');
+//select the Xingu Indigenous Park shapefile
+var xingu = wdpa_polygon.filter(ee.Filter.eq('NAME', 'Parque do Xingu'));
+Map.addLayer(xingu, {}, 'Xingu');
+
+var ndvi_xingu = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2016-01-01','2019-12-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+
+var xingu_chart = ui.Chart.image.seriesByRegion(ndvi_xingu, xingu, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'Xingu 2016-2019',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(xingu_chart);
+
+var dataset_xingu = ee.FeatureCollection('users/lkmills/test_brazil').aggregate_stats('NDVI');
+print('Xingu Mean NDVI 2016-2019:', dataset_xingu);

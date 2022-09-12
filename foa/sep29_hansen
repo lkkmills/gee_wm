@@ -1,0 +1,29 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = /* color: #d63000 */ee.Geometry.MultiPoint();
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+//Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+//Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+Map.addLayer(combinedFeatureCollection2, {color: 'yellow'}, 'Combined FeatureCollection');
+
+var addHansen = function(feature) {
+  var gfc2019 = ee.Image('UMD/hansen/global_forest_change_2019_v1_7');
+  var lossIn2019 = gfc2019.select(['lossyear']);
+  var areaImage = lossIn2019.multiply(ee.Image.pixelArea());
+  var stats = areaImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({area_lost_sqm: stats.get('lossyear')});
+};
+
+var getHansen = combinedFeatureCollection2.map(addHansen);
+print(getHansen.first());
+
+//https://gis.stackexchange.com/questions/293072/compute-forest-loss-per-polygon-in-google-earth-engine

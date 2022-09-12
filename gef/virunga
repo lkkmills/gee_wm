@@ -1,0 +1,115 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var imageCollection = ee.ImageCollection("MODIS/006/MOD13A2"),
+    geometry = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[29.022029466689087, -1.247816108878098],
+          [29.022029466689087, -1.5937785214812445],
+          [29.362605638564087, -1.5937785214812445],
+          [29.362605638564087, -1.247816108878098]]], null, false),
+    table = ee.FeatureCollection("users/lkmills/virunga");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+Map.setCenter(23.5, -2.5, 6);
+
+var modisNDVI = ee.ImageCollection('MODIS/006/MOD13Q1')
+              .select('NDVI')
+              .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+                   
+  }
+);
+                    
+var modisNDVI_year = modisNDVI.filter(ee.Filter.calendarRange(2000, 2020, 'year'));
+
+var interval = 1;
+var increment = 'year';
+var start = '2000-01-01';
+var startDate = ee.Date(start);
+var secondDate = startDate.advance(interval, increment).millis();
+var increase = secondDate.subtract(startDate.millis());
+var list = ee.List.sequence(startDate.millis(), ee.Date('2020-07-01').millis(), increase);
+
+var year_list = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008',
+                '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017',
+                '2018', '2019', '2020'];
+
+var virunga = ee.FeatureCollection('users/lkmills/virunga');
+Map.addLayer(virunga, {}, 'Virunga');
+
+var bottom_left_virunga = ee.Geometry.Point([29.35024, -0.566667]);
+Map.addLayer(bottom_left_virunga, {color: 'red'}, 'bottom_left_virunga');
+
+var bottom_right_virunga = ee.Geometry.Point([29.68687, -0.566667]);
+Map.addLayer(bottom_right_virunga, {color: 'red'}, 'bottom_right_virunga');
+
+var top_left_virunga = ee.Geometry.Point([29.35024, -0.2312504]);
+Map.addLayer(top_left_virunga, {color: 'red'}, 'top_left_virunga');
+
+var top_right_virunga = ee.Geometry.Point([29.68687, -0.2312504]);
+Map.addLayer(top_right_virunga, {color: 'red'}, 'top_right_virunga');
+  
+var composites_virunga = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(virunga).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: virunga,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_virunga = ee.Dictionary.fromLists(year_list, composites_virunga.aggregate_array('NDVI'));
+print('Parc national des Virunga', out_dict_virunga);
+
+var ndvi_virunga = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2010-01-01', '2020-07-01'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+
+var TS_virunga = ui.Chart.image.seriesByRegion(ndvi_virunga, virunga, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Virunga 2010-2020',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_virunga);
+
+var bottom_left_virunga = ee.Geometry.Point([29.35024, -0.566667]);
+Map.addLayer(bottom_left_virunga, {color: 'red'}, 'bottom_left_virunga');
+
+var bottom_right_virunga = ee.Geometry.Point([29.68687, -0.566667]);
+Map.addLayer(bottom_right_virunga, {color: 'red'}, 'bottom_right_virunga');
+
+var top_left_virunga = ee.Geometry.Point([29.35024, -0.2312504]);
+Map.addLayer(top_left_virunga, {color: 'red'}, 'top_left_virunga');
+
+var top_right_virunga = ee.Geometry.Point([29.68687, -0.2312504]);
+Map.addLayer(top_right_virunga, {color: 'red'}, 'top_right_virunga');
+

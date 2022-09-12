@@ -1,0 +1,36 @@
+// MODIS Time-Series NDVI for the Democratic Republic of the Congo (DRC)
+// Yearly, March 2000 - May 2020
+
+// Load country features from Large Scale International Boundary (LSIB) dataset.
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+
+// Subset the DRC feature from countries.
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+  // FIPS code = CG, https://en.wikipedia.org/wiki/List_of_FIPS_country_codes
+  
+// Add DRC region outline to layer.
+Map.addLayer(drcongo, {}, 'DRC');
+
+// Add MODIS Terra Daily NDVI.
+var modisNDVI = ee.ImageCollection('MODIS/MCD43A4_NDVI');
+
+var salonga = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Salonga')
+  ));
+Map.addLayer(salonga, {}, 'Salonga');
+
+// Filter by select dates and clip to DRC feature.
+  // 2000-2001 >> 0001
+var collection0001 = ee.ImageCollection(modisNDVI.filterDate('2000-01-01', '2000-12-31'));
+var clipped0001 = collection0001.mean().clip(salonga);
+
+var meanDictionary = clipped0001.reduceRegion({
+  reducer: ee.Reducer.mean(),
+  geometry: salonga,
+  scale: 30,
+  maxPixels: 1e10
+});
+
+print(meanDictionary);

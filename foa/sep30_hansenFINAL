@@ -1,0 +1,179 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var test_bom = /* color: #d63000 */ee.Geometry.Polygon(
+        [[[-0.30124773764343304, 14.077146191399917],
+          [-0.30066838049621625, 14.075418682702349],
+          [-0.30045380377502484, 14.073628720155488],
+          [-0.2994238355133061, 14.07537705582561],
+          [-0.2980934598419194, 14.073753601718334],
+          [-0.2972566106292729, 14.076625858829333],
+          [-0.2994238355133061, 14.076272032004503],
+          [-0.3000675656768803, 14.07791628142981]]]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+Map.addLayer(combinedFeatureCollection2, {color: 'red'}, 'combinedFeatureCollection2');
+
+var fiji = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+Map.addLayer(fiji, {color: '0000FF'}, 'Fiji points');
+
+var bufferPoly = function(feature) {
+  return feature.buffer(100);   // substitute in your value of Z here
+};
+
+var bufferedFiji = fiji.map(bufferPoly);
+Map.addLayer(bufferedFiji, {color: 'red'}, 'bufferedFiji');
+
+// Get the forest loss image.
+var gfc2014 = ee.Image('UMD/hansen/global_forest_change_2019_v1_7');
+
+var stats12_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(12);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_12: stats.get('lossyear')})
+};
+
+var stats13_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(13);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_13: stats.get('lossyear')})
+};
+
+var stats14_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(14);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_14: stats.get('lossyear')})
+};
+
+var stats15_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(15);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_15: stats.get('lossyear')})
+};
+
+var stats16_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(16);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_16: stats.get('lossyear')})
+};
+
+var stats17_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(17);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_17: stats.get('lossyear')})
+};
+
+var stats18_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(18);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_18: stats.get('lossyear')})
+};
+
+var stats19_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(19);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_19: stats.get('lossyear')})
+};
+
+var getstats12 = combinedFeatureCollection2.map(stats12_func);
+var getstats13 = getstats12.map(stats13_func);
+var getstats14 = getstats13.map(stats14_func);
+var getstats15 = getstats14.map(stats15_func);
+var getstats16 = getstats15.map(stats16_func);
+var getstats17 = getstats16.map(stats17_func);
+var getstats18 = getstats17.map(stats18_func);
+var getstats19 = getstats18.map(stats19_func);
+
+var getstats12_fiji = bufferedFiji.map(stats12_func);
+var getstats13_fiji = getstats12_fiji.map(stats13_func);
+var getstats14_fiji = getstats13_fiji.map(stats14_func);
+var getstats15_fiji = getstats14_fiji.map(stats15_func);
+var getstats16_fiji = getstats15_fiji.map(stats16_func);
+var getstats17_fiji = getstats16_fiji.map(stats17_func);
+var getstats18_fiji = getstats17_fiji.map(stats18_func);
+var getstats19_fiji = getstats18_fiji.map(stats19_func);
+
+//Export.table.toDrive({
+  //collection: getstats19,
+  //description: 'getstats19',
+  //selectors: ['Name', 'loss_12', 'loss_13', 'loss_14', 'loss_15',
+  //'loss_16', 'loss_17', 'loss_18', 'loss_19']
+//});
+
+Export.table.toDrive({
+  collection: getstats19_fiji,
+  description: 'getstats19_fiji',
+  selectors: ['Name', 'loss_12', 'loss_13', 'loss_14', 'loss_15',
+  'loss_16', 'loss_17', 'loss_18', 'loss_19']
+});
+
+var treecover2000_func = function(feature) {
+  var lossImage = gfc2014.select(['treecover2000']);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e10
+  });
+  return feature.set({treecover2000: stats.get('treecover2000')})
+};
+
+var gettreecover2000 = combinedFeatureCollection2.map(treecover2000_func);
+
+var gettreecover2000_fiji = bufferedFiji.map(treecover2000_func);
+print(gettreecover2000_fiji);
+
+//Export.table.toDrive({
+  //collection: gettreecover2000,
+  //description: 'gettreecover2000',
+  //selectors: ['Name', 'treecover2000']
+//});
+
+Export.table.toDrive({
+  collection: gettreecover2000_fiji,
+  description: 'gettreecover2000_fiji',
+  selectors: ['Name', 'treecover2000']
+});

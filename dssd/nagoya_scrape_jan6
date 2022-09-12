@@ -1,0 +1,558 @@
+// Map.setCenter(123.015, 11.668, 7);
+
+var phl_adm1 = ee.FeatureCollection('users/lkmills/geoBoundaries-PHL-ADM1_simplified');
+print(phl_adm1.first());
+
+Map.addLayer(phl_adm1, {color: 'green'}, 'phl_adm1');
+
+var modisNDVI = ee.ImageCollection('MODIS/006/MOD13Q1')
+              .select('NDVI')
+              .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+                   
+  }
+);
+
+var ndvi_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2000: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2001: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2002: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+      reducer: ee.Reducer.mean(),
+      geometry: feature.geometry(),
+      scale: 30,
+      maxPixels: 1e9
+    });
+  return feature.set({NDVI_2003: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2004: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2005: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2006: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2007: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2008: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2009: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2010: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2011: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2012: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2013: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2014: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2015: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2016: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2017: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2018: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2019-01-01', '2019-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2019: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2020 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2020-01-01', '2020-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2020: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_func_2021 = function(feature) {
+  var collection = ee.ImageCollection(modisNDVI.filterDate('2021-01-01', '2021-11-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({NDVI_2021: meanDictionary.get('NDVI_rescaled')})
+};
+
+var ndvi_2000 = phl_adm1.map(ndvi_func_2000);
+var ndvi_2001 = ndvi_2000.map(ndvi_func_2001);
+var ndvi_2002 = ndvi_2001.map(ndvi_func_2002);
+var ndvi_2003 = ndvi_2002.map(ndvi_func_2003);
+var ndvi_2004 = ndvi_2003.map(ndvi_func_2004);
+var ndvi_2005 = ndvi_2004.map(ndvi_func_2005);
+var ndvi_2006 = ndvi_2005.map(ndvi_func_2006);
+var ndvi_2007 = ndvi_2006.map(ndvi_func_2007);
+var ndvi_2008 = ndvi_2007.map(ndvi_func_2008);
+var ndvi_2009 = ndvi_2008.map(ndvi_func_2009);
+var ndvi_2010 = ndvi_2009.map(ndvi_func_2010);
+var ndvi_2011 = ndvi_2010.map(ndvi_func_2011);
+var ndvi_2012 = ndvi_2011.map(ndvi_func_2012);
+var ndvi_2013 = ndvi_2012.map(ndvi_func_2013);
+var ndvi_2014 = ndvi_2013.map(ndvi_func_2014);
+var ndvi_2015 = ndvi_2014.map(ndvi_func_2015);
+var ndvi_2016 = ndvi_2015.map(ndvi_func_2016);
+var ndvi_2017 = ndvi_2016.map(ndvi_func_2017);
+var ndvi_2018 = ndvi_2017.map(ndvi_func_2018);
+var ndvi_2019 = ndvi_2018.map(ndvi_func_2019);
+var ndvi_2020 = ndvi_2019.map(ndvi_func_2020);
+var ndvi_2021 = ndvi_2020.map(ndvi_func_2021);
+
+Export.table.toDrive({
+  collection: ndvi_2021, 
+  description: 'ndvi_2021', 
+  selectors: ['shapeName', 'NDVI_2000', 'NDVI_2001', 'NDVI_2002', 'NDVI_2003', 'NDVI_2004', 
+  'NDVI_2005', 'NDVI_2006', 'NDVI_2007', 'NDVI_2008', 'NDVI_2009', 'NDVI_2010', 
+  'NDVI_2011', 'NDVI_2012', 'NDVI_2013', 'NDVI_2014', 'NDVI_2015', 'NDVI_2016', 
+  'NDVI_2017', 'NDVI_2018', 'NDVI_2019', 'NDVI_2020', 'NDVI_2021'] 
+});
+
+// Scrape nighttime lights data within each polygon.
+
+var nighttimeLights = ee.ImageCollection('NOAA/DMSP-OLS/NIGHTTIME_LIGHTS').filter(ee.Filter.date('2000-01-01', '2020-08-07')).select('stable_lights');
+
+var nighttimeLights_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2000: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2001: meanDictionary.get('stable_lights')})
+};
+
+
+var nighttimeLights_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2002: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2003: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2004: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2005: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2006: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2007: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2008: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2009: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2010: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2011: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2012: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(nighttimeLights.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({stable_lights_2013: meanDictionary.get('stable_lights')})
+};
+
+var nighttimeLights_2000 = phl_adm1.map(nighttimeLights_func_2000);
+var nighttimeLights_2001 = nighttimeLights_2000.map(nighttimeLights_func_2001);
+var nighttimeLights_2002 = nighttimeLights_2001.map(nighttimeLights_func_2002);
+var nighttimeLights_2003 = nighttimeLights_2002.map(nighttimeLights_func_2003);
+var nighttimeLights_2004 = nighttimeLights_2003.map(nighttimeLights_func_2004);
+var nighttimeLights_2005 = nighttimeLights_2004.map(nighttimeLights_func_2005);
+var nighttimeLights_2006 = nighttimeLights_2005.map(nighttimeLights_func_2006);
+var nighttimeLights_2007 = nighttimeLights_2006.map(nighttimeLights_func_2007);
+var nighttimeLights_2008 = nighttimeLights_2007.map(nighttimeLights_func_2008);
+var nighttimeLights_2009 = nighttimeLights_2008.map(nighttimeLights_func_2009);
+var nighttimeLights_2010 = nighttimeLights_2009.map(nighttimeLights_func_2010);
+var nighttimeLights_2011 = nighttimeLights_2010.map(nighttimeLights_func_2011);
+var nighttimeLights_2012 = nighttimeLights_2011.map(nighttimeLights_func_2012);
+var nighttimeLights_2013 = nighttimeLights_2012.map(nighttimeLights_func_2013);
+//print(nighttimeLights_2013);
+
+Export.table.toDrive({
+  collection: nighttimeLights_2013, 
+  description: 'nighttimeLights_2013', 
+  selectors: ['shapeName', 'stable_lights_2000', 'stable_lights_2001', 'stable_lights_2002', 'stable_lights_2003', 'stable_lights_2004', 
+  'stable_lights_2005', 'stable_lights_2006', 'stable_lights_2007', 'stable_lights_2008', 'stable_lights_2009', 'stable_lights_2010', 
+  'stable_lights_2011', 'stable_lights_2012', 'stable_lights_2013'] 
+});
+
+// Scrape population data within each tile.
+
+var pop = ee.ImageCollection("CIESIN/GPWv411/GPW_Basic_Demographic_Characteristics").first().select('basic_demographic_characteristics');
+
+var pop_func = function(feature) {
+  var collection = pop;
+  var clipped = collection.clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({basic_demographic_characteristics: meanDictionary.get('basic_demographic_characteristics')})
+};
+
+var pop_value = phl_adm1.map(pop_func);
+//print(pop_value);
+
+Export.table.toDrive({
+  collection: pop_value, 
+  description: 'pop_value', 
+  selectors: ['shapeName', 'basic_demographic_characteristics'] 
+});
+
+// Scrape elevation data within each tile.
+
+var elevation_func = function(feature) {
+  var collection = ee.Image('CGIAR/SRTM90_V4').select('elevation');
+  var clipped = collection.clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({elevation: meanDictionary.get('elevation')})
+};
+
+var elevation = phl_adm1.map(elevation_func)
+
+Export.table.toDrive({
+  collection: elevation, 
+  description: 'elevation', 
+  selectors: ['shapeName', 'elevation'] 
+});

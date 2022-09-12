@@ -1,0 +1,51 @@
+// Load country features from Large Scale International Boundary (LSIB) dataset.
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+Map.addLayer(countries, {}, 'countries');
+//print(countries);
+
+// Subset the Congo Republic feature from countries.
+var chad = countries.filter(ee.Filter.eq('country_na', 'Chad'));
+Map.addLayer(chad, {color: 'red'}, 'congo');
+
+// Get the forest loss image.
+var gfc2014 = ee.Image('UMD/hansen/global_forest_change_2015');
+var lossImage = gfc2014.select(['lossyear']).eq(12);
+
+// Sum the values of forest loss pixels in the Congo Republic.
+var stats = lossImage.reduceRegion({
+  reducer: ee.Reducer.sum(),
+  geometry: chad,
+  scale: 30,
+  maxPixels: 1e10
+});
+//print(stats);
+
+print('pixels representing loss: ', stats.get('lossyear'));
+
+var stats12_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(12);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e10
+  });
+  return feature.set({loss_12: stats.get('lossyear')})
+};
+
+var getstats12 = countries.map(stats12_func);
+print(getstats12.first());
+
+var stats13_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(13);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e10
+  });
+  return feature.set({loss_13: stats.get('lossyear')})
+};
+
+var getstats13 = countries.map(stats13_func);
+print(getstats13.first());

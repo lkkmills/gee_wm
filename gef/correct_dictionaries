@@ -1,0 +1,411 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("users/lkmills/geoBoundaries_DRC_ADM1");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Yearly MEAN NDVI for GEF Projects in Specified WDPA Regions and ADM1 levels
+
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+Map.setCenter(23.5, -2.5, 6);
+
+var modisNDVI = ee.ImageCollection('MODIS/006/MOD13Q1')
+              .select('NDVI')
+              .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+                   
+  }
+);
+                    
+var modisNDVI_year = modisNDVI.filter(ee.Filter.calendarRange(2000, 2020, 'year'));
+
+var interval = 1;
+var increment = 'year';
+var start = '2000-01-01';
+var startDate = ee.Date(start);
+var secondDate = startDate.advance(interval, increment).millis();
+var increase = secondDate.subtract(startDate.millis());
+var list = ee.List.sequence(startDate.millis(), ee.Date('2020-06-09').millis(), increase);
+
+var year_list = ['2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008',
+                '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017',
+                '2018', '2019', '2020'];
+                
+var geoBoundaries_ADM1 = ee.FeatureCollection('users/lkmills/geoBoundaries_DRC_ADM1');
+
+// Pârc National de la Salonga >> WDPA
+var salonga = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Salonga')
+  ));
+Map.addLayer(salonga, {}, 'Salonga');
+
+var composites_salonga = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(salonga).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: salonga,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_salonga = ee.Dictionary.fromLists(year_list, composites_salonga.aggregate_array('NDVI'));
+print('Pârc National de la Salonga', out_dict_salonga);
+
+// Parc National de Kahuzi-Biega >> WDPA
+var kahuzi_biega = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de Kahuzi-Biega')
+  ));
+Map.addLayer(kahuzi_biega, {}, 'Kahuzi-Biega');
+  
+var composites_kahuzi_biega = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(kahuzi_biega).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: kahuzi_biega,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_kahuzi_biega = ee.Dictionary.fromLists(year_list, composites_kahuzi_biega.aggregate_array('NDVI'));
+print('Parc National de Kahuzi-Biega', out_dict_kahuzi_biega);
+
+// Parc National de Kahuzi-Biega >> WDPA
+var virunga = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national des Virunga')
+  ));
+Map.addLayer(virunga, {}, 'Virunga');
+  
+var composites_virunga = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(virunga).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: virunga,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_virunga = ee.Dictionary.fromLists(year_list, composites_virunga.aggregate_array('NDVI'));
+print('Parc national des Virunga', out_dict_virunga);
+
+// Parc National de la Garamba >> WDPA
+var garamba = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Garamba')
+  ));
+Map.addLayer(garamba, {}, 'Garamba');
+  
+var composites_garamba = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(garamba).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: garamba,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_garamba = ee.Dictionary.fromLists(year_list, composites_garamba.aggregate_array('NDVI'));
+print('Parc national de la Garamba', out_dict_garamba);
+
+// Parc National de la Maïko >> WDPA
+var maiko = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Maiko')
+  ));
+Map.addLayer(maiko, {}, 'Maiko');
+  
+var composites_maiko = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(maiko).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: maiko,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_maiko = ee.Dictionary.fromLists(year_list, composites_maiko.aggregate_array('NDVI'));
+print('Parc National de la Maïko', out_dict_maiko);
+
+// Tumba Lediima Natural Reserve >> WDPA
+var tumba_lediima = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Tumba-Lediima')
+  ));
+Map.addLayer(tumba_lediima, {}, 'Tumba-Lediima');
+  
+var composites_tumba_lediima = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(tumba_lediima).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: tumba_lediima,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_tumba_lediima = ee.Dictionary.fromLists(year_list, composites_tumba_lediima.aggregate_array('NDVI'));
+print('Tumba Lediima Natural Reserve', out_dict_tumba_lediima);
+
+// Nord-Ubangi >> geoBoundaries ADM1
+var nord_ubangi = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Nord-Ubangi'));
+Map.addLayer(nord_ubangi, {}, 'Nord-Ubangi');
+
+var composites_nord_ubangi = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(nord_ubangi).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: nord_ubangi,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_nord_ubangi = ee.Dictionary.fromLists(year_list, composites_nord_ubangi.aggregate_array('NDVI'));
+print('Nord-Ubangi', out_dict_nord_ubangi);
+
+// Lower Uele >> geoBoundaries ADM1
+var bas_uele = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Lower Uele'));
+Map.addLayer(bas_uele, {}, 'Bas Uele');
+
+var composites_bas_uele = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(bas_uele).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: bas_uele,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+print('Lower Uele = exported table');
+
+//Export.table.toDrive({
+  //collection: composites_bas_uele,
+  //description: 'composites_bas_uele',
+  //fileFormat: 'CSV'
+//});
+
+// Mongala >> geoBoundaries ADM1
+var mongala = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Mongala'));
+Map.addLayer(mongala, {}, 'Mongala');
+
+var composites_mongala = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(mongala).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: mongala,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_mongala = ee.Dictionary.fromLists(year_list, composites_mongala.aggregate_array('NDVI'));
+print('Mongala', out_dict_mongala);
+
+// Ituri >> geoBoundaries ADM1
+var ituri = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Ituri'));
+Map.addLayer(ituri, {}, 'Ituri');
+
+var composites_ituri = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(ituri).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: ituri,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_ituri = ee.Dictionary.fromLists(year_list, composites_ituri.aggregate_array('NDVI'));
+print('Ituri', out_dict_ituri);
+
+// Province du Sud-Ubangi >> geoBoundaries ADM1
+var sud_ubangi = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Sud-Ubangi'));
+Map.addLayer(sud_ubangi, {}, 'Sud-Ubangi');
+
+var composites_sud_ubangi = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(sud_ubangi).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: sud_ubangi,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_sud_ubangi = ee.Dictionary.fromLists(year_list, composites_sud_ubangi.aggregate_array('NDVI'));
+print('Sud-Ubangi', out_dict_sud_ubangi);
+
+// Tshopo >> geoBoundaries ADM1
+var tshopo = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Tshopo'));
+Map.addLayer(tshopo, {}, 'Tshopo');
+
+var composites_tshopo = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(tshopo).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: tshopo,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+print('Tshopo = exported table');
+
+//Export.table.toDrive({
+  //collection: composites_tshopo,
+  //description: 'composites_tshopo',
+  //fileFormat: 'CSV'
+//});
+
+// Mai-Ndombe >> geoBoundaries ADM1
+var mai_ndombe = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Mai-Ndombe'));
+Map.addLayer(mai_ndombe, {}, 'Mai-Ndombe');
+
+var composites_mai_ndombe = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(mai_ndombe).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: mai_ndombe,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+print('Mai-Ndombe = exported table');
+
+//Export.table.toDrive({
+  //collection: composites_mai_ndombe,
+  //description: 'composites_mai_ndombe',
+  //fileFormat: 'CSV'
+//});
+
+// Kwango >> geoBoundaries ADM1
+var kwango = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Kwango'));
+Map.addLayer(kwango, {}, 'Kwango');
+
+var composites_kwango = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(kwango).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: kwango,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_kwango = ee.Dictionary.fromLists(year_list, composites_kwango.aggregate_array('NDVI'));
+print('Kwango', out_dict_kwango);
+
+// Équateur >> geoBoundaries ADM1
+var equateur = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Équateur'));
+Map.addLayer(equateur, {}, 'Équateur');
+
+var composites_equateur = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(equateur).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: equateur,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_equateur = ee.Dictionary.fromLists(year_list, composites_equateur.aggregate_array('NDVI'));
+print('Équateur', out_dict_equateur);
+
+// Upper Uele >> geoBoundaries ADM1
+var haut_uele = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Upper Uele'));
+Map.addLayer(haut_uele, {}, 'Upper Uele');
+
+var composites_haut_uele = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(haut_uele).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: haut_uele,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_haut_uele = ee.Dictionary.fromLists(year_list, composites_haut_uele.aggregate_array('NDVI'));
+print('Upper Uele', out_dict_haut_uele);
+
+// Tshuapa >> geoBoundaries ADM1
+var tshuapa = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Tshuapa'));
+Map.addLayer(tshuapa, {}, 'Tshuapa');
+
+var composites_tshuapa = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(tshuapa).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: tshuapa,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+print('Tshuapa = exported table');
+
+Export.table.toDrive({
+  collection: composites_tshuapa,
+  description: 'composites_tshuapa',
+  fileFormat: 'CSV'
+});
+
+// Kwilu >> geoBoundaries ADM1
+var kwilu = geoBoundaries_ADM1.filter(ee.Filter.eq('shapeName', 'Kwilu'));
+Map.addLayer(kwilu, {}, 'Kwilu');
+
+var composites_kwilu = ee.ImageCollection.fromImages(list.map(function(startYear){
+  var filtCol = modisNDVI_year.filterDate(ee.Date(startYear), ee.Date(startYear).advance(interval, increment));
+  var meanImage = filtCol.mean().clip(kwilu).divide(10000);
+  var meanVal = meanImage.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: kwilu,
+    scale: 500
+  });
+  return ee.Image(meanImage.setMulti(meanVal)).set('system:time_start', ee.Date(startYear).millis());
+}));
+
+var out_dict_kwilu = ee.Dictionary.fromLists(year_list, composites_kwilu.aggregate_array('NDVI'));
+print('Kwilu', out_dict_kwilu);

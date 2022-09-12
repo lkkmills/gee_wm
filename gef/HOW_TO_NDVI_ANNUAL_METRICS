@@ -1,0 +1,55 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var imageCollection3 = ee.ImageCollection("MODIS/006/MOD13Q1"),
+    table = ee.FeatureCollection("users/lkmills/eetest");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// MODIS Time-Series NDVI for the Democratic Republic of the Congo (DRC)
+// 2001-2002 EXAMPLE of HOW to create annual NDVI metrics
+
+// Load country features from Large Scale International Boundary (LSIB) dataset.
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+
+// Subset target country feature from countries.
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+  // FIPS code = CG, https://en.wikipedia.org/wiki/List_of_FIPS_country_codes
+
+// Use inspector to find center of target country.
+Map.setCenter(23, -3, 5.5);
+
+// Visualization parameters and charted annual metrics.
+    // 2001-2002 >> 0001
+var ndvi0001 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2001-01-01', '2001-12-31'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+var TS_0001 = ui.Chart.image.seriesByRegion(ndvi0001, drcongo, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2001-2002',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0001);
+
+var dataset = ee.FeatureCollection('users/lkmills/eetest').aggregate_mean('NDVI');
+print('Mean:', dataset);
+
+var ndvi0001 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2001-01-01', '2001-12-31'))
+                  .select('NDVI');
+var ndviVis0001 = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+Map.addLayer(ndvi0001.mean().clip(drcongo), ndviVis0001, '2001-2002');

@@ -1,0 +1,32 @@
+var prec1_grid = ee.FeatureCollection('users/lkmills/Prec_1_grid');
+//Map.addLayer(prec1_grid, {color: 'red'}, 'prec1_grid');
+
+//print(prec1_grid);
+
+var prec2_grid = ee.FeatureCollection('users/lkmills/prec_2_grid');
+//Map.addLayer(prec2_grid, {color: 'orange'}, 'prec2_grid');
+
+//print(prec2_grid);
+
+var prec3_grid = ee.FeatureCollection('users/lkmills/prec_3_grid');
+//Map.addLayer(prec3_grid, {color: 'yellow'}, 'prec3_grid');
+
+var prec4_grid = ee.FeatureCollection('users/lkmills/prec_4_grid');
+//Map.addLayer(prec4_grid, {color: 'green'}, 'prec4_grid');
+
+var combine1 = prec1_grid.merge(prec2_grid);
+//print(combine1);
+//Map.addLayer(combine1, {color: 'blue'}, 'combine1');
+
+var combine2 = combine1.merge(prec3_grid);
+var combine3 = combine2.merge(prec4_grid);
+
+Map.addLayer(combine3, {color: 'purple'}, 'combine3');
+print(combine3.size());
+print(combine3.first());
+
+Export.table.toDrive({
+  collection: combine3, 
+  description: 'precision_merged_june21', 
+  selectors: ['Name', 'centroid'] 
+});

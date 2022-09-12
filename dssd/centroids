@@ -1,0 +1,18 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("users/lkmills/maluku_centroids");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var control_halfkm_grid = ee.FeatureCollection('users/lkmills/control_halfkm_grid');
+
+var centroids = function(feature) {
+  return feature.set({centroid: feature.geometry().centroid().coordinates()});
+}
+
+var centroids = control_halfkm_grid.map(centroids);
+print(centroids);
+Map.addLayer(centroids, {color: 'purple'}, 'centroids_control_halfkm_grid');
+
+Export.table.toDrive({
+  collection: centroids, 
+  description: 'centroids_control_halfkm_grid', 
+  selectors: ['id', 'centroid'] 
+});

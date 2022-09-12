@@ -1,0 +1,78 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var imageCollection = ee.ImageCollection("MODIS/006/MOD13Q1");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+Map.setCenter(23.5, -2.5, 6);
+
+var ADM1 = ee.FeatureCollection('users/lkmills/geoBoundariesSimplified-3_0_0-COD-ADM1');
+
+// Bas Uele
+var bas_uele = ADM1.filter(ee.Filter.eq('shapeName', 'Lower Uele'));
+Map.addLayer(bas_uele, {}, 'Bas Uele');
+
+var ndvi_bas_uele_1 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2000-01-01', '2020-06-09'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+                   
+  }
+);
+
+var bas_uele_1 = ui.Chart.image.seriesByRegion(ndvi_bas_uele_1, bas_uele, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'TEST',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(bas_uele_1);
+
+//var dataset_bas_uele_1 = ee.FeatureCollection('users/lkmills/bas_uele_1').aggregate_mean('NDVI');
+//print('Bas Uele Mean NDVI 2000-2008:', dataset_bas_uele_1);
+
+
+//set a list of start dates
+var startDate = '2000';
+var endDate = '2020';
+var weekDifference = ee.Date(startDate).advance(1, 'year').millis().subtract(ee.Date(startDate).millis());
+var listMap = ee.List.sequence(ee.Date(startDate).millis(), ee.Date(endDate).millis(), weekDifference);
+//print(listMap);
+
+var createFC = function(element, list) {
+  list = ee.List(list) // cast the 'accumulating' object
+
+  element = ee.Dictionary(element)  // its an dict with 'class' and 'mean' as keys
+  var clss = ee.Number(element.get('class'))
+  var means = ee.List(element.get('mean')) // means is a list in which index 0 is 'sur_refl_b02', 1 is 'sur_refl_b03' and 2 is 'sur_refl_b04'
+  var sr2 = ee.Number(means.get(0))
+  var sr3 = ee.Number(means.get(1))
+  var sr4 = ee.Number(means.get(2))
+
+  var feat = ee.Feature(null, {'class': clss, 
+                               'sur_refl_b02': sr2,
+                               'sur_refl_b03': sr3,
+                               'sur_refl_b04': sr4})
+
+  return list.add(feat)
+}
+
+var featList = ee.List(ee.List(mean).iterate(createFC, ee.List([])))
+
+var collection = ee.FeatureCollection(featList)
+
+var chart = ui.Chart.feature.byFeature(collection, 'class')
+print(chart)
+

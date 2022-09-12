@@ -1,0 +1,1676 @@
+var leyte = ee.FeatureCollection('users/lkmills/Leyte');
+Map.addLayer(leyte, {color: '0000FF'}, 'Leyte');
+
+var swe = ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE').filter(ee.Filter.date('2000-01-01', '2019-12-01')).select('swe');
+
+var swe_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2000: meanDictionary.get('swe')})
+};
+
+var swe_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2001: meanDictionary.get('swe')})
+};
+
+
+var swe_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2002: meanDictionary.get('swe')})
+};
+
+var swe_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2003: meanDictionary.get('swe')})
+};
+
+var swe_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2004: meanDictionary.get('swe')})
+};
+
+var swe_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2005: meanDictionary.get('swe')})
+};
+
+var swe_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2006: meanDictionary.get('swe')})
+};
+
+var swe_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2007: meanDictionary.get('swe')})
+};
+
+var swe_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2008: meanDictionary.get('swe')})
+};
+
+var swe_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2009: meanDictionary.get('swe')})
+};
+
+var swe_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2010: meanDictionary.get('swe')})
+};
+
+var swe_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2011: meanDictionary.get('swe')})
+};
+
+var swe_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2012: meanDictionary.get('swe')})
+};
+
+var swe_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2013: meanDictionary.get('swe')})
+};
+
+var swe_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2014: meanDictionary.get('swe')})
+};
+
+
+var swe_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2015: meanDictionary.get('swe')})
+};
+
+
+var swe_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2016: meanDictionary.get('swe')})
+};
+
+
+var swe_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2017: meanDictionary.get('swe')})
+};
+
+
+var swe_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2018: meanDictionary.get('swe')})
+};
+
+
+var swe_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(swe.filterDate('2019-01-01', '2019-12-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({swe_2019: meanDictionary.get('swe')})
+};
+
+
+var swe_2000 = leyte.map(swe_func_2000);
+var swe_2001 = swe_2000.map(swe_func_2001);
+var swe_2002 = swe_2001.map(swe_func_2002);
+var swe_2003 = swe_2002.map(swe_func_2003);
+var swe_2004 = swe_2003.map(swe_func_2004);
+var swe_2005 = swe_2004.map(swe_func_2005);
+var swe_2006 = swe_2005.map(swe_func_2006);
+var swe_2007 = swe_2006.map(swe_func_2007);
+var swe_2008 = swe_2007.map(swe_func_2008);
+var swe_2009 = swe_2008.map(swe_func_2009);
+var swe_2010 = swe_2009.map(swe_func_2010);
+var swe_2011 = swe_2010.map(swe_func_2011);
+var swe_2012 = swe_2011.map(swe_func_2012);
+var swe_2013 = swe_2012.map(swe_func_2013);
+var swe_2014 = swe_2013.map(swe_func_2014);
+var swe_2015 = swe_2014.map(swe_func_2015);
+var swe_2016 = swe_2015.map(swe_func_2016);
+var swe_2017 = swe_2016.map(swe_func_2017);
+var swe_2018 = swe_2017.map(swe_func_2018);
+var swe_2019 = swe_2018.map(swe_func_2019);
+
+Export.table.toDrive({
+  collection: swe_2019, 
+  description: 'swe_2019', 
+  selectors: ['Name', 'swe_2000', 'swe_2001','swe_2002','swe_2003',
+  'swe_2004','swe_2005','swe_2006','swe_2007','swe_2008',
+  'swe_2009','swe_2010','swe_2011','swe_2012','swe_2013',
+  'swe_2014', 'swe_2015', 'swe_2016', 'swe_2017', 'swe_2018','swe_2019'] 
+});
+
+var tmmn = ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE').filter(ee.Filter.date('2000-01-01', '2019-12-01')).select('tmmn');
+
+var tmmn_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2000: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2001: meanDictionary.get('tmmn')})
+};
+
+
+var tmmn_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2002: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2003: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2004: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2005: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2006: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2007: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2008: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2009: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2010: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2011: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2012: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2013: meanDictionary.get('tmmn')})
+};
+
+var tmmn_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2014: meanDictionary.get('tmmn')})
+};
+
+
+var tmmn_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2015: meanDictionary.get('tmmn')})
+};
+
+
+var tmmn_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2016: meanDictionary.get('tmmn')})
+};
+
+
+var tmmn_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2017: meanDictionary.get('tmmn')})
+};
+
+
+var tmmn_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2018: meanDictionary.get('tmmn')})
+};
+
+
+var tmmn_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(tmmn.filterDate('2019-01-01', '2019-12-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmn_2019: meanDictionary.get('tmmn')})
+};
+
+
+var tmmn_2000 = leyte.map(tmmn_func_2000);
+var tmmn_2001 = tmmn_2000.map(tmmn_func_2001);
+var tmmn_2002 = tmmn_2001.map(tmmn_func_2002);
+var tmmn_2003 = tmmn_2002.map(tmmn_func_2003);
+var tmmn_2004 = tmmn_2003.map(tmmn_func_2004);
+var tmmn_2005 = tmmn_2004.map(tmmn_func_2005);
+var tmmn_2006 = tmmn_2005.map(tmmn_func_2006);
+var tmmn_2007 = tmmn_2006.map(tmmn_func_2007);
+var tmmn_2008 = tmmn_2007.map(tmmn_func_2008);
+var tmmn_2009 = tmmn_2008.map(tmmn_func_2009);
+var tmmn_2010 = tmmn_2009.map(tmmn_func_2010);
+var tmmn_2011 = tmmn_2010.map(tmmn_func_2011);
+var tmmn_2012 = tmmn_2011.map(tmmn_func_2012);
+var tmmn_2013 = tmmn_2012.map(tmmn_func_2013);
+var tmmn_2014 = tmmn_2013.map(tmmn_func_2014);
+var tmmn_2015 = tmmn_2014.map(tmmn_func_2015);
+var tmmn_2016 = tmmn_2015.map(tmmn_func_2016);
+var tmmn_2017 = tmmn_2016.map(tmmn_func_2017);
+var tmmn_2018 = tmmn_2017.map(tmmn_func_2018);
+var tmmn_2019 = tmmn_2018.map(tmmn_func_2019);
+
+Export.table.toDrive({
+  collection: tmmn_2019, 
+  description: 'tmmn_2019', 
+  selectors: ['Name', 'tmmn_2000', 'tmmn_2001','tmmn_2002','tmmn_2003',
+  'tmmn_2004','tmmn_2005','tmmn_2006','tmmn_2007','tmmn_2008',
+  'tmmn_2009','tmmn_2010','tmmn_2011','tmmn_2012','tmmn_2013',
+  'tmmn_2014', 'tmmn_2015', 'tmmn_2016', 'tmmn_2017', 'tmmn_2018','tmmn_2019'] 
+});
+
+var tmmx = ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE').filter(ee.Filter.date('2000-01-01', '2019-12-01')).select('tmmx');
+
+var tmmx_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2000: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2001: meanDictionary.get('tmmx')})
+};
+
+
+var tmmx_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2002: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2003: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2004: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2005: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2006: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2007: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2008: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2009: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2010: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2011: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2012: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2013: meanDictionary.get('tmmx')})
+};
+
+var tmmx_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2014: meanDictionary.get('tmmx')})
+};
+
+
+var tmmx_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2015: meanDictionary.get('tmmx')})
+};
+
+
+var tmmx_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2016: meanDictionary.get('tmmx')})
+};
+
+
+var tmmx_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2017: meanDictionary.get('tmmx')})
+};
+
+
+var tmmx_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2018: meanDictionary.get('tmmx')})
+};
+
+
+var tmmx_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(tmmx.filterDate('2019-01-01', '2019-12-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({tmmx_2019: meanDictionary.get('tmmx')})
+};
+
+
+var tmmx_2000 = leyte.map(tmmx_func_2000);
+var tmmx_2001 = tmmx_2000.map(tmmx_func_2001);
+var tmmx_2002 = tmmx_2001.map(tmmx_func_2002);
+var tmmx_2003 = tmmx_2002.map(tmmx_func_2003);
+var tmmx_2004 = tmmx_2003.map(tmmx_func_2004);
+var tmmx_2005 = tmmx_2004.map(tmmx_func_2005);
+var tmmx_2006 = tmmx_2005.map(tmmx_func_2006);
+var tmmx_2007 = tmmx_2006.map(tmmx_func_2007);
+var tmmx_2008 = tmmx_2007.map(tmmx_func_2008);
+var tmmx_2009 = tmmx_2008.map(tmmx_func_2009);
+var tmmx_2010 = tmmx_2009.map(tmmx_func_2010);
+var tmmx_2011 = tmmx_2010.map(tmmx_func_2011);
+var tmmx_2012 = tmmx_2011.map(tmmx_func_2012);
+var tmmx_2013 = tmmx_2012.map(tmmx_func_2013);
+var tmmx_2014 = tmmx_2013.map(tmmx_func_2014);
+var tmmx_2015 = tmmx_2014.map(tmmx_func_2015);
+var tmmx_2016 = tmmx_2015.map(tmmx_func_2016);
+var tmmx_2017 = tmmx_2016.map(tmmx_func_2017);
+var tmmx_2018 = tmmx_2017.map(tmmx_func_2018);
+var tmmx_2019 = tmmx_2018.map(tmmx_func_2019);
+
+Export.table.toDrive({
+  collection: tmmx_2019, 
+  description: 'tmmx_2019', 
+  selectors: ['Name', 'tmmx_2000', 'tmmx_2001','tmmx_2002','tmmx_2003',
+  'tmmx_2004','tmmx_2005','tmmx_2006','tmmx_2007','tmmx_2008',
+  'tmmx_2009','tmmx_2010','tmmx_2011','tmmx_2012','tmmx_2013',
+  'tmmx_2014', 'tmmx_2015', 'tmmx_2016', 'tmmx_2017', 'tmmx_2018','tmmx_2019'] 
+});
+
+var vap = ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE').filter(ee.Filter.date('2000-01-01', '2019-12-01')).select('vap');
+
+var vap_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2000: meanDictionary.get('vap')})
+};
+
+var vap_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2001: meanDictionary.get('vap')})
+};
+
+
+var vap_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2002: meanDictionary.get('vap')})
+};
+
+var vap_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2003: meanDictionary.get('vap')})
+};
+
+var vap_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2004: meanDictionary.get('vap')})
+};
+
+var vap_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2005: meanDictionary.get('vap')})
+};
+
+var vap_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2006: meanDictionary.get('vap')})
+};
+
+var vap_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2007: meanDictionary.get('vap')})
+};
+
+var vap_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2008: meanDictionary.get('vap')})
+};
+
+var vap_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2009: meanDictionary.get('vap')})
+};
+
+var vap_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2010: meanDictionary.get('vap')})
+};
+
+var vap_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2011: meanDictionary.get('vap')})
+};
+
+var vap_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2012: meanDictionary.get('vap')})
+};
+
+var vap_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2013: meanDictionary.get('vap')})
+};
+
+var vap_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2014: meanDictionary.get('vap')})
+};
+
+
+var vap_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2015: meanDictionary.get('vap')})
+};
+
+
+var vap_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2016: meanDictionary.get('vap')})
+};
+
+
+var vap_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2017: meanDictionary.get('vap')})
+};
+
+
+var vap_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2018: meanDictionary.get('vap')})
+};
+
+
+var vap_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(vap.filterDate('2019-01-01', '2019-12-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vap_2019: meanDictionary.get('vap')})
+};
+
+
+var vap_2000 = leyte.map(vap_func_2000);
+var vap_2001 = vap_2000.map(vap_func_2001);
+var vap_2002 = vap_2001.map(vap_func_2002);
+var vap_2003 = vap_2002.map(vap_func_2003);
+var vap_2004 = vap_2003.map(vap_func_2004);
+var vap_2005 = vap_2004.map(vap_func_2005);
+var vap_2006 = vap_2005.map(vap_func_2006);
+var vap_2007 = vap_2006.map(vap_func_2007);
+var vap_2008 = vap_2007.map(vap_func_2008);
+var vap_2009 = vap_2008.map(vap_func_2009);
+var vap_2010 = vap_2009.map(vap_func_2010);
+var vap_2011 = vap_2010.map(vap_func_2011);
+var vap_2012 = vap_2011.map(vap_func_2012);
+var vap_2013 = vap_2012.map(vap_func_2013);
+var vap_2014 = vap_2013.map(vap_func_2014);
+var vap_2015 = vap_2014.map(vap_func_2015);
+var vap_2016 = vap_2015.map(vap_func_2016);
+var vap_2017 = vap_2016.map(vap_func_2017);
+var vap_2018 = vap_2017.map(vap_func_2018);
+var vap_2019 = vap_2018.map(vap_func_2019);
+
+Export.table.toDrive({
+  collection: vap_2019, 
+  description: 'vap_2019', 
+  selectors: ['Name', 'vap_2000', 'vap_2001','vap_2002','vap_2003',
+  'vap_2004','vap_2005','vap_2006','vap_2007','vap_2008',
+  'vap_2009','vap_2010','vap_2011','vap_2012','vap_2013',
+  'vap_2014', 'vap_2015', 'vap_2016', 'vap_2017', 'vap_2018','vap_2019'] 
+});
+
+var vpd = ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE').filter(ee.Filter.date('2000-01-01', '2019-12-01')).select('vpd');
+
+var vpd_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2000: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2001: meanDictionary.get('vpd')})
+};
+
+
+var vpd_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2002: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2003: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2004: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2005: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2006: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2007: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2008: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2009: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2010: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2011: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2012: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2013: meanDictionary.get('vpd')})
+};
+
+var vpd_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2014: meanDictionary.get('vpd')})
+};
+
+
+var vpd_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2015: meanDictionary.get('vpd')})
+};
+
+
+var vpd_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2016: meanDictionary.get('vpd')})
+};
+
+
+var vpd_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2017: meanDictionary.get('vpd')})
+};
+
+
+var vpd_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2018: meanDictionary.get('vpd')})
+};
+
+
+var vpd_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(vpd.filterDate('2019-01-01', '2019-12-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vpd_2019: meanDictionary.get('vpd')})
+};
+
+
+var vpd_2000 = leyte.map(vpd_func_2000);
+var vpd_2001 = vpd_2000.map(vpd_func_2001);
+var vpd_2002 = vpd_2001.map(vpd_func_2002);
+var vpd_2003 = vpd_2002.map(vpd_func_2003);
+var vpd_2004 = vpd_2003.map(vpd_func_2004);
+var vpd_2005 = vpd_2004.map(vpd_func_2005);
+var vpd_2006 = vpd_2005.map(vpd_func_2006);
+var vpd_2007 = vpd_2006.map(vpd_func_2007);
+var vpd_2008 = vpd_2007.map(vpd_func_2008);
+var vpd_2009 = vpd_2008.map(vpd_func_2009);
+var vpd_2010 = vpd_2009.map(vpd_func_2010);
+var vpd_2011 = vpd_2010.map(vpd_func_2011);
+var vpd_2012 = vpd_2011.map(vpd_func_2012);
+var vpd_2013 = vpd_2012.map(vpd_func_2013);
+var vpd_2014 = vpd_2013.map(vpd_func_2014);
+var vpd_2015 = vpd_2014.map(vpd_func_2015);
+var vpd_2016 = vpd_2015.map(vpd_func_2016);
+var vpd_2017 = vpd_2016.map(vpd_func_2017);
+var vpd_2018 = vpd_2017.map(vpd_func_2018);
+var vpd_2019 = vpd_2018.map(vpd_func_2019);
+
+Export.table.toDrive({
+  collection: vpd_2019, 
+  description: 'vpd_2019', 
+  selectors: ['Name', 'vpd_2000', 'vpd_2001','vpd_2002','vpd_2003',
+  'vpd_2004','vpd_2005','vpd_2006','vpd_2007','vpd_2008',
+  'vpd_2009','vpd_2010','vpd_2011','vpd_2012','vpd_2013',
+  'vpd_2014', 'vpd_2015', 'vpd_2016', 'vpd_2017', 'vpd_2018','vpd_2019'] 
+});
+
+var vs = ee.ImageCollection('IDAHO_EPSCOR/TERRACLIMATE').filter(ee.Filter.date('2000-01-01', '2019-12-01')).select('vs');
+
+var vs_func_2000 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2000-01-01', '2000-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2000: meanDictionary.get('vs')})
+};
+
+var vs_func_2001 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2001-01-01', '2001-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2001: meanDictionary.get('vs')})
+};
+
+
+var vs_func_2002 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2002-01-01', '2002-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2002: meanDictionary.get('vs')})
+};
+
+var vs_func_2003 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2003-01-01', '2003-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2003: meanDictionary.get('vs')})
+};
+
+var vs_func_2004 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2004-01-01', '2004-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2004: meanDictionary.get('vs')})
+};
+
+var vs_func_2005 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2005-01-01', '2005-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2005: meanDictionary.get('vs')})
+};
+
+var vs_func_2006 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2006-01-01', '2006-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2006: meanDictionary.get('vs')})
+};
+
+var vs_func_2007 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2007-01-01', '2007-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2007: meanDictionary.get('vs')})
+};
+
+var vs_func_2008 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2008-01-01', '2008-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2008: meanDictionary.get('vs')})
+};
+
+var vs_func_2009 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2009-01-01', '2009-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2009: meanDictionary.get('vs')})
+};
+
+var vs_func_2010 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2010-01-01', '2010-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2010: meanDictionary.get('vs')})
+};
+
+var vs_func_2011 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2011-01-01', '2011-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2011: meanDictionary.get('vs')})
+};
+
+var vs_func_2012 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2012-01-01', '2012-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2012: meanDictionary.get('vs')})
+};
+
+var vs_func_2013 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2013-01-01', '2013-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2013: meanDictionary.get('vs')})
+};
+
+var vs_func_2014 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2014-01-01', '2014-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2014: meanDictionary.get('vs')})
+};
+
+
+var vs_func_2015 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2015-01-01', '2015-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2015: meanDictionary.get('vs')})
+};
+
+
+var vs_func_2016 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2016-01-01', '2016-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2016: meanDictionary.get('vs')})
+};
+
+
+var vs_func_2017 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2017-01-01', '2017-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2017: meanDictionary.get('vs')})
+};
+
+
+var vs_func_2018 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2018-01-01', '2018-12-31'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2018: meanDictionary.get('vs')})
+};
+
+
+var vs_func_2019 = function(feature) {
+  var collection = ee.ImageCollection(vs.filterDate('2019-01-01', '2019-12-01'));
+  var clipped = collection.mean().clip(feature.geometry());
+  var meanDictionary = clipped.reduceRegion({
+    reducer: ee.Reducer.mean(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e9
+  });
+  return feature.set({vs_2019: meanDictionary.get('vs')})
+};
+
+
+var vs_2000 = leyte.map(vs_func_2000);
+var vs_2001 = vs_2000.map(vs_func_2001);
+var vs_2002 = vs_2001.map(vs_func_2002);
+var vs_2003 = vs_2002.map(vs_func_2003);
+var vs_2004 = vs_2003.map(vs_func_2004);
+var vs_2005 = vs_2004.map(vs_func_2005);
+var vs_2006 = vs_2005.map(vs_func_2006);
+var vs_2007 = vs_2006.map(vs_func_2007);
+var vs_2008 = vs_2007.map(vs_func_2008);
+var vs_2009 = vs_2008.map(vs_func_2009);
+var vs_2010 = vs_2009.map(vs_func_2010);
+var vs_2011 = vs_2010.map(vs_func_2011);
+var vs_2012 = vs_2011.map(vs_func_2012);
+var vs_2013 = vs_2012.map(vs_func_2013);
+var vs_2014 = vs_2013.map(vs_func_2014);
+var vs_2015 = vs_2014.map(vs_func_2015);
+var vs_2016 = vs_2015.map(vs_func_2016);
+var vs_2017 = vs_2016.map(vs_func_2017);
+var vs_2018 = vs_2017.map(vs_func_2018);
+var vs_2019 = vs_2018.map(vs_func_2019);
+
+Export.table.toDrive({
+  collection: vs_2019, 
+  description: 'vs_2019', 
+  selectors: ['Name', 'vs_2000', 'vs_2001','vs_2002','vs_2003',
+  'vs_2004','vs_2005','vs_2006','vs_2007','vs_2008',
+  'vs_2009','vs_2010','vs_2011','vs_2012','vs_2013',
+  'vs_2014', 'vs_2015', 'vs_2016', 'vs_2017', 'vs_2018','vs_2019'] 
+});

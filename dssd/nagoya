@@ -1,0 +1,33 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var image = ee.Image("users/lkmills/povmap_global_subnational_infant_mortality_rates_v2_01_birth15_alloc"),
+    image2 = ee.Image("users/lkmills/povmap_global_subnational_infant_mortality_rates_v2_01_pop0_2015");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var col_adm2 = ee.FeatureCollection('users/lkmills/geoBoundariesSimplified-3_0_0-COL-ADM2');
+print(col_adm2);
+
+Map.addLayer(col_adm2, {color: 'blue'}, 'Colombia ADM2');
+Map.setCenter(-73.49, 3.93, 6);
+
+var birth = ee.Image('users/lkmills/povmap_global_subnational_infant_mortality_rates_v2_01_birth15_alloc');
+//Map.addLayer(birth);
+
+var clip = birth.clip(col_adm2);
+Map.addLayer(clip);
+print(clip);
+
+// Add reducer output to the Features in the collection.
+var maineMeansFeatures = birth.reduceRegions({
+  collection: col_adm2,
+  reducer: ee.Reducer.mean(),
+  scale: 30,
+});
+
+print(maineMeansFeatures);
+var palette = ['FF0000', '00FF00', '0000FF'];
+Map.addLayer(maineMeansFeatures, {palette: palette, max: 14}, 'different color edges');
+
+Export.table.toDrive({
+  collection: maineMeansFeatures, 
+  description: 'maineMeansFeatures', 
+  selectors: ['mean', 'shapeGroup', 'shapeID', 'shapeISO', 'shapeName', 'shapeType'] 
+});

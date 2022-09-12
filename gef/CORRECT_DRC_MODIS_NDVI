@@ -1,0 +1,80 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var imageCollection = ee.ImageCollection("MODIS/MOD09GA_NDVI"),
+    geometry = 
+    /* color: #d69191 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[117.25794854440784, 0.45231522051494605],
+          [117.25794854440784, 0.0897710538861328],
+          [117.61912408151721, 0.0897710538861328],
+          [117.61912408151721, 0.45231522051494605]]], null, false),
+    image = ee.Image("UMD/hansen/global_forest_change_2020_v1_8");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var dataset1 = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2019-01-01', '2021-04-23'));
+var colorized = dataset1.select('NDVI');
+var colorizedVis = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+
+var dataset = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2010-01-01', '2021-04-23'));
+
+// Load country features from Large Scale International Boundary (LSIB) dataset.
+//var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+
+// Subset the DR Congo feature from countries.
+//var east_kali = countries.filter(ee.Filter.eq('country_co', 'CG'));
+  // FIPS code = CG, https://en.wikipedia.org/wiki/List_of_FIPS_country_codes
+
+var east_kali = ee.FeatureCollection('users/lkmills/east_kali');
+
+// var TS_0001 = ui.Chart.image.seriesByRegion(dataset, east_kali, ee.Reducer.mean(), 'NDVI', 500, 'system:time_start')
+//   .setSeriesNames(['NDVI'])
+//   .setOptions({
+//     title: 'NDVI Time Series',
+//     vAxis: {title: 'NDVI'},
+//     hAxis: {title: 'date'},
+// });
+// print(TS_0001);
+
+//Map.setCenter(23, -3, 5.5);x
+Map.addLayer(colorized.mean().clip(east_kali), colorizedVis, 'Colorized');
+
+var point = ee.Geometry.Point([117.44, 0.27]);
+Map.addLayer(point, {color: 'red'}, 'point');
+
+// Apply the buffer method to the Point object.
+var pointBuffer = point.buffer({'distance': 20000});
+
+Map.addLayer(pointBuffer, {color: 'red'}, 'buffer');
+
+// Load country features from Large Scale International Boundary (LSIB) dataset.
+//var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+
+/////
+
+// // Subset the Congo Republic feature from countries.
+// var congo = countries.filter(ee.Filter.eq('country_na', 'Rep of the Congo'));
+
+// Get the forest loss image.
+var gfc2014 = ee.Image("UMD/hansen/global_forest_change_2020_v1_8");
+var lossImage = gfc2014.select(['loss']).filter(ee.Filter.date('2019-08-01', '2020-10-31'));
+
+// Sum the values of forest loss pixels in the Congo Republic.
+var stats = lossImage.reduceRegion({
+  reducer: ee.Reducer.sum(),
+  geometry: geometry,
+  scale: 30
+});
+print(stats);

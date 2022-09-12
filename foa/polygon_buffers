@@ -1,0 +1,195 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("users/lkmills/GGW_RESTOR_2013-2015"),
+    table2 = ee.FeatureCollection("users/lkmills/GGW_RESTOR_2016-2018"),
+    table3 = ee.FeatureCollection("users/lkmills/GGW_RESTOR_2019-2020"),
+    table4 = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017"),
+    table5 = ee.FeatureCollection("users/lkmills/GGW_RESTOR_2019-2020_FIJI"),
+    geometry = 
+    /* color: #ff0000 */
+    /* shown: false */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      },
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.MultiPolygon(
+        [[[[3.0069524887805565, 15.065744388230828],
+           [3.0069524887805565, 12.901758647833079],
+           [5.5612737778430565, 12.901758647833079],
+           [5.5612737778430565, 15.065744388230828]]],
+         [[[-15.977741873869508, 17.502154561553137],
+           [-15.977741873869508, 15.53260484535962],
+           [-13.483845389494508, 15.53260484535962],
+           [-13.483845389494508, 17.502154561553137]]],
+         [[[-15.725686149854115, 13.622597204019664],
+           [-15.725686149854115, 13.307409630309829],
+           [-14.094216423291615, 13.307409630309829],
+           [-14.094216423291615, 13.622597204019664]]],
+         [[[8.914829777647556, 12.95662787876987],
+           [8.914829777647556, 11.872972928311569],
+           [10.925327824522556, 11.872972928311569],
+           [10.925327824522556, 12.95662787876987]]],
+         [[[35.710595416172175, 14.489484226403928],
+           [35.710595416172175, 12.658043165204662],
+           [36.518090533359675, 12.658043165204662],
+           [36.518090533359675, 14.489484226403928]]],
+         [[[-3.719122668487571, 14.550380950483131],
+           [-3.719122668487571, 12.939010026610402],
+           [-0.9780338013000711, 12.939010026610402],
+           [-0.9780338013000711, 14.550380950483131]]],
+         [[[-0.6264713013000711, 15.118556254131054],
+           [-0.6264713013000711, 13.505846404382831],
+           [1.708123425262409, 13.505846404382831],
+           [1.708123425262409, 15.118556254131054]]],
+         [[[-74.35235382787276, 18.643532296264794],
+           [-74.35235382787276, 18.52377714213743],
+           [-74.11614777318526, 18.52377714213743],
+           [-74.11614777318526, 18.643532296264794]]],
+         [[[-74.44301649877424, 18.51852019842718],
+           [-74.44301649877424, 18.366097046063175],
+           [-74.07085463353987, 18.366097046063175],
+           [-74.07085463353987, 18.51852019842718]]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+
+var burkinafaso = countries.filter(ee.Filter.eq('country_co', 'UV'));
+Map.addLayer(burkinafaso, styleParams, 'Burkina Faso');
+
+var mali = countries.filter(ee.Filter.eq('country_co', 'ML'));
+Map.addLayer(mali, styleParams, 'Mali');
+
+var niger = countries.filter(ee.Filter.eq('country_co', 'NG'));
+Map.addLayer(niger, styleParams, 'Niger');
+
+var senegal = countries.filter(ee.Filter.eq('country_co', 'SG'));
+Map.addLayer(senegal, styleParams, 'Senegal');
+
+var gambia = countries.filter(ee.Filter.eq('country_co', 'GA'));
+Map.addLayer(gambia, styleParams, 'Gambia');
+
+var ethiopia = countries.filter(ee.Filter.eq('country_co', 'ET'));
+Map.addLayer(ethiopia, styleParams, 'Ethiopia');
+
+var mauritania = countries.filter(ee.Filter.eq('country_co', 'MR'));
+Map.addLayer(mauritania, styleParams, 'Mauritania');
+
+var nigeria = countries.filter(ee.Filter.eq('country_co', 'NI'));
+Map.addLayer(nigeria, styleParams, 'Nigeria');
+
+var sudan = countries.filter(ee.Filter.eq('country_co', 'SU'));
+Map.addLayer(sudan, styleParams, 'Sudan');
+
+var fiji = countries.filter(ee.Filter.eq('country_co', 'FJ'));
+Map.addLayer(fiji, styleParams, 'Fiji');
+
+var haiti = countries.filter(ee.Filter.eq('country_co', 'HA'));
+Map.addLayer(haiti, styleParams, 'Haiti');
+
+//
+
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+
+print(first);
+
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+Map.addLayer(third, {color: '0000FF'}, '2019-2020'); // blue
+
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+Map.addLayer(fourth, {color: '0000FF'}, 'Fiji points');
+
+//
+
+var region_haiti = ee.Geometry.Rectangle(-74.3547, 18.5267, -74.1136, 18.6445);
+var randomPoints_haiti = ee.FeatureCollection.randomPoints(region_haiti);
+Map.centerObject(randomPoints_haiti);
+
+Map.addLayer(randomPoints_haiti, {}, 'random points Haiti');
+
+var region_haiti2 = ee.Geometry.Rectangle(-74.4439, 18.37, -74.069, 18.5198);
+var randomPoints_haiti2 = ee.FeatureCollection.randomPoints(region_haiti2);
+Map.centerObject(randomPoints_haiti2);
+
+Map.addLayer(randomPoints_haiti2, {}, 'random points Haiti 2');
+
+var region_mali = ee.Geometry.Rectangle(-3.7356, 12.9551, -0.9561, 14.561);
+var randomPoints_mali = ee.FeatureCollection.randomPoints(region_mali);
+Map.centerObject(randomPoints_mali);
+
+Map.addLayer(randomPoints_mali, {}, 'random points Mali');
+
+var region_burkina = ee.Geometry.Rectangle(-0.6484, 13.5219, 1.7246, 15.1292);
+var randomPoints_burkina = ee.FeatureCollection.randomPoints(region_burkina);
+Map.centerObject(randomPoints_burkina);
+
+Map.addLayer(randomPoints_burkina, {}, 'random points Burkina Faso');
+
+var region_niger = ee.Geometry.Rectangle(2.965, 12.944, 5.601, 15.055);
+var randomPoints_niger = ee.FeatureCollection.randomPoints(region_niger);
+Map.centerObject(randomPoints_niger);
+
+Map.addLayer(randomPoints_niger, {}, 'random points Niger');
+
+var region_senegal = ee.Geometry.Rectangle(-16, 15.543, -13.462, 17.46);
+var randomPoints_senegal = ee.FeatureCollection.randomPoints(region_senegal);
+Map.centerObject(randomPoints_senegal);
+
+Map.addLayer(randomPoints_senegal, {}, 'random points Senegal');
+
+var region_gambia = ee.Geometry.Rectangle(-15.7339, 13.3101, -14.0915, 13.6226);
+var randomPoints_gambia = ee.FeatureCollection.randomPoints(region_gambia);
+Map.centerObject(randomPoints_gambia);
+
+Map.addLayer(randomPoints_gambia, {}, 'random points Gambia');
+
+var region_nigeria = ee.Geometry.Rectangle(8.893, 11.873, 10.936, 12.967);
+var randomPoints_nigeria = ee.FeatureCollection.randomPoints(region_nigeria);
+Map.centerObject(randomPoints_nigeria);
+
+Map.addLayer(randomPoints_nigeria, {}, 'random points Nigeria');
+
+var region_sudan = ee.Geometry.Rectangle(35.6956, 12.6642, 36.5306, 14.4903);
+var randomPoints_sudan = ee.FeatureCollection.randomPoints(region_sudan);
+Map.centerObject(randomPoints_sudan);
+
+Map.addLayer(randomPoints_sudan, {}, 'random points Sudan');
+
+var randomPoints_fiji = ee.FeatureCollection.randomPoints(fiji);
+Map.centerObject(randomPoints_fiji);
+
+Map.addLayer(randomPoints_fiji, {}, 'random points Fiji');
+
+

@@ -1,0 +1,50 @@
+//// Load country features from Large Scale International Boundary (LSIB) dataset. ////
+
+var Nigeria = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017').filter(ee.Filter.eq('country_na', 'Nigeria'));
+
+print(Nigeria);
+
+Map.addLayer(Nigeria, {color: 'green'}, 'Nigeria');
+Map.setCenter(8.012, 9.717, 6);
+
+//// Load data from the Armed Conflict Location & Event Data Project (ACLED). ////
+
+var acled = ee.FeatureCollection('users/lkmills/Demo_Data');
+
+var acled_filter = acled
+        .filter("country == 'Nigeria'")
+        .filter("year == 2021");
+
+Map.addLayer(acled_filter, {color: 'blue'}, 'acled_filter');
+print(acled_filter);
+
+var acledStats = acled_filter.aggregate_histogram('sub_event_type');
+print(acledStats);
+
+// Chart dictionary results.
+var chart = ui.Chart.array.values({
+  array: acledStats.values(),
+  axis: 0,
+  xLabels: acledStats.keys()
+}).setChartType('PieChart')
+                .setOptions({
+                  title: 'Political Violence Event Types, Nigeria 2021',
+                  colors: [
+                    '604791', '1d6b99', '39a8a7', '0f8755', '76b349', 'f0af07',
+                    'e37d05', 'cf513e', '96356f', '724173', '9c4f97', '696969'
+                  ],
+                });
+print(chart);
+
+var acledStats = acled_filter.aggregate_histogram('sub_event_type');
+print(acledStats);
+
+//
+
+var acled_filter2 = acled
+        .filter("country == 'Nigeria'")
+        .filter("year == 2021")
+        .filter("sub_event_type == 'Armed clash'");
+
+var acledStats2 = acled_filter2.aggregate_histogram('admin2');
+print(acledStats2);

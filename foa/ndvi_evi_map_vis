@@ -1,0 +1,76 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var imageCollection = ee.ImageCollection("MODIS/006/MOD13Q1"),
+    table = ee.FeatureCollection("users/lkmills/geoBoundariesCGAZ_ADM0"),
+    table2 = ee.FeatureCollection("users/lkmills/cgaz");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var cgaz = ee.FeatureCollection('users/lkmills/cgaz');
+//Map.addLayer(cgaz, {color: 'FFFFFF'}, 'cgaz');
+
+var dataset = ee.ImageCollection('MODIS/006/MOD13Q1')
+                  .filter(ee.Filter.date('2020-08-01', '2020-09-01'));
+var modisNDVI = dataset.select('NDVI');
+var ndviVis = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+//Map.setCenter(6.746, 46.529, 2);
+
+var first = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2013-2015');
+//Map.addLayer(first, {color: 'FF0000'}, '2013-2015'); // red
+
+//print(first);
+
+var second = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2016-2018');
+//Map.addLayer(second, {color: '00FF00'}, '2016-2018'); // green
+
+//print(second);
+
+var third = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020');
+//Map.addLayer(third, {color: '0000FF'}, '2019-2020'); // blue
+
+//print(third);
+
+var fourth = ee.FeatureCollection('users/lkmills/GGW_RESTOR_2019-2020_FIJI');
+//Map.addLayer(fourth, {color: '0000FF'}, 'Fiji points');
+
+var combinedFeatureCollection1 = first.merge(second);
+var combinedFeatureCollection2 = combinedFeatureCollection1.merge(third);
+Map.addLayer(combinedFeatureCollection2, {color: 'yellow'}, 'Combined FeatureCollection');
+
+
+var collection0001 = ee.ImageCollection(modisNDVI.filterDate('2020-08-01', '2020-09-01'));
+var clipped0001 = collection0001.mean().clip(combinedFeatureCollection2);
+Map.addLayer(clipped0001, ndviVis, 'NDVI0001');
+
+
+var modisEVI = dataset.select('EVI');
+var eviVis = {
+  min: 0.0,
+  max: 8000.0,
+  palette: [
+    'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+
+
+var collection0001_2 = ee.ImageCollection(modisEVI.filterDate('2020-08-01', '2020-09-01'));
+var clipped0001_2 = collection0001_2.mean().clip(combinedFeatureCollection2);
+Map.addLayer(clipped0001_2, eviVis, 'EVI0001');
+
+var dataset = ee.ImageCollection('HYCOM/sea_surface_elevation')
+                  .filter(ee.Filter.date('2018-08-01', '2018-08-15'));
+var surfaceElevation = dataset.select('surface_elevation');
+var surfaceElevationVis = {
+  min: -2000.0,
+  max: 2000.0,
+  palette: ['FFFFFF'],
+};
+//Map.setCenter(-28.1, 28.3, 1);
+//Map.addLayer(surfaceElevation, surfaceElevationVis, 'Surface Elevation');

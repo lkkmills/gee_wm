@@ -1,0 +1,22 @@
+var engine = require('users/andreim/geeMonitor:monitor.js');
+
+var roi = roi||ee.Geometry.Point(-60.00, -14.33)
+Map.addLayer(roi, {color: 'blue'}, 'roi');
+Map.setCenter(-60.00, -14.33, 9);
+
+var roio = roi
+var historyStart = historyStart||'2013-01-01'
+var monitoringEnd = monitoringEnd||'2018-12-31'
+var historyEnd = historyEnd||"2016-12-31"
+var monitoringStart = monitoringStart||"2017-01-01"
+var h = h||0.25
+var hxh = h
+var period = period||10
+var alpha = alpha||0.05
+var atAlpha = 1 - alpha;
+var magnitudeThreshold = magnitudeThreshold||-0.000000000000000000000000000000121
+var harmonics = harmonics||1
+
+var result = engine.bfastMonitor(roi,historyStart,historyEnd,monitoringStart,monitoringEnd,h,period,alpha,magnitudeThreshold,harmonics)
+
+print(result);

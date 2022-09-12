@@ -1,0 +1,179 @@
+// Introduction to Javascript for Earth Engine
+
+print('Hello World!');
+
+// print('Hello World!');
+
+// Use single (or double) quotes to make a string.
+var greetString = 'Ahoy there!';
+// Use parentheses to pass arguments to functions.
+print(greetString);
+
+// Store a number in a variable.
+var number = 42;
+print('The answer is:', number);
+
+// Use square brackets [] to make a list.
+var listOfNumbers = [0, 1, 1, 2, 3, 5];
+print('List of numbers:', listOfNumbers);
+
+// Make a list of strings.
+var listOfStrings = ['a', 'b', 'c', 'd'];
+print('List of strings:', listOfStrings);
+
+// Use curly brackets {} to make a dictionary of key:value pairs.
+var object = {
+  foo: 'bar',
+  baz: 13,
+  stuff: ['this', 'that', 'the other thing']
+};
+print('Dictionary:', object);
+// Access dictionary items using square brackets.
+print('Print foo:', object['foo']);
+// Access dictionary items using dot notation.
+print('Print stuff:', object.stuff);
+
+var myFunction = function(parameter1, parameter2, parameter3) {
+  statement;
+  statement;
+  statement;
+  return statement;
+};
+
+// The reflect function takes a single parameter: element.
+var reflect = function(element) {
+  // Return the argument.
+  return element;
+};
+print('A good day to you!', reflect('Back at you!'));
+
+var aString = ee.Algorithms.String(42);
+
+// Define a string, then put it into an EE container.
+var aString = 'To the cloud!';
+var eeString = ee.String(aString);
+print('Where to?', eeString);
+
+// Define a string that exists on the server.
+var serverString = ee.String('This is on the server.');
+print('String on the server:', serverString);
+
+// Define a number that exists on the server.
+var serverNumber = ee.Number(Math.E);
+print('e=', serverNumber);
+
+// Use a built-in function to perform an operation on the number.
+var logE = serverNumber.log();
+print('log(e)=', logE);
+
+// Make a sequence the hard way.
+var eeList = ee.List([1, 2, 3, 4, 5]);
+// Make a sequence the easy way!
+var sequence = ee.List.sequence(1, 5);
+print('Sequence:', sequence);
+
+// Use a method on an ee.List to extract a value.
+var value = sequence.get(2);
+print('Value at index 2:', value);
+
+// Cast the return value of get() to a number.
+print('No error:', ee.Number(value).add(3));
+
+// Make a Dictionary on the server.
+var dictionary = ee.Dictionary({
+  e: Math.E,
+  pi: Math.PI,
+  phi: (1 + Math.sqrt(5)) / 2
+});
+
+// Get some values from the dictionary.
+print('Euler:', dictionary.get('e'));
+print('Pi:', dictionary.get('pi'));
+print('Golden ratio:', dictionary.get('phi'));
+
+// Get all the keys:
+print('Keys: ', dictionary.keys());
+
+// Define a date in Earth Engine.
+var date = ee.Date('2015-12-31');
+print('Date:', date);
+
+// Get the current time using the JavaScript Date.now() method.
+var now = Date.now();
+print('Milliseconds since January 1, 1970', now);
+
+// Initialize an ee.Date object.
+var eeNow = ee.Date(now);
+print('Now:', eeNow);
+
+var aDate = ee.Date.fromYMD(2017, 1, 13);
+print('aDate:', aDate);
+
+var theDate = ee.Date.fromYMD({
+  day: 13,
+  month: 1,
+  year: 2017
+});
+print('theDate:', theDate);
+
+// This generates a list of numbers from 1 to 10.
+var myList = ee.List.sequence(1, 10);
+
+// The map() operation takes a function that works on each element independently
+// and returns a value. You define a function that can be applied to the input.
+var computeSquares = function(number) {
+  // We define the operation using the EE API.
+  return ee.Number(number).pow(2);
+};
+
+// Apply your function to each item in the list by using the map() function.
+var squares = myList.map(computeSquares);
+print(squares);  // [1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+// The following function determines if a number is even or odd.  The mod(2)
+// function returns 0 if the number is even and 1 if it is odd (the remainder
+// after dividing by 2).  The input is multipled by this remainder so even
+// numbers get set to 0 and odd numbers are left unchanged.
+var getOddNumbers = function(number) {
+  number = ee.Number(number);   // Cast the input to a Number so we can use mod.
+  var remainder = number.mod(2);
+  return number.multiply(remainder);
+};
+
+var newList = myList.map(getOddNumbers);
+
+// Remove the 0 values.
+var oddNumbers = newList.removeAll([0]);
+
+var squares = oddNumbers.map(computeSquares);
+print(squares);  // [1, 9, 25, 49, 81]
+
+var collection = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA');
+
+// Divide the collection into 2 subsets and apply a different algorithm on them.
+var subset1 = collection.filter(ee.Filter.lt('SUN_ELEVATION', 40));
+var subset2 = collection.filter(ee.Filter.gte('SUN_ELEVATION', 40));
+
+var processed1 = subset1.map(function(image) {
+  return image.multiply(2);
+});
+var processed2 = subset2;
+
+// Merge the collections to get a single collection.
+var final = processed1.merge(processed2);
+print('Original collection size', collection.size());
+print('Processed collection size', final.size());
+
+var algorithm = function(current, previous) {
+  previous = ee.List(previous);
+  var n1 = ee.Number(previous.get(-1));
+  var n2 = ee.Number(previous.get(-2));
+  return previous.add(n1.add(n2));
+};
+
+// Compute 10 iterations.
+var numIteration = ee.List.repeat(1, 10);
+var start = [0, 1];
+var sequence = numIteration.iterate(algorithm, start);
+print(sequence);  // [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
+

@@ -1,0 +1,79 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("users/lkmills/geoBtest");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+///// HOW TO FILTER WDPA
+
+// Subset the DRC feature from countries.
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+
+// Subset protected areas to the bounds of the DRC feature.
+var dataset = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Salonga')
+  ));
+
+var dataset_test = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter(ee.Filter.bounds(drcongo));
+var salonga = dataset_test.filter(ee.Filter.eq('NAME', 'Parc national de la Salonga'));
+
+var visParams = {
+  palette: ['2ed033', '5aff05', '67b9ff', '5844ff', '0a7618', '2c05ff'],
+  min: 0.0,
+  max: 1550000.0,
+  opacity: 0.8,
+};
+var image = ee.Image().float().paint(dataset, 'REP_AREA');
+Map.setCenter(23.5, -2.5, 6);
+Map.addLayer(image, visParams, 'WCMC/WDPA/current/polygons');
+Map.addLayer(salonga, null, 'for Inspector', false);
+
+///// HOW TO FILTER GEOBOUNDARIES
+
+// Subset the DRC feature from countries.
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+Map.setCenter(23.5, -2.5, 6);
+
+var ADM1 = ee.FeatureCollection('users/lkmills/geoBoundariesSimplified-3_0_0-COD-ADM1');
+var bas_uele = ADM1.filter(ee.Filter.eq('shapeName', 'Nord-Ubangi'));
+Map.addLayer(bas_uele, {}, 'Bas Uele');
+
+var ndvi = ee.ImageCollection('MODIS/006/MOD13Q1')
+                    .filter(ee.Filter.date('2020-01-01', '2020-06-09'))
+                    .select('NDVI')
+                    .map(
+                      function(img) {
+                        var rescaled_NDVI = img.select('NDVI')
+                                                .multiply(0.0001)
+                                                .rename('NDVI_rescaled');
+                        return img.addBands(rescaled_NDVI);
+  }
+);
+
+var TS_0001 = ui.Chart.image.seriesByRegion(ndvi, bas_uele, ee.Reducer.mean(), 'NDVI_rescaled', 500, 'system:time_start')
+  .setSeriesNames(['NDVI'])
+  .setOptions({
+    title: 'NDVI Time Series 2019',
+    vAxis: {title: 'NDVI'},
+    hAxis: {title: 'date'},
+});
+print(TS_0001);
+
+//var dataset = ee.FeatureCollection('users/lkmills/eetest').aggregate_mean('NDVI');
+//print('Mean:', dataset);
+

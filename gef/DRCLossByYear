@@ -1,0 +1,186 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017"),
+    image = ee.Image("UMD/hansen/global_forest_change_2019_v1_7");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Yearly forest loss in the Democratic Republic of the Congo (DR Congo)
+// detected primarily between 2001-2019 >> visualization and charted yearly loss
+
+// Load country features from Large Scale International Boundary (LSIB) dataset.
+//var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+
+// Subset the DR Congo feature from countries.
+//var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+  // FIPS code = CG, https://en.wikipedia.org/wiki/List_of_FIPS_country_codes
+
+var drcongo = ee.FeatureCollection('users/lkmills/east_kali');
+
+// Get the loss image using Hansen v1.7 (2000-2019).
+// Band: loss, forest loss during study period, or primarily 2001-2019.
+var gfc2019 = ee.Image('UMD/hansen/global_forest_change_2019_v1_7');
+  // Green represents where the study detected forest in the year 2000.
+  // Image masked upon visualization to make areas in which forest cover is zero transparent.
+var lossIn2000 = gfc2019.select(['lossyear']).eq(0);
+var lossIn2001 = gfc2019.select(['lossyear']).eq(1);
+var lossIn2002 = gfc2019.select(['lossyear']).eq(2);
+var lossIn2003 = gfc2019.select(['lossyear']).eq(3);
+var lossIn2004 = gfc2019.select(['lossyear']).eq(4);
+var lossIn2005 = gfc2019.select(['lossyear']).eq(5);
+var lossIn2006 = gfc2019.select(['lossyear']).eq(6);
+var lossIn2007 = gfc2019.select(['lossyear']).eq(7);
+var lossIn2008 = gfc2019.select(['lossyear']).eq(8);
+var lossIn2009 = gfc2019.select(['lossyear']).eq(9);
+var lossIn2010 = gfc2019.select(['lossyear']).eq(10);
+var lossIn2011 = gfc2019.select(['lossyear']).eq(11);
+var lossIn2012 = gfc2019.select(['lossyear']).eq(12);
+var lossIn2013 = gfc2019.select(['lossyear']).eq(13);
+var lossIn2014 = gfc2019.select(['lossyear']).eq(14);
+var lossIn2015 = gfc2019.select(['lossyear']).eq(15);
+var lossIn2016 = gfc2019.select(['lossyear']).eq(16);
+var lossIn2017 = gfc2019.select(['lossyear']).eq(17);
+var lossIn2018 = gfc2019.select(['lossyear']).eq(18);
+var lossIn2019 = gfc2019.select(['lossyear']).eq(19);
+var lossIn2020 = gfc2019.select(['lossyear']).eq(20);
+print(lossIn2000);
+print(lossIn2020);
+
+var lossAreaImage = lossIn2000.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2001.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2002.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2003.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2004.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2005.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2006.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2007.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2008.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2009.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2010.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2011.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2012.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2013.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2014.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2015.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2016.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2017.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2018.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2019.multiply(ee.Image.pixelArea());
+var lossAreaImage = lossIn2020.multiply(ee.Image.pixelArea());
+  // Pink is estimated forest loss over the study period (2001-2019).
+var gainImage =  gfc2019.select(['gain']);
+var treeCover = gfc2019.select(['treecover2000']);
+
+// Band: lossYear, year of gross forest cover loss event, 0-19, 20 objects.
+  // Instead of multiplying the loss image with the area image and then
+  // summing over the result to get a measure of area, use a Grouped Reducer
+  // so the pixel areas will be summed and grouped according to the value 
+  // in lossYear band.
+var lossYear = gfc2019.select(['lossyear']);
+var lossByYear = lossAreaImage.addBands(lossYear).reduceRegion({
+  reducer: ee.Reducer.sum().group({
+    groupField: 1
+    }),
+  geometry: drcongo,
+  scale: 30,
+  maxPixels: 1e10
+});
+print(lossByYear);
+
+// Use format() to convert year dict keys from 0-19 to 2001-2019.
+var statsFormatted = ee.List(lossByYear.get('groups'))
+  .map(function(el) {
+    var d = ee.Dictionary(el);
+    return [ee.Number(d.get('group')).format("20%02d"), d.get('sum')];
+  });
+var statsDictionary = ee.Dictionary(statsFormatted.flatten());
+
+// Map visualization of DR Congo forest loss 2000-2019.
+
+// Clip forest coverage to DR Congo boundary.
+var gfc2019_clip = gfc2019.clip(drcongo);
+
+//Display forest extent in green #ACCA64.
+// Map.addLayer(gfc2019_clip.mask(gfc2019_clip), {
+//   bands: ['treecover2000'],
+//   palette: ['000000', 'ACCA64'],
+//   max: 100
+// }, 'DR Congo Forest Cover Masked');
+
+Map.addLayer(gfc2019_clip.mask(gfc2019_clip), {
+  bands: ['treecover2000'],
+  palette: ['BEBEBE'],
+  max: 100
+}, 'DR Congo Forest Cover Masked');
+
+// Clip forest gain to DR Congo boundary.
+var gain_clip = gainImage.clip(drcongo);
+
+// Display forest gain in blue #4600FF.
+Map.addLayer(gain_clip.updateMask(gain_clip),
+            {palette: ['4600FF']}, 'Forest Gain');
+
+// Clip forest loss to DR Congo boundary.
+var loss_clip_2000 = lossIn2000.clip(drcongo);
+var loss_clip_2001 = lossIn2001.clip(drcongo);
+var loss_clip_2002 = lossIn2002.clip(drcongo);
+var loss_clip_2003 = lossIn2003.clip(drcongo);
+var loss_clip_2004 = lossIn2004.clip(drcongo);
+var loss_clip_2005 = lossIn2005.clip(drcongo);
+var loss_clip_2006 = lossIn2006.clip(drcongo);
+var loss_clip_2007 = lossIn2007.clip(drcongo);
+var loss_clip_2008 = lossIn2008.clip(drcongo);
+var loss_clip_2009 = lossIn2009.clip(drcongo);
+var loss_clip_2010 = lossIn2010.clip(drcongo);
+var loss_clip_2011 = lossIn2011.clip(drcongo);
+var loss_clip_2012 = lossIn2012.clip(drcongo);
+var loss_clip_2013 = lossIn2013.clip(drcongo);
+var loss_clip_2014 = lossIn2014.clip(drcongo);
+var loss_clip_2015 = lossIn2015.clip(drcongo);
+var loss_clip_2016 = lossIn2016.clip(drcongo);
+var loss_clip_2017 = lossIn2017.clip(drcongo);
+var loss_clip_2018 = lossIn2018.clip(drcongo);
+var loss_clip_2019 = lossIn2019.clip(drcongo);
+var loss_clip_2020 = lossIn2019.clip(drcongo);
+
+// Display forest loss in pink #DC6C9A.
+Map.addLayer(loss_clip_2000.updateMask(loss_clip_2000),
+    {palette: ['DC6C9A']}, 'Loss in 2000');
+Map.addLayer(loss_clip_2001.updateMask(loss_clip_2001),
+    {palette: ['DC6C9A']}, 'Loss in 2001');
+Map.addLayer(loss_clip_2002.updateMask(loss_clip_2002),
+    {palette: ['DC6C9A']}, 'Loss in 2002');
+Map.addLayer(loss_clip_2003.updateMask(loss_clip_2003),
+    {palette: ['DC6C9A']}, 'Loss in 2003');
+Map.addLayer(loss_clip_2004.updateMask(loss_clip_2004),
+    {palette: ['DC6C9A']}, 'Loss in 2004');
+Map.addLayer(loss_clip_2005.updateMask(loss_clip_2005),
+    {palette: ['DC6C9A']}, 'Loss in 2005');
+Map.addLayer(loss_clip_2006.updateMask(loss_clip_2006),
+    {palette: ['DC6C9A']}, 'Loss in 2006');
+Map.addLayer(loss_clip_2007.updateMask(loss_clip_2007),
+    {palette: ['DC6C9A']}, 'Loss in 2007');
+Map.addLayer(loss_clip_2008.updateMask(loss_clip_2008),
+    {palette: ['DC6C9A']}, 'Loss in 2008');
+Map.addLayer(loss_clip_2009.updateMask(loss_clip_2009),
+    {palette: ['DC6C9A']}, 'Loss in 2009');
+Map.addLayer(loss_clip_2010.updateMask(loss_clip_2010),
+    {palette: ['DC6C9A']}, 'Loss in 2010');
+Map.addLayer(loss_clip_2011.updateMask(loss_clip_2011),
+    {palette: ['DC6C9A']}, 'Loss in 2011');
+Map.addLayer(loss_clip_2012.updateMask(loss_clip_2012),
+    {palette: ['DC6C9A']}, 'Loss in 2012');
+Map.addLayer(loss_clip_2013.updateMask(loss_clip_2013),
+    {palette: ['DC6C9A']}, 'Loss in 2013');
+Map.addLayer(loss_clip_2014.updateMask(loss_clip_2014),
+    {palette: ['DC6C9A']}, 'Loss in 2014');
+Map.addLayer(loss_clip_2015.updateMask(loss_clip_2015),
+    {palette: ['DC6C9A']}, 'Loss in 2015');
+Map.addLayer(loss_clip_2016.updateMask(loss_clip_2016),
+    {palette: ['DC6C9A']}, 'Loss in 2016');
+Map.addLayer(loss_clip_2017.updateMask(loss_clip_2017),
+    {palette: ['DC6C9A']}, 'Loss in 2017');
+Map.addLayer(loss_clip_2018.updateMask(loss_clip_2018),
+    {palette: ['DC6C9A']}, 'Loss in 2018');
+Map.addLayer(loss_clip_2019.updateMask(loss_clip_2019),
+    {palette: ['DC6C9A']}, 'Loss in 2019');  
+Map.addLayer(loss_clip_2020.updateMask(loss_clip_2020),
+    {palette: ['DC6C9A']}, 'Loss in 2020');  
+  

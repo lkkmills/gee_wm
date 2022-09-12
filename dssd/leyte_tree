@@ -1,0 +1,128 @@
+var leyte = ee.FeatureCollection('users/lkmills/Leyte');
+Map.addLayer(leyte, {color: '0000FF'}, 'Leyte');
+
+// Get the forest loss image.
+var gfc2014 = ee.Image('UMD/hansen/global_forest_change_2019_v1_7');
+
+var stats12_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(12);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_12: stats.get('lossyear')})
+};
+
+var stats13_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(13);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_13: stats.get('lossyear')})
+};
+
+var stats14_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(14);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_14: stats.get('lossyear')})
+};
+
+var stats15_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(15);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_15: stats.get('lossyear')})
+};
+
+var stats16_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(16);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_16: stats.get('lossyear')})
+};
+
+var stats17_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(17);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_17: stats.get('lossyear')})
+};
+
+var stats18_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(18);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_18: stats.get('lossyear')})
+};
+
+var stats19_func = function(feature) {
+  var lossImage = gfc2014.select(['lossyear']).eq(19);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e30
+  });
+  return feature.set({loss_19: stats.get('lossyear')})
+};
+
+var getstats12 = leyte.map(stats12_func);
+var getstats13 = getstats12.map(stats13_func);
+var getstats14 = getstats13.map(stats14_func);
+var getstats15 = getstats14.map(stats15_func);
+var getstats16 = getstats15.map(stats16_func);
+var getstats17 = getstats16.map(stats17_func);
+var getstats18 = getstats17.map(stats18_func);
+var getstats19 = getstats18.map(stats19_func);
+
+Export.table.toDrive({
+  collection: getstats19,
+  description: 'getstats19',
+  selectors: ['Name', 'loss_12', 'loss_13', 'loss_14', 'loss_15',
+  'loss_16', 'loss_17', 'loss_18', 'loss_19']
+});
+
+var treecover2000_func = function(feature) {
+  var lossImage = gfc2014.select(['treecover2000']);
+  var stats = lossImage.reduceRegion({
+    reducer: ee.Reducer.sum(),
+    geometry: feature.geometry(),
+    scale: 30,
+    maxPixels: 1e10
+  });
+  return feature.set({treecover2000: stats.get('treecover2000')})
+};
+
+var gettreecover2000 = leyte.map(treecover2000_func);
+
+Export.table.toDrive({
+  collection: gettreecover2000,
+  description: 'gettreecover2000',
+  selectors: ['Name', 'treecover2000']
+});

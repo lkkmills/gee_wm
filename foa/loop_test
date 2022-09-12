@@ -1,0 +1,30 @@
+var myList = ee.List.sequence(0,999);
+var region = ee.Geometry.Rectangle(-119.224, 34.669, -99.536, 50.064);
+var randomPoints = ee.FeatureCollection.randomPoints(region);
+Map.addLayer(randomPoints, {}, 'random points');
+var ind = randomPoints;
+var multi = randomPoints.geometry();
+var geometries = multi.geometries();
+var lineString = ee.Geometry.LineString(geometries);
+var newList = lineString.coordinates();
+
+var computeBuffers = function(num) {
+  var point = ee.Geometry.Point(newList.get(num));
+  var buffPoint = point.centroid(100).buffer(500);
+  return buffPoint;
+};
+
+var test = myList.map(computeBuffers);
+print(test);
+
+var newmulti = ee.Geometry.MultiPolygon(test);
+print('buffers', newmulti);
+Map.addLayer(newmulti, {color:'red'}, 'newmulti');
+
+
+
+
+
+
+
+
