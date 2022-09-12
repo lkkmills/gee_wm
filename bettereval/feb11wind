@@ -1,0 +1,123 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = /* color: #d63000 */ee.Geometry.MultiPoint();
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Daily mean 10m u-component of wind
+var era5_u_wind_10m = ee.ImageCollection('ECMWF/ERA5/DAILY')
+                          .select('u_component_of_wind_10m')
+                          .filter(ee.Filter.date('2019-07-01', '2019-07-31'));
+
+// Visualization palette for u- and v-component of 10m wind
+var visWind = {
+  min: 0,
+  max: 30,
+  palette: [
+    '#FFFFFF', '#FFFF71', '#DEFF00', '#9EFF00', '#77B038', '#007E55', '#005F51',
+    '#004B51', '#013A7B', '#023AAD'
+  ]
+};
+
+// Visualization palette for pressure (surface pressure, mean sea level
+// pressure) - adjust min and max values for mslp to min:990 and max:1050
+var visPressure = {
+  min: 500,
+  max: 1150,
+  palette: [
+    '#01FFFF', '#058BFF', '#0600FF', '#DF00FF', '#FF00FF', '#FF8C00', '#FF8C00'
+  ]
+};
+
+
+// Map.addLayer(
+//     era5_u_wind_10m.filter(ee.Filter.date('2019-07-15')), visWind,
+//     'Daily mean 10m u-component of wind');
+
+//Map.setCenter(33.21626573, 0.4173371083, 7);
+
+var features = [
+  ee.Feature(ee.Geometry.Point(33.21626573, 0.4173371083), {name: 'Uganda Leather and Tanning Industries'}),
+  ee.Feature(ee.Geometry.Point(33.21476369, 0.4173585654), {name: 'Sky Fat'}),
+  ee.Feature(ee.Geometry.Point(33.21377, 0.4156837298), {name: 'Gomba Fishing Industries'}),
+  ee.Feature(ee.Geometry.Point(31.7195021, -0.3310869675), {name: 'Leatherland Tannery'}),
+  ee.Feature(ee.Geometry.Point(31.71860231, -0.3321542073), {name: 'Novelty Tannery'}),
+  ee.Feature(ee.Geometry.Point(30.68733337, -0.6098459583), {name: 'Basajjabalaba Tannery'}),
+  ee.Feature(ee.Geometry.Point(32.69361612, 0.3584519681), {name: 'Kampala Industrial and Business Park (KIBP) (Namanve)'}),
+  ee.Feature(ee.Geometry.Point(32.60949198, 0.3152763558), {name: 'Bweyogerere'}),
+  ee.Feature(ee.Geometry.Point(33.61763755, 1.775661729), {name: 'Soroti'}),
+  ee.Feature(ee.Geometry.Point(0.4554832314, 33.18731376), {name: '1i'}),
+  ee.Feature(ee.Geometry.Point(1.076452835, 34.1383745), {name: '2'}),
+  ee.Feature(ee.Geometry.Point(0.429618298, 33.22219994), {name: '3'}),
+  ee.Feature(ee.Geometry.Point(0.3584519681, 32.69361612), {name: '4'}),
+  ee.Feature(ee.Geometry.Point(0.6859278952, 34.17910117), {name: 'Jamba'}),
+];
+
+var fromList = ee.FeatureCollection(features);
+print(fromList);
+
+Map.addLayer(fromList, {color: 'purple'}, 'Tanneries/Industrial Parks');
+
+// var bufferPoly = function(fromList) {
+//   return fromList.buffer(5000);   // substitute in your value of Z here
+// };
+
+// var buffered = fromList.map(bufferPoly);
+// Map.addLayer(buffered, {color: 'red'}, 'buffers');
+
+// var x = ee.List.sequence(33.5,33.735,0.01)
+// var y = ee.List.sequence(1.7,1.86,0.01)
+// var features = ee.FeatureCollection(x.map(function(xcor){
+// var feat = ee.FeatureCollection(y.map(function(ycor){
+// return ee.Feature(ee.Geometry.Point([xcor,ycor]))
+// }))
+// return feat
+// })).flatten()
+ 
+// print(features)
+// Map.addLayer(features)
+
+// var x = ee.List.sequence(33.0892,33.3357,0.01)
+// var y = ee.List.sequence(0.3303,0.4944,0.01)
+// var features = ee.FeatureCollection(x.map(function(xcor){
+// var feat = ee.FeatureCollection(y.map(function(ycor){
+// return ee.Feature(ee.Geometry.Point([xcor,ycor]))
+// }))
+// return feat
+// })).flatten()
+ 
+// print(features)
+// Map.addLayer(features)
+
+// var x = ee.List.sequence(32.5247,32.7712,0.01)
+// var y = ee.List.sequence(0.2515,0.417,0.01)
+// var features = ee.FeatureCollection(x.map(function(xcor){
+// var feat = ee.FeatureCollection(y.map(function(ycor){
+// return ee.Feature(ee.Geometry.Point([xcor,ycor]))
+// }))
+// return feat
+// })).flatten()
+ 
+// print(features)
+// Map.addLayer(features)
+
+// var x = ee.List.sequence(31.5935,31.8469,0.01)
+// var y = ee.List.sequence(-0.4186,-0.2525,0.01)
+// var features = ee.FeatureCollection(x.map(function(xcor){
+// var feat = ee.FeatureCollection(y.map(function(ycor){
+// return ee.Feature(ee.Geometry.Point([xcor,ycor]))
+// }))
+// return feat
+// })).flatten()
+ 
+// print(features)
+// Map.addLayer(features)
+
+// var x = ee.List.sequence(30.566,30.8097,0.01)
+// var y = ee.List.sequence(-0.6888,-0.522,0.01)
+// var features = ee.FeatureCollection(x.map(function(xcor){
+// var feat = ee.FeatureCollection(y.map(function(ycor){
+// return ee.Feature(ee.Geometry.Point([xcor,ycor]))
+// }))
+// return feat
+// })).flatten()
+ 
+// print(features)
+// Map.addLayer(features)

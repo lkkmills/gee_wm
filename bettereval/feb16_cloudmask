@@ -1,0 +1,91 @@
+// https://stackoverflow.com/questions/51152982/google-earth-engine-mask-clouds-and-map-a-function-over-an-image-collection-of
+
+// Function to cloud mask Landsat 8.
+var maskL8SR = function(image) {
+  // Bits 3 and 5 are cloud shadow and cloud, respectively.
+  var cloudShadowBitMask = ee.Number(2).pow(3).int();
+  var cloudsBitMask = ee.Number(2).pow(5).int();
+  // Get the QA band.
+  var qa = image.select('pixel_qa');
+  // Both flags should be set to zero, indicating clear conditions.
+  var mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0).and(
+            qa.bitwiseAnd(cloudsBitMask).eq(0));
+  return image
+      // Scale the data to reflectance and temperature.
+      .select(['B5', 'B7'], ['NIR', 'SWIR']).multiply(0.0001)
+      .addBands(image.select(['B11'], ['Thermal']).multiply(0.1))
+      .updateMask(mask);
+};
+
+// Function to cloud mask Landsats 5-7
+var maskL57SR = function(image) {
+  var qa = image.select('pixel_qa');
+  // return qa;
+  // // Second bit must be zero, meaning none to low cloud confidence.
+  var mask1 = qa.bitwiseAnd(ee.Number(2).pow(7).int()).eq(0).and(
+      qa.bitwiseAnd(ee.Number(2).pow(3).int()).lte(0)); // cloud shadow
+  // // This gets rid of irritating fixed-pattern noise at the edge of the images.
+  var mask2 = image.select('B.*').gt(0).reduce('min');
+  return mask2;
+
+  // return image
+  //     // .select(['B4', 'B7'], ['NIR', 'SWIR']).multiply(0.0001)
+  //     // // .addBands(image.select(['B6'], ['Thermal']).multiply(0.1))
+  //     // .addBands(image.select(['B3', 'B2', 'B1']).multiply(0.1))
+  //     .select(['B3', 'B2', 'B1'])
+  //     .updateMask(mask1.and(mask2));
+};
+
+// find all data and filter them by date
+var lst5 = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
+    .filterDate('1984-10-01', '2011-10-01')
+    .map(maskL57SR)
+var lst7 = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+    .filterDate('2011-10-01', '2013-04-07')
+    .map(maskL57SR)
+var lst8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+    .filterDate('2013-04-07', '2018-05-01')
+    .map(maskL8SR)
+var lst7_08 = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+    .filterDate('2007-12-01', '2008-02-01')
+    .map(maskL57SR)
+var lst7_92 = ee.ImageCollection('LANDSAT/LT04/C01/T1_SR')
+    .filterDate('1992-01-02', '1992-04-01')
+    .map(maskL57SR)
+    
+
+Map.addLayer(lst5.first())//.select(['B3', 'B2', 'B1']));
+
+var bandNames = lst5.first().bandNames();
+print('Band names: ', bandNames);
+    
+////////////////////////////////////////////////////////////    
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+// // Combine all landsat data, 1985 through 2015
+// var everything = ee.ImageCollection(lst5.merge(lst7));
+// everything = everything.merge(lst8);
+// everything = everything.merge(lst7_08);
+// everything = everything.merge(lst7_92);
+
+// // NBR:
+// var nbrFunction = function(image) {
+//   image = ee.Image(image)
+//   return image.addBands(image.expression(
+//     '(nir - 0.0001 * swir * thermal) / ' +
+//     '(nir + 0.0001 * swir * thermal)', {
+//       nir: image.select(['NIR']),
+//       swir: image.select(['SWIR']),
+//       thermal: image.select(['Thermal'])
+//     }).rename('NBR').clamp(-1, 1));
+// };
+
+// everything = everything.map(nbrFunction);
+
+// var check = ee.Image(everything.first());
+// Map.centerObject(check);
+// Map.addLayer(check);
+
+//Map.addLayer(everything);
