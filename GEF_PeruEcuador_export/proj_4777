@@ -1,0 +1,40 @@
+///////////////////
+// GEFID = 4777 //
+///////////////////
+
+// SET-UP
+
+// Function to assign each boundary its corresponding project ID
+var setGEFID = function(feature) {
+  return feature.set('GEFID', project_id);
+};
+
+// Define the project ID
+var project_id = 4777
+
+// GEOBOUNDARIES ADM2
+
+// Upload geoBoundaries Vietnam ADM2 data to GEE
+// REPLACE 'users/lkmills/geoBoundaries-VNM-ADM2' WITH YOUR SHAPEFILE ID
+
+// Cotacachi, Otavalo, Parish La Esperanza, Colta, Guamote, Saraguro, Paltas
+var adm2 = ee.FeatureCollection('users/lkmills/geoBoundaries-VNM-ADM2').filter(ee.Filter.or(
+  ee.Filter.eq("shapeName", 'Cotacachi'),
+  ee.Filter.eq("shapeName", 'Otavalo'),
+  ee.Filter.eq("shapeName", 'Colta'),
+  ee.Filter.eq("shapeName", 'Guamote'),
+  ee.Filter.eq("shapeName", 'Saraguro'),
+  ee.Filter.eq("shapeName", 'Paltas')))
+  .map(setGEFID);
+  
+Map.addLayer(adm2, {color: 'red'}, 'adm2');
+//print('ADM2: ', adm2);
+
+var adm2_4777 = adm2.map(setGEFID);
+print('ADM2: ', adm2_4777);
+
+Export.table.toDrive({
+  collection: adm2_4777,
+  description:'adm2_4777',
+  fileFormat: 'GeoJSON'
+});

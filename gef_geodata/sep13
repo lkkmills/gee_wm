@@ -1,0 +1,114 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("WCMC/WDPA/current/polygons"),
+    table2 = ee.FeatureCollection("users/lkmills/geoBoundaries-VNM-ADM2");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+Map.setCenter(108.048, 14.511, 7);
+
+///////////////////
+// GEFID = 10787 //
+///////////////////
+
+// Datasets used: geoBoundaries; WDPA; University of California, Berkeley. Museum of Vertebrate Zoology
+
+//var adm1_vietnam = ee.FeatureCollection('users/lkmills/geoBoundaries-VNM-ADM1');
+//Map.addLayer(adm1_vietnam, {color: 'red'}, 'adm1_vietnam');
+
+//var adm2_vietnam = ee.FeatureCollection('users/lkmills/geoBoundaries-VNM-ADM2');
+//Map.addLayer(adm2_vietnam, {color: 'orange'}, 'adm2_vietnam');
+
+//var adm3_vietnam = ee.FeatureCollection('users/lkmills/dk039bc2779');
+//Map.addLayer(adm3_vietnam, {color: 'orange'}, 'adm3_vietnam');
+// https://maps.princeton.edu/catalog/stanford-dk039bc2779
+
+var phong_buffer = ee.FeatureCollection('users/lkmills/dk039bc2779').filter(ee.Filter.or(
+  ee.Filter.eq('id_3',7490), ee.Filter.eq('id_3',7502), ee.Filter.eq('id_3',7494), ee.Filter.eq('id_3',7503), ee.Filter.eq('id_3',7501),
+  ee.Filter.eq('id_3',7461), ee.Filter.eq('id_3',7458), ee.Filter.eq('id_3',7514), ee.Filter.eq('id_3',7451), ee.Filter.eq('id_3',7456),
+  ee.Filter.eq('id_3',7438), ee.Filter.eq('id_3',7455), ee.Filter.eq('id_3',7453)));
+Map.addLayer(phong_buffer, {color: 'orange'}, 'phong_buffer');
+
+var thuan_bac = ee.FeatureCollection('users/lkmills/geoBoundaries-VNM-ADM2').filter("shapeName == 'Thuan Bac'");
+Map.addLayer(thuan_bac, {color: 'orange'}, 'thuan_bac');
+
+var ninh_hai = ee.FeatureCollection('users/lkmills/geoBoundaries-VNM-ADM2').filter("shapeName == 'Ninh Hai'");
+Map.addLayer(ninh_hai, {color: 'orange'}, 'ninh_hai');
+
+//var protected_areas = ee.FeatureCollection("WCMC/WDPA/current/polygons").filter("ISO3 == 'VNM'");
+//Map.addLayer(protected_areas, {color: 'green'}, 'all protected areas');
+//print(protected_areas);
+
+var nui_chua = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter("WDPAID == 303041");
+Map.addLayer(nui_chua, {color: 'green'}, 'nui_chua');
+
+var phong = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter("WDPAID == 10345");
+Map.addLayer(phong, {color: 'green'}, 'phong');
+
+var combined_10787 = phong_buffer.merge(thuan_bac);
+var combined2_10787 = combined_10787.merge(ninh_hai);
+var combined3_10787 = combined2_10787.merge(nui_chua);
+var combined4_10787 = combined3_10787.merge(phong);
+
+print(combined4_10787);
+Map.addLayer(combined4_10787, {color: 'red'}, 'project_1');
+
+var setGEFID = function(feature) {
+  return feature.set('GEFID', 10787);   // substitute in your value of Z here
+};
+
+var new_10787 = combined4_10787.map(setGEFID);
+//Map.addLayer(new_10787, {color: 'red'}, 'new_10787');
+
+print(new_10787);
+Map.addLayer(new_10787, {color: 'blue'}, 'new_10787');
+
+// NOTES = Didn't get marine core zone for Phong
+// 
+
+/////////////////
+// GEFID = 10539 //
+/////////////////
+
+var kon_chu = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter("WDPAID == 10377");
+Map.addLayer(kon_chu, {color: 'green'}, 'kon_chu');
+
+var kon_ka_kinh = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter("WDPAID == 10378");
+Map.addLayer(kon_ka_kinh, {color: 'green'}, 'kon_ka_kinh');
+
+var krong_trai = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter("WDPAID == 10379");
+Map.addLayer(krong_trai, {color: 'green'}, 'krong_trai');
+
+var gia_lai_buffer = ee.FeatureCollection('users/lkmills/geoBoundaries-VNM-ADM2').filter(ee.Filter.or(
+  ee.Filter.eq('shapeName','KBang'), ee.Filter.eq('shapeName','Mang Yang'), ee.Filter.eq('shapeName','An Khe'),
+  ee.Filter.eq('shapeName','Dak Po'), ee.Filter.eq('shapeName','Kong Chro'), ee.Filter.eq('shapeName','Ia Pa'), 
+  ee.Filter.eq('shapeName','Ayun Pa'), ee.Filter.eq('shapeName','Phu Thien'),
+  ee.Filter.eq('shapeName','Krong Pa'),ee.Filter.eq('shapeName','Dong Xuan'), 
+  ee.Filter.eq('shapeName','Son Hoa'), ee.Filter.eq('shapeName','Song Hinh')));
+Map.addLayer(gia_lai_buffer, {color: 'pink'}, 'gia_lai_buffer_buffer');
+
+// K’Bang, Mang Yang, An Khe (township), Dak Po, Kong Chro, Ia Pa, Ayun Pa (township), Phu Thien, and Krong Pa
+// Dong Xuan, Son Hoa and Song Hinh
+
+var combined_10539 = kon_chu.merge(kon_ka_kinh);
+var combined2_10539 = combined_10539.merge(krong_trai);
+var combined3_10539 = combined2_10539.merge(gia_lai_buffer);
+
+print(combined3_10539);
+Map.addLayer(combined3_10539, {color: 'red'}, 'project_2');
+
+var setGEFID = function(feature) {
+  return feature.set('GEFID', 10539);   // substitute in your value of Z here
+};
+
+var new_10539 = combined3_10539.map(setGEFID);
+
+print(new_10539);
+Map.addLayer(new_10539, {color: 'blue'}, 'new_10539');
+
+var combined = new_10787.merge(new_10539)
+print(combined);
+
+// Export the FeatureCollection to a KML file.
+Export.table.toDrive({
+  collection: phong_buffer,
+  description:'phong_buffer',
+  fileFormat: 'SHP'
+});

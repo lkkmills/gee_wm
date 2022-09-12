@@ -1,0 +1,58 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var roi = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[-74.16392874924729, 40.74670800294221],
+          [-74.16392874924729, 40.69232443266851],
+          [-74.06676840989182, 40.69232443266851],
+          [-74.06676840989182, 40.74670800294221]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var images = ee.ImageCollection('USDA/NAIP/DOQQ')
+                  .filter(ee.Filter.date('2017-01-01', '2018-12-31'));
+// var trueColor = images.select(['R', 'G', 'B']);
+// var trueColorVis = {
+//   min: 0.0,
+//   max: 255.0,
+// };
+// Map.setCenter(-73.9958, 40.7278, 15);
+// Map.addLayer(trueColor, trueColorVis, 'True Color');
+
+// var nir = images.select('N');
+// var red = images.select('R');
+//var ndvi = nir.subtract(red).divide(nir.add(red)).rename('NDVI');
+
+//var norm = image.normalizedDifference(['N','R']);
+
+var NDVI = (function(image) {
+  var index = image.normalizedDifference(['N', 'R']).rename('NDVI');
+  return image.addBands(index);
+});
+
+var test_ndvi= images.map(NDVI);
+
+var naipmosaic_ndvi= naipmosaic.addBands(naipmosaic.normalizedDifference(['N','R']).rename('NDVI'));
+
+
+// // Create a chart of mean NDVI over time within the ROI.
+// var chart = ui.Chart.image.series({
+//   imageCollection: withNDVI.select('NDVI'),
+//   region: roi,
+//   reducer: ee.Reducer.mean(),
+//   scale: 30
+// }).setOptions({
+//   title: 'Treatment Site, 2013 - 2021',
+//   hAxis:
+//     {title: 'Time', titleTextStyle: {italic: false, bold: true}},
+//   vAxis: 
+//     {title: 'NDVI',
+//     titleTextStyle: {italic: false, bold: true}
+//   },
+// });
+
+// // Display the chart in the console.
+// print(chart);

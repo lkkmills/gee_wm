@@ -1,0 +1,35 @@
+// 900907
+
+///////////////////
+// GEFID = 4770 //
+///////////////////
+
+// SET-UP
+
+// Function to assign each boundary its corresponding project ID
+var setGEFID = function(feature) {
+  return feature.set('GEFID', project_id);
+};
+
+// Define the project ID
+var project_id = 4770
+
+// PROTECTED AREAS
+// 1 - Nui Chua National Park
+// 2 - Phong Nha-Ke Bang National Park
+
+// Find WDPAIDs by searching protected areas here: https://www.protectedplanet.net/en
+
+var protected_areas = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter(ee.Filter.eq("WDPAID", 97513)).map(setGEFID);
+
+Map.addLayer(protected_areas, {color: 'purple'}, 'protected_areas');
+// print('Protected Areas: ', protected_areas);
+
+var protected_areas_4770 = protected_areas.map(setGEFID);
+print('Protected Areas: ', protected_areas_4770);
+
+Export.table.toDrive({
+  collection: protected_areas_4770,
+  description:'protected_areas_4770',
+  fileFormat: 'GeoJSON'
+});

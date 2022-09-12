@@ -1,0 +1,46 @@
+///////////////////
+// GEFID = 3717 //
+///////////////////
+
+// SET-UP
+
+// Center the map on Peru/Ecuador
+Map.setCenter(-76.06, -5.2, 5);
+
+// Function to assign each boundary its corresponding project ID
+var setGEFID = function(feature) {
+  return feature.set('GEFID', project_id);
+};
+
+// Define the project ID
+var project_id = 3717
+
+// GEOBOUNDARIES ADM2
+// 1 - San Lorenzo
+// 2 - Bolivar
+// 3 - Espejo
+// 4 - Mira
+// 5 - Ibarra
+// 6 - Pimampiro
+// 7 - Urcuqui
+
+var test = ee.FeatureCollection('users/lkmills/geoBoundaries-ECU-ADM1_simplified');
+print(test);
+
+Map.addLayer(test, {color: 'blue'}, 'test');
+
+var adm2 = ee.FeatureCollection('users/lkmills/geoBoundaries-ECU-ADM2_simplified').filter(ee.Filter.or(
+  ee.Filter.eq("shapeName", 'San Lorenzo'),
+  ee.Filter.eq("shapeName", 'Bolivar'),
+  ee.Filter.eq("shapeName", 'Espejo'),
+  ee.Filter.eq("shapeName", 'Mira'),
+  ee.Filter.eq("shapeName", 'Ibarra'),
+  ee.Filter.eq("shapeName", 'Pimampiro'),
+  ee.Filter.eq("shapeName", 'San Miguel de Urcuqui')))
+  .map(setGEFID);
+  
+//Map.addLayer(adm2, {color: 'red'}, 'adm2');
+//print('ADM2: ', adm2);
+
+var adm2_3717 = adm2.map(setGEFID);
+print('ADM2: ', adm2_3717);

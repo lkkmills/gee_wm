@@ -1,0 +1,55 @@
+///////////////////
+// GEFID = 10514 //
+///////////////////
+
+// SET-UP
+
+// Center the map on Vietnam
+Map.setCenter(108.048, 14.511, 7);
+
+// Function to assign each boundary its corresponding project ID
+var setGEFID = function(feature) {
+  return feature.set('GEFID', project_id);
+};
+
+// Define the project ID
+var project_id = 10514
+
+var points = /* color: #d63000 */ee.List(
+    [[106.4475, 16.9025],
+     [106.1969, 16.6719],
+     [106.1989, 16.6432],
+     [106.4958, 16.3738],
+     [106.51646, 16.3218],
+     [106.4187, 16.3115],
+     [105.2515, 16.5437],
+     [105.02956, 16.5218],
+     [105.2068, 16.4990],
+     [105.3391, 16.3867]]);
+
+// var mp = ee.FeatureCollection(points)
+// print(mp)
+var mp = ee.FeatureCollection(points.map(function(p){
+  var point = ee.Feature(ee.Geometry.Point(p), {})
+  return point
+}))
+print(mp)
+
+var bufferPoly = function(feature) {
+  return feature.buffer(500);   // substitute in your value of Z here
+};
+
+var buffers = mp.map(bufferPoly);
+Map.addLayer(buffers, {color: 'purple'}, 'buffers');
+print(buffers);
+var buffers_10514 = buffers.map(setGEFID);
+print('Buffers ', buffers_10514);
+
+Map.addLayer(mp, {color: 'red'}, 'points');
+Map.addLayer(buffers_10514, {color: 'blue'}, 'buffers');
+
+Export.table.toDrive({
+  collection: buffers_10514,
+  description:'buffers_10514',
+  fileFormat: 'SHP'
+});

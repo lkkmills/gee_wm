@@ -1,0 +1,215 @@
+///////////////////
+// GEFID = 10787 //
+///////////////////
+
+// SET-UP
+
+// Center the map on Vietnam
+Map.setCenter(104.17, 17.321, 6);
+
+// Function to assign each boundary its corresponding project ID
+var setGEFID = function(feature) {
+  return feature.set('GEFID', project_id);
+};
+
+// Define the project ID
+var project_id = 10787
+
+// PROTECTED AREAS
+// 1 - Nui Chua National Park
+// 2 - Phong Nha-Ke Bang National Park
+
+// Find WDPAIDs by searching protected areas here: https://www.protectedplanet.net/en
+
+var protected_areas = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter(ee.Filter.or(
+  ee.Filter.eq("WDPAID", 303041), // WDPAID for Nui Chua
+  ee.Filter.eq("WDPAID", 10345))) // WDPAID for Phong Nha-Ke Bang
+  .map(setGEFID);
+  
+//Map.addLayer(protected_areas, {color: 'E58E19'}, 'protected_areas');
+// print('Protected Areas: ', protected_areas);
+
+var protected_areas_10787 = protected_areas.map(setGEFID);
+//print('Protected Areas: ', protected_areas_10787);
+
+// GEOBOUNDARIES ADM2
+// 1 - Thuan Bac
+// 2 - Ninh Hai
+
+// Upload geoBoundaries Vietnam ADM2 data to GEE
+// REPLACE 'users/lkmills/geoBoundaries-VNM-ADM2' WITH YOUR SHAPEFILE ID
+var adm2 = ee.FeatureCollection('users/lkmills/geoBoundaries-VNM-ADM2').filter(ee.Filter.or(
+  ee.Filter.eq("shapeName", 'Thuan Bac'),
+  ee.Filter.eq("shapeName", 'Ninh Hai')))
+  .map(setGEFID);
+  
+//Map.addLayer(adm2, {color: 'E58E19'}, 'adm2');
+//print('ADM2: ', adm2);
+
+var adm2_10787 = adm2.map(setGEFID);
+//print('ADM2: ', adm2_10787);
+
+// VIETNAM ADM3, UNIVERSITY OF CALIFORNIA, BERKLEY
+// https://maps.princeton.edu/catalog/stanford-dk039bc2779
+// 13 communes (not named in PIF, had to identify through map)
+
+// Upload Vietnam ADM3 data to GEE
+// REPLACE 'users/lkmills/dk039bc2779' WITH YOUR SHAPEFILE ID
+var adm3 = ee.FeatureCollection('users/lkmills/dk039bc2779').filter(ee.Filter.or(
+  ee.Filter.eq('id_3',7490), ee.Filter.eq('id_3',7502), ee.Filter.eq('id_3',7494), ee.Filter.eq('id_3',7503), 
+  ee.Filter.eq('id_3',7501), ee.Filter.eq('id_3',7461), ee.Filter.eq('id_3',7458), ee.Filter.eq('id_3',7514), 
+  ee.Filter.eq('id_3',7451), ee.Filter.eq('id_3',7456), ee.Filter.eq('id_3',7438), ee.Filter.eq('id_3',7455), 
+  ee.Filter.eq('id_3',7453))).map(setGEFID);
+
+//Map.addLayer(adm3, {color: 'E58E19'}, 'adm3');
+//print('ADM3: ', adm3);
+
+var adm3_10787 = adm3.map(setGEFID);
+//print('ADM3: ', adm3_10787);
+
+var combine1_10787 = protected_areas_10787.merge(adm2_10787);
+var combine2_10787 = combine1_10787.merge(adm3_10787);
+
+print('GEFID = 10787', combine2_10787);
+Map.addLayer(combine2_10787, {color: 'E58E19'}, '10787');
+
+///////////////////
+// GEFID = 4650 //
+///////////////////
+
+var project_id = 4650
+
+// PROTECTED AREAS
+// 1 -  Xe Pian NPA in southern Laos
+// 2 - Nam Kading NPA in central Laosx
+// 3 - Nam Et Phou Louey NPA
+// 4 - the fourth hasn't been determined yet
+
+// Find WDPAIDs by searching protected areas here: https://www.protectedplanet.net/en
+
+var protected_areas = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter(ee.Filter.or(
+  ee.Filter.eq("WDPAID", 12176), // WDPAID for Xe Pian (1)
+  ee.Filter.eq("WDPAID", 18896), // WDPAID for Name Kading (2)
+  ee.Filter.eq("WDPAID", 555703743))) // WDPAID for Nam Et Phoulouey (3)
+//  TBD (4)
+  .map(setGEFID);
+  
+//Map.addLayer(protected_areas, {color: '008B98'}, 'protected_areas');
+// print('Protected Areas: ', protected_areas);
+
+var protected_areas_4650 = protected_areas.map(setGEFID);
+print('GEFID = 4650', protected_areas_4650);
+Map.addLayer(protected_areas_4650, {color: '008B98'}, '4650');
+
+///////////////////
+// GEFID = 9640 //
+///////////////////
+
+// SET-UP
+
+// Define the project ID
+var project_id = 9640
+
+// PROTECTED AREAS
+// 1 - Preah Sihanouk "Ream" National Park
+
+// Find WDPAIDs by searching protected areas here: https://www.protectedplanet.net/en
+
+var protected_areas = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter(ee.Filter.or(
+  ee.Filter.eq("WDPAID", 68859))) // WDPAID for Ream
+  .map(setGEFID);
+  
+//Map.addLayer(protected_areas, {color: '0F6CB6'}, 'protected_areas');
+//print('Protected Areas: ', protected_areas);
+
+var protected_areas_9640 = protected_areas.map(setGEFID);
+//print('Protected Areas: ', protected_areas_9640);
+
+// TONLE SAP GREAT LAKE
+
+// Upload Tonle Sap data to GEE
+var tonle_sap = ee.FeatureCollection('users/lkmills/tonle_sap')
+.map(setGEFID);
+
+//Map.addLayer(tonle_sap, {color: '0F6CB6'}, 'Tonle Sap');
+//print('Tonle Sap: ', tonle_sap);
+
+var tonle_sap_9640 = tonle_sap.map(setGEFID);
+//print('Tonle Sap: ', tonle_sap_9640);
+
+// MEKONG RIVER
+
+// Upload Asia Rivers data to GEE
+var mekong_riverbasin = ee.FeatureCollection('users/lkmills/mekong_basin')
+.map(setGEFID);
+
+//Map.addLayer(mekong_riverbasin, {color: '0F6CB6'}, 'Mekong River');
+//print('Mekong River: ', mekong_riverbasin);
+
+var combine1_9640 = protected_areas_9640.merge(tonle_sap);
+var combine2_9640 = combine1_9640.merge(mekong_riverbasin);
+
+print('GEFID = 9640', combine2_9640);
+Map.addLayer(combine2_9640, {color: '0F6CB6'}, '9640');
+
+// set position of panel
+var legend = ui.Panel({
+  style: {
+    position: 'bottom-left',
+    padding: '8px 15px'
+  }
+});
+ 
+// Create legend title
+var legendTitle = ui.Label({
+  value: 'GEF Projects',
+  style: {
+    fontWeight: 'bold',
+    fontSize: '18px',
+    margin: '0 0 4px 0',
+    padding: '0'
+    }
+});
+ 
+// Add the title to the panel
+legend.add(legendTitle);
+ 
+// Creates and styles 1 row of the legend.
+var makeRow = function(color, name) {
+ 
+      // Create the label that is actually the colored box.
+      var colorBox = ui.Label({
+        style: {
+          backgroundColor: '#' + color,
+          // Use padding to give the box height and width.
+          padding: '8px',
+          margin: '0 0 4px 0'
+        }
+      });
+ 
+      // Create the label filled with the description text.
+      var description = ui.Label({
+        value: name,
+        style: {margin: '0 0 4px 6px'}
+      });
+ 
+      // return the panel
+      return ui.Panel({
+        widgets: [colorBox, description],
+        layout: ui.Panel.Layout.Flow('horizontal')
+      });
+};
+ 
+//  Palette with the colors
+var palette =['E58E19', '008B98', '0F6CB6'];
+ 
+// name of the legend
+var names = ['10787', '4650', '9640'];
+ 
+// Add color and and names
+for (var i = 0; i < 3; i++) {
+  legend.add(makeRow(palette[i], names[i]));
+  }  
+ 
+// add legend to map (alternatively you can also print the legend to the console)
+Map.add(legend);

@@ -1,0 +1,63 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var table = ee.FeatureCollection("users/lkmills/kenya_polys"),
+    geometry = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[34.479009500459995, -1.1717914656318429],
+          [34.479009500459995, -1.3921493680423644],
+          [34.805852762178745, -1.3921493680423644],
+          [34.805852762178745, -1.1717914656318429]]], null, false),
+    geometry2 = 
+    /* color: #98ff00 */
+    /* shown: false */
+    ee.Geometry.LineString(
+        [[34.47763620944437, -1.3916476557937745],
+         [34.47763620944437, -1.171976212159694]]),
+    geometry3 = 
+    /* color: #0b4a8b */
+    /* shown: false */
+    ee.Geometry.LinearRing(
+        [[34.47694956393656, -1.171976212159694],
+         [34.80722605319437, -1.1706032080905469],
+         [34.47694956393656, -1.171976212159694]]),
+    geometry4 = /* color: #ffc82d */ee.Geometry.LineString(
+        [[34.47763620944437, -1.171976212159694],
+         [34.80722605319437, -1.1706032080905469]]);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var kenya_polys = ee.FeatureCollection('users/lkmills/kenya_polys');
+kenya_polys = kenya_polys.geometry();
+Map.addLayer(kenya_polys, {color: 'blue'}, 'kenya_polys');
+
+var centroid = kenya_polys.centroid();
+print(centroid);
+
+var centroid_kenya = ee.Geometry.Point([34.65, -1.30]);
+Map.addLayer(centroid_kenya, {color: 'red'}, 'centroid_kenya');
+
+var bottom_left = ee.Geometry.Point([34.47856, -1.392145]);
+Map.addLayer(bottom_left, {color: 'red'}, 'bottom_left');
+
+var bottom_right = ee.Geometry.Point([34.80762,-1.392145]);
+Map.addLayer(bottom_right, {color: 'red'}, 'bottom_right');
+
+var top_left = ee.Geometry.Point([34.47856, -1.172086]);
+Map.addLayer(top_left, {color: 'red'}, 'top_left');
+
+var top_right = ee.Geometry.Point([34.80762,-1.172086]);
+Map.addLayer(top_right, {color: 'red'}, 'top_right');
+
+var km_ab = ee.Feature(geometry4);
+print(km_ab.length());
+
+// km_ab = 24.289859292276016589
+
+var km_lr=ee.Feature(geometry4);
+print(km_lr.length());
+
+// km_lr = 36682.47284157837
+

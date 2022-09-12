@@ -1,0 +1,82 @@
+var countries = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017');
+var drcongo = countries.filter(ee.Filter.eq('country_co', 'CG'));
+var styleParams = {
+  fillColor: 'b5ffb4',
+  color: '868686',
+  width: 2.5,
+  opacity: 0.6,
+};
+Map.addLayer(drcongo, styleParams, 'DRC');
+Map.setCenter(23.5, -2.5, 6);
+
+// Pârc National de la Salonga >> WDPA
+var salonga = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Salonga')
+  ));
+Map.addLayer(salonga, {}, 'Salonga');
+
+var centroid_salonga = ee.Geometry.Point([20.94817, -2.492970]);
+Map.addLayer(centroid_salonga, {color: 'blue'}, 'centroid_salonga');
+print('Salonga:', centroid_salonga);
+
+// Parc National de la Garamba >> WDPA
+var garamba = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de la Garamba')
+  ));
+Map.addLayer(garamba, {}, 'Garamba');
+
+var centroid_garamba = ee.Geometry.Point([29.51399, 4.165103]);
+Map.addLayer(centroid_garamba, {color: 'blue'}, 'centroid_garamba');
+print('Garamba:', centroid_garamba);
+
+// Parc National de Kahuzi-Biega >> WDPA
+var kahuzi_biega = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national de Kahuzi-Biega')
+  ));
+Map.addLayer(kahuzi_biega, {}, 'Kahuzi-Biega');
+
+var centroid_kahuzi_biega = kahuzi_biega.geometry().centroid({'maxError': 1});
+Map.addLayer(centroid_kahuzi_biega, {color: 'blue'}, 'centroid_kahuzi_biega');
+print('Kahuzi-Biega:', centroid_kahuzi_biega);
+
+// Parc National de la Maïko >> WDPA
+var maiko = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Maiko')
+  ));
+Map.addLayer(maiko, {}, 'Maiko');
+
+var centroid_maiko = maiko.geometry().centroid({'maxError': 1});
+Map.addLayer(centroid_maiko, {color: 'blue'}, 'centroid_maiko');
+print('Maiko:', centroid_maiko);
+
+// Tumba Lediima Natural Reserve >> WDPA
+var tumba_lediima = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Tumba-Lediima')
+  ));
+Map.addLayer(tumba_lediima, {}, 'Tumba-Lediima');
+
+var centroid_tumba_lediima = tumba_lediima.geometry().centroid({'maxError': 1});
+Map.addLayer(centroid_tumba_lediima, {color: 'blue'}, 'centroid_tumba_lediima');
+print('Tumba Lediima:', centroid_tumba_lediima);
+
+// Virunga >> WDPA
+var virunga = ee.FeatureCollection('WCMC/WDPA/current/polygons')
+.filter(ee.Filter.and(
+    ee.Filter.bounds(drcongo.geometry()),
+    ee.Filter.eq('ORIG_NAME', 'Parc national des Virunga')
+  ));
+Map.addLayer(virunga, {}, 'Virunga');
+
+var centroid_virunga = virunga.geometry().centroid({'maxError': 1});
+Map.addLayer(centroid_virunga, {color: 'blue'}, 'centroid_virunga');
+print('Virunga:', centroid_virunga);

@@ -1,0 +1,76 @@
+Map.setCenter(108.048, 14.511, 7);
+
+var setGEFID = function(feature) {
+  return feature.set('GEFID', project_id);   // substitute in your value of Z here
+};
+
+///////////////////
+// GEFID = 10787 //
+///////////////////
+
+var project_id = 10787
+
+var groupings = ['group1', 'group2', 'group3']
+
+// PROTECTED AREAS
+// 1 - Nui Chua National Park
+// 2 - Phong Nha-Ke Bang National Park
+
+// var group1_10787 = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter(ee.Filter.or(
+//   ee.Filter.eq("WDPAID == 303041"), ee.Filter.eq("WDPAID == 10345")));
+
+var group1 = ee.FeatureCollection('WCMC/WDPA/current/polygons').filter(ee.Filter.or(
+  ee.Filter.eq("WDPAID", 303041), 
+  ee.Filter.eq("WDPAID", 10345)))
+  .map(setGEFID);
+  
+Map.addLayer(group1, {color: 'purple'}, 'group1');
+  
+// Export.table.toDrive({
+//   collection: group1,
+//   description: 'group1_' + project_id,
+//   fileFormat: 'SHP'
+// });
+
+// GEOBOUNDARIES ADM2
+// 1 - Thuan Bac
+// 2 - Ninh Hai
+
+var group2 = ee.FeatureCollection('users/lkmills/geoBoundaries-VNM-ADM2').filter(ee.Filter.or(
+  ee.Filter.eq("shapeName", 'Thuan Bac'),
+  ee.Filter.eq("shapeName", 'Ninh Hai')))
+  .map(setGEFID);
+  
+// Export.table.toDrive({
+//   collection: group2,
+//   description: 'group2_' + project_id,
+//   fileFormat: 'SHP'
+// });
+
+// // VIETNAM ADM3, UNIVERSITY OF CALIFORNIA, BERKLEY
+// // https://maps.princeton.edu/catalog/stanford-dk039bc2779
+// // 13 communes (not named in PIF, had to identify through map)
+
+var group3 = ee.FeatureCollection('users/lkmills/dk039bc2779').filter(ee.Filter.or(
+  ee.Filter.eq('id_3',7490), ee.Filter.eq('id_3',7502), ee.Filter.eq('id_3',7494), ee.Filter.eq('id_3',7503), 
+  ee.Filter.eq('id_3',7501), ee.Filter.eq('id_3',7461), ee.Filter.eq('id_3',7458), ee.Filter.eq('id_3',7514), 
+  ee.Filter.eq('id_3',7451), ee.Filter.eq('id_3',7456), ee.Filter.eq('id_3',7438), ee.Filter.eq('id_3',7455), 
+  ee.Filter.eq('id_3',7453))).map(setGEFID);
+  
+// Export.table.toDrive({
+//   collection: group3,
+//   description: 'group3_' + project_id,
+//   fileFormat: 'SHP'
+// });
+
+var combined = group1.merge(group2);
+var combined2 = combined.merge(group3);
+
+print(combined2);
+Map.addLayer(combined2, {color: 'red'}, 'TEST');
+
+Export.table.toDrive({
+  collection: combined2,
+  description: 'combined2',
+  fileFormat: 'KML'
+});
